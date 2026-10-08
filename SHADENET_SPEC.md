@@ -33,7 +33,7 @@ Shadenet is an autonomous, privacy-first, decentralized cited intelligence and n
 - **NightCal (The Calendar):** Public-facing 4-axis night sheet for regional shows (X: start hour, Y: venue lanes, Z: community sample tallies, Wire: set duration).
 - **Umwelt Horizon (The Zine):** Decentralized editorial publication and news syndication compiled from a git markdown vault into an Adaptive Viewport Resolution (AVR) node graph with wikilink validation.
 - **Serendipilyst (The Marketplace):** Community bulletin board for services, gigs, and notices. Actions require an activated Steward.
-- **Steward (The Personal Agent):** Client-side personal agent running as a PWA on the phone. Holds private calendar, personal availability, skills registry, JIT layout preferences, and content gunode-primaryils.
+- **Steward (The Personal Agent):** Client-side personal agent running as a PWA on the phone. Holds private calendar, personal availability, skills registry, JIT layout preferences, and content guardrails.
 - **Rooms (Hosts & Venues):** Physical venues and gathering spaces discovered via OpenStreetMap Overpass and enriched with primary-source citations.
 - **Flags (Public Cards & Dossiers):** Public profile cards for venues (Rooms) and users/service providers (Stewards).
 

@@ -13,7 +13,7 @@ Server side (Python):
   subscriptions.py      A2A protocol + per-agent mailboxes
 
 Client side (vanilla JS):
-- steward.js            keygen, attestation binding, verbose gunode-primaryils,
+- steward.js            keygen, attestation binding, verbose guardrails,
                         adaptive filtering (localStorage/IndexedDB)
 - manifest.webmanifest  installable PWA
 - sw.js                 offline service worker
