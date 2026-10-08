@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,6 +23,14 @@
     --display: 'Geist', 'Inter', system-ui, sans-serif;
     --text: 'Geist', 'Inter', system-ui, sans-serif;
     --mono: 'Geist Mono', monospace;
+
+    /* Steward dark surface tokens */
+    --paper: #080808;
+    --paper-raised: #14151a;
+    --ink-soft: #b6b2be;
+    --steward-ink: #aeb4c2;
+    --rule: #4a4d58;
+    --accent: #dcaa7e;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--night); color: var(--sheet); font-family: var(--text); }
@@ -601,9 +609,10 @@ load();
 setInterval(() => { if (busy || !processor.surface) return; fetch("/api/model").then(r => r.json()).then(message => { const before = JSON.stringify(processor.surface.data.events || []); processor.apply(message); const after = JSON.stringify(processor.surface.data.events || []); if (before !== after) render(); }).catch(() => {}); }, 45000);
 </script>
 
-<aside id="refusal" class="refusal-panel" hidden style="position:fixed;inset:0;background:#111;color:#fff;padding:2rem;z-index:9999;">
+<aside id="refusal" class="refusal-panel" hidden style="position:fixed;inset:0;background:#111;color:#fff;padding:2rem;z-index:9999;overflow-y:auto;">
   <h1 style="font-size:1.5rem;margin-bottom:0.5rem;color:var(--comedy);">Surface Refused</h1>
-  <p id="refusal-reason" style="font-size:0.95rem;"></p>
+  <p id="refusal-reason" style="font-size:0.95rem;margin-bottom:1rem;"></p>
+  <ul id="refusal-list" style="margin-left:1.5rem;font-family:var(--mono);font-size:0.85rem;line-height:1.6;"></ul>
 </aside>
 
 <script src="/policy.generated.js"></script>

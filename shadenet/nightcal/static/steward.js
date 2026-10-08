@@ -64,7 +64,7 @@ const Steward = (() => {
 
   const ARTICLE_VOICE = {
     weight: '450',
-    colour: 'var(--ink)',
+    colour: 'var(--sheet, var(--ink))',
     note: "the article's own voice — used during calibration, so the reader learns " +
           "the steward's rhythm in a register they already chose",
   };

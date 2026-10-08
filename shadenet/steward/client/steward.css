@@ -71,9 +71,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: "Iowan Old Style", Charter, Georgia, "Times New Roman", serif;
+  background: var(--night, var(--paper));
+  color: var(--sheet, var(--ink));
+  font-family: var(--text, "Iowan Old Style", Charter, Georgia, "Times New Roman", serif);
   line-height: var(--line-height);
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
@@ -165,7 +165,7 @@ code {
   font-size: 1.05rem;
   line-height: 1.55;
   transition: font-weight 400ms ease, color 600ms ease;
-  color: var(--ink);
+  color: var(--sheet, var(--ink));
 }
 
 /* A durable line is a control. It looks tappable and it is, and the affordance
