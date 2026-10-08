@@ -1,0 +1,180 @@
+/* NightCal base: reset, type, focus, layout primitives.
+   Every value comes from a token in tokens.css. If you need a raw value here,
+   add a token instead. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  font-size: calc(100% * var(--nc-text-scale));
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--nc-color-bg);
+  color: var(--nc-color-text);
+  font-family: var(--nc-font-family-sans);
+  font-size: var(--nc-font-size-md);
+  line-height: var(--nc-font-line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, svg, video, canvas { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, h4, p, ul, ol, figure, dl, dd { margin: 0; }
+ul[role="list"], ol[role="list"] { list-style: none; padding: 0; }
+[hidden] { display: none !important; }
+
+h1, h2, h3, h4 {
+  font-family: var(--nc-font-family-display);
+  line-height: var(--nc-font-line-height-tight);
+  letter-spacing: var(--nc-font-tracking-tight);
+  font-weight: var(--nc-font-weight-heavy);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+p { text-wrap: pretty; max-width: var(--nc-size-measure); }
+
+a { color: var(--nc-color-link); text-underline-offset: 0.18em; text-decoration-thickness: var(--nc-size-border); }
+a:hover { text-decoration-thickness: var(--nc-size-border-strong); }
+
+/* Focus: one visible ring everywhere, never removed. 2.4.7 / 2.4.13. */
+:focus { outline: none; }
+:focus-visible {
+  outline: var(--nc-size-focus-ring) solid var(--nc-color-focus);
+  outline-offset: var(--nc-size-focus-offset);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-skip {
+  position: absolute;
+  left: var(--nc-space-4);
+  top: var(--nc-space-2);
+  z-index: var(--nc-z-toast);
+  padding: var(--nc-space-3) var(--nc-space-4);
+  background: var(--nc-color-accent);
+  color: var(--nc-color-on-accent);
+  font-weight: var(--nc-font-weight-bold);
+  border-radius: var(--nc-radius-md);
+  transform: translateY(-200%);
+}
+.nc-skip:focus-visible { transform: none; }
+
+.nc-sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* Layout primitives */
+.nc-container {
+  width: min(var(--nc-size-content-max), 100% - 2 * var(--nc-size-gutter));
+  margin-inline: auto;
+}
+.nc-stack { display: flex; flex-direction: column; gap: var(--nc-stack-gap, var(--nc-space-4)); }
+.nc-stack > *, .nc-page > *, .nc-gallery section > * { min-width: 0; max-width: 100%; }
+.nc-cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nc-cluster-gap, var(--nc-space-3)); }
+.nc-section { padding-block: var(--nc-space-6); }
+.nc-section + .nc-section { border-top: var(--nc-size-border) solid var(--nc-color-border); }
+
+.nc-eyebrow {
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  letter-spacing: var(--nc-font-tracking-caps);
+  text-transform: uppercase;
+  color: var(--nc-color-text-muted);
+}
+.nc-muted { color: var(--nc-color-text-muted); }
+.nc-h1 { font-size: var(--nc-font-size-display); }
+.nc-h2 { font-size: var(--nc-font-size-2xl); }
+.nc-h3 { font-size: var(--nc-font-size-xl); }
+.nc-lede { font-size: var(--nc-font-size-lg); color: var(--nc-color-text-muted); }
+
+/* Form controls shared by components */
+.nc-select {
+  min-height: var(--nc-size-target);
+  padding: 0 calc(var(--nc-space-6) + var(--nc-space-2)) 0 var(--nc-space-3);
+  border: var(--nc-size-border) solid var(--nc-color-border-strong);
+  border-radius: var(--nc-radius-md);
+  background-color: var(--nc-color-surface);
+  color: var(--nc-color-text);
+  font-size: var(--nc-font-size-md);
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 1.15rem) 55%, calc(100% - 0.8rem) 55%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+.nc-label { display: block; font-size: var(--nc-font-size-sm); font-weight: var(--nc-font-weight-bold); margin-bottom: var(--nc-space-1); }
+
+/* Segmented control built from native radios. */
+.nc-segmented { margin: 0; padding: 0; border: 0; min-width: 0; max-width: 100%; }
+.nc-segmented__options {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: var(--nc-space-1);
+  gap: var(--nc-space-1);
+  border: var(--nc-size-border) solid var(--nc-color-border-strong);
+  border-radius: var(--nc-radius-md);
+  background: var(--nc-color-surface);
+}
+.nc-segmented__option { position: relative; display: inline-flex; }
+.nc-segmented__option input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.nc-segmented__option span {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--nc-size-target);
+  min-width: var(--nc-size-target);
+  padding: 0 var(--nc-space-3);
+  border-radius: var(--nc-radius-sm);
+  font-weight: var(--nc-font-weight-bold);
+  white-space: nowrap;
+}
+.nc-segmented__option input:checked + span { background: var(--nc-color-selected-bg); color: var(--nc-color-selected-text); }
+.nc-segmented__option input:focus-visible + span { outline: var(--nc-size-focus-ring) solid var(--nc-color-focus); outline-offset: var(--nc-size-focus-offset); }
+.nc-segmented__option:hover input:not(:checked) + span { background: var(--nc-color-surface-sunken); }
+
+/* Embed routes: no page chrome, transparent edges, sized by content. */
+body.nc-embed { min-height: 0; background: var(--nc-color-bg); }
+body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
+
+/* Lazy sections reserve space so content-visibility does not shift layout. */
+.nc-lazy { content-visibility: auto; contain-intrinsic-size: auto 40rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}
+
+/* Modal dialog (native <dialog>: focus trap, Esc, focus return come free). */
+.nc-dialog {
+  width: min(44rem, calc(100vw - 2 * var(--nc-size-gutter)));
+  max-height: calc(100dvh - 2 * var(--nc-size-gutter));
+  padding: 0;
+  border: 0;
+  border-radius: var(--nc-radius-lg);
+  background: var(--nc-color-surface-raised);
+  color: var(--nc-color-text);
+  box-shadow: var(--nc-shadow-overlay);
+  container-type: inline-size;
+}
+.nc-dialog::backdrop { background: var(--nc-color-scrim); }
+.nc-dialog__inner { display: grid; gap: var(--nc-space-2); padding: var(--nc-space-2); }
+.nc-dialog__close { justify-self: end; }
+.nc-dialog .nc-event-card { box-shadow: none; border: 0; background: transparent; }
+.nc-dialog[open] { animation: nc-rise var(--nc-duration-base) var(--nc-easing-standard); }
+@keyframes nc-rise { from { opacity: 0; transform: translateY(var(--nc-space-4)); } to { opacity: 1; transform: none; } }
+
+.nc-embed-root { container-type: inline-size; }
+
+/* A link that stands alone (not inside a sentence) is a 44px target. */
+.nc-link { display: inline-flex; align-items: center; min-height: var(--nc-size-target); min-width: var(--nc-size-target); }

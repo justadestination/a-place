@@ -1,0 +1,22 @@
+# NightCal front-end (web/) + existing nightcal API, one origin.
+# Static files are served as-is; /api/* goes to the unchanged Python server.
+nightcal.justadestination.com, shady.justadestination.com {
+	encode zstd gzip
+	root * /opt/shadenet/web
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8765
+	}
+	handle {
+		try_files {path} {path}/index.html
+		file_server
+	}
+	# Long cache for content that changes name when it changes; short for HTML.
+	@hashed path /css/nightcal.css /vendor/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+	@html path / /*/ *.html
+	header @html Cache-Control "no-cache"
+	# Embeds must be frameable by other sites, so no X-Frame-Options here.
+	header /embed/* -X-Frame-Options
+	header Referrer-Policy "strict-origin-when-cross-origin"
+	header X-Content-Type-Options "nosniff"
+}

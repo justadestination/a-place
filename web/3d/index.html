@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;sha256-MWfGbnoZSzPtwaRdt79JrkxnORjfzJQgEsk6h0CLBBo=&#x27; &#x27;sha256-Q2qUzK3VHNDk5oQ//5f8UilrPhf9myrdE6IOB4RtzVo=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; https: data: blob:; connect-src &#x27;self&#x27;; frame-src &#x27;self&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;">
+<title>NightCal in 3D — AR preview</title>
+<meta name="description" content="The same week and the same zine map as a 3D scene you can walk around, with WebXR AR where the device supports it.">
+<link rel="canonical" href="https://nightcal.justadestination.com/3d/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F6F4EE">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NightCal">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="NightCal in 3D — AR preview">
+<meta property="og:description" content="The same week and the same zine map as a 3D scene you can walk around, with WebXR AR where the device supports it.">
+<meta property="og:url" content="https://nightcal.justadestination.com/3d/">
+<meta property="og:image" content="https://nightcal.justadestination.com/og/ar.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NightCal in 3D — AR preview">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NightCal in 3D — AR preview">
+<meta name="twitter:description" content="The same week and the same zine map as a 3D scene you can walk around, with WebXR AR where the device supports it.">
+<meta name="twitter:image" content="https://nightcal.justadestination.com/og/ar.png">
+<meta name="twitter:image:alt" content="NightCal in 3D — AR preview">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>(function () {
+  var d = document.documentElement, s = null, q = null;
+  try { s = JSON.parse(localStorage.getItem("nightcal.theme.v1") || "null"); } catch (e) {}
+  try { q = new URLSearchParams(location.search); } catch (e) {}
+  if (q) {
+    s = s || {};
+    if (q.get("scheme")) s.scheme = q.get("scheme");
+    if (q.get("textScale")) s.textScale = parseFloat(q.get("textScale"));
+    if (q.get("density")) s.density = q.get("density");
+  }
+  if (!s) return;
+  if (s.scheme === "light" || s.scheme === "dark") d.setAttribute("data-theme", s.scheme);
+  if (s.textScale > 0) d.style.setProperty("--nc-text-scale", String(Math.min(2, Math.max(1, s.textScale))));
+  if (typeof s.density === "number") d.style.setProperty("--nc-density", String(s.density));
+  else if (s.density === "compact" || s.density === "spacious") d.setAttribute("data-density", s.density);
+  if (s.motion === "reduce" || s.motion === "full") d.setAttribute("data-motion", s.motion);
+  if (s.css) {
+    var el = document.createElement("style");
+    el.id = "nc-theme-overrides";
+    el.textContent = s.css;
+    document.head.appendChild(el);
+  }
+})();</script>
+<link rel="stylesheet" href="/css/nightcal.css?v=fcf57cf1e2">
+<script type="importmap">{"imports": {"three": "/vendor/three/three.module.min.js", "three/addons/": "/vendor/three/addons/"}}</script>
+<link rel="modulepreload" href="/js/pages/ar.js">
+<link rel="modulepreload" href="/components/event-row/event-row.js">
+<link rel="modulepreload" href="/components/kind-tag/kind-tag.js">
+<link rel="modulepreload" href="/js/data/calendar.js">
+<link rel="modulepreload" href="/js/data/dates.js">
+<link rel="modulepreload" href="/components/glyph.js">
+<link rel="modulepreload" href="/js/core/dom.js">
+<link rel="modulepreload" href="/components/button/button.js">
+<link rel="modulepreload" href="/components/site-footer/site-footer.js">
+<link rel="modulepreload" href="/js/core/site.js">
+<link rel="modulepreload" href="/components/site-header/site-header.js">
+<link rel="modulepreload" href="/components/theme-controls/theme-controls.js">
+<link rel="modulepreload" href="/js/core/theme.js">
+<link rel="modulepreload" href="/js/core/tokens.js">
+<link rel="modulepreload" href="/js/data/graph.js">
+<link rel="modulepreload" href="/js/layout/force.js">
+<link rel="modulepreload" href="/js/data/scene.js">
+
+<script type="module" src="/js/pages/ar.js"></script>
+</head>
+<body>
+<a class="nc-skip" href="#main">Skip to content</a>
+<div id="app"></div>
+<noscript><p class="nc-container nc-section">NightCal needs JavaScript turned on to show listings.</p></noscript>
+</body>
+</html>

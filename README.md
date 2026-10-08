@@ -251,6 +251,16 @@ a-place/
 
 ---
 
+## NightCal Front-End & Design System (`web/`, `tokens/`)
+
+The public calendar and the AVR+JIT zine have a token-based design system and a static front-end in `web/`. It reads the existing `/api/model` and changes nothing in the backend.
+
+- **Tokens and themes:** `tokens/` holds the canonical light and dark themes. Both are gated to WCAG 2.2 AA at build time.
+- **Components:** 15 components, each with a standalone `/embed/<name>/` route, social metadata and a README.
+- **Theme API:** live, contrast-enforced theming for Steward agents. See `docs/THEME_API.md`.
+- **Pages:** the redesigned calendar (`/`), the zine node map (`/zine/`), a 3D/WebXR preview (`/3d/`), a design system gallery (`/system/`) and three landing options waiting on the owner (`/landing/`).
+- **Start here:** `web/README.md`. The audits are in `docs/AUDIT.md` (legacy page) and `docs/ACCESSIBILITY.md` (this layer).
+
 ## License
 
 This project is licensed under the **Apache License, Version 2.0**. See the [LICENSE](LICENSE) file for details.

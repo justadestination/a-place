@@ -1,0 +1,66 @@
+{
+  "$description": "Every full page. tools/build_pages.py writes <path>index.html for each, with theme boot, CSS, social metadata and the page module. Embed routes (/embed/<component>/) are generated from components/*/ automatically; do not list them here.",
+  "pages": [
+    {
+      "path": "/",
+      "title": "NightCal — what's on in Downtown Santa Rosa tonight",
+      "description": "Live music, comedy, shows and trivia in downtown Santa Rosa, tonight and this week. Every listing cites where it came from.",
+      "module": "js/pages/calendar.js",
+      "og": "calendar",
+      "shell": "calendar"
+    },
+    {
+      "path": "/zine/",
+      "title": "AVR+JIT — the NightCal zine",
+      "description": "Reviews, articles and letters about downtown nights, mapped as a graph of the rooms and shows they talk about.",
+      "module": "js/pages/zine.js",
+      "og": "zine",
+      "shell": "zine"
+    },
+    {
+      "path": "/3d/",
+      "title": "NightCal in 3D — AR preview",
+      "description": "The same week and the same zine map as a 3D scene you can walk around, with WebXR AR where the device supports it.",
+      "module": "js/pages/ar.js",
+      "og": "ar"
+    },
+    {
+      "path": "/system/",
+      "title": "NightCal design system",
+      "description": "Tokens, themes, components, embed routes and the theme API behind NightCal.",
+      "module": "js/pages/system.js",
+      "og": "system"
+    },
+    {
+      "path": "/landing/",
+      "title": "Landing page options — NightCal",
+      "description": "Three candidate front doors for NightCal, for the owner to choose between.",
+      "module": "js/pages/landing.js",
+      "og": "landing"
+    },
+    {
+      "path": "/landing/a/",
+      "title": "Option A: Tonight first — NightCal",
+      "description": "Landing option A. Opens on tonight's listings, with the calendar and the zine one step away.",
+      "module": "js/pages/landing.js",
+      "og": "landing-a",
+      "variant": "a"
+    },
+    {
+      "path": "/landing/b/",
+      "title": "Option B: Two doors — NightCal",
+      "description": "Landing option B. One sentence on what this is, then two equal doors: the calendar and the zine.",
+      "module": "js/pages/landing.js",
+      "og": "landing-b",
+      "variant": "b"
+    },
+    {
+      "path": "/landing/c/",
+      "title": "Option C: Three steps — NightCal",
+      "description": "Landing option C. A numbered path: see what's on, read the zine, put it on your own site.",
+      "module": "js/pages/landing.js",
+      "og": "landing-c",
+      "variant": "c"
+    }
+  ]
+}
