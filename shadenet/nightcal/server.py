@@ -126,6 +126,9 @@ class Handler(BaseHTTPRequestHandler):
         self._json(code, payload)
         return True
 
+    def do_HEAD(self) -> None:  # noqa: N802
+        self.do_GET()
+
     def do_GET(self) -> None:  # noqa: N802
         if self._events("GET"):
             return
