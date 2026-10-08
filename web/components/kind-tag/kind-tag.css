@@ -1,0 +1,29 @@
+.nc-glyph { width: var(--nc-size-glyph); height: var(--nc-size-glyph); flex: none; }
+
+.nc-kind-tag {
+  --tone-bg: var(--nc-color-kind-other-bg);
+  --tone-fg: var(--nc-color-kind-other-fg);
+  --tone-mark: var(--nc-color-kind-other-mark);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  padding: var(--nc-space-1) var(--nc-space-3);
+  border-radius: var(--nc-radius-pill);
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  line-height: var(--nc-font-line-height-snug);
+  white-space: nowrap;
+}
+.nc-kind-tag .nc-glyph { color: var(--tone-fg); }
+.nc-kind-tag--compact { padding: 0 var(--nc-space-2); font-size: var(--nc-font-size-xs); }
+
+.nc-kind-glyph { color: var(--tone-mark); }
+
+[data-tone="music"] { --tone-bg: var(--nc-color-kind-music-bg); --tone-fg: var(--nc-color-kind-music-fg); --tone-mark: var(--nc-color-kind-music-mark); }
+[data-tone="comedy"] { --tone-bg: var(--nc-color-kind-comedy-bg); --tone-fg: var(--nc-color-kind-comedy-fg); --tone-mark: var(--nc-color-kind-comedy-mark); }
+[data-tone="show"] { --tone-bg: var(--nc-color-kind-show-bg); --tone-fg: var(--nc-color-kind-show-fg); --tone-mark: var(--nc-color-kind-show-mark); }
+[data-tone="trivia"] { --tone-bg: var(--nc-color-kind-trivia-bg); --tone-fg: var(--nc-color-kind-trivia-fg); --tone-mark: var(--nc-color-kind-trivia-mark); }
+[data-tone="food"] { --tone-bg: var(--nc-color-kind-food-bg); --tone-fg: var(--nc-color-kind-food-fg); --tone-mark: var(--nc-color-kind-food-mark); }
+[data-tone="other"] { --tone-bg: var(--nc-color-kind-other-bg); --tone-fg: var(--nc-color-kind-other-fg); --tone-mark: var(--nc-color-kind-other-mark); }

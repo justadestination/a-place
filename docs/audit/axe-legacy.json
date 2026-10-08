@@ -1,0 +1,210 @@
+{
+  "mobile": {
+    "axe": [],
+    "tabStops": [
+      {
+        "tag": "BUTTON",
+        "cls": "day is-selected is-today",
+        "label": "Thursday, October 8",
+        "w": 371,
+        "h": 113
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Friday, October 9, Main Street Tavern Se",
+        "w": 50,
+        "h": 71
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Saturday, October 10, Headline Comedy - ",
+        "w": 51,
+        "h": 71
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Sunday, October 11",
+        "w": 51,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Monday, October 12",
+        "w": 51,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Tuesday, October 13",
+        "w": 50,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Wednesday, October 14",
+        "w": 50,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Thursday, October 15",
+        "w": 50,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Friday, October 16, Main Street Tavern S",
+        "w": 51,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Saturday, October 17, Downtown Sound: Th",
+        "w": 52,
+        "h": 73
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Sunday, October 18, 2026 Norbay Theater ",
+        "w": 51,
+        "h": 75
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Monday, October 19",
+        "w": 52,
+        "h": 75
+      }
+    ],
+    "textUnder12px": [
+      "p.footer 11.52px ×3",
+      "span. 10.4px ×7",
+      "span.obj-label 9.6px ×19",
+      "span.more 10.4px ×2"
+    ],
+    "targetsUnder44px": {
+      "skip 155×34": 1,
+      "ctrl 60×31": 1,
+      "ctrl 84×31": 1,
+      "ctrl 116×31": 1,
+      "ctrl 92×31": 1,
+      "ctrl 160×31": 1,
+      "room 27×27": 18
+    }
+  },
+  "desktop": {
+    "axe": [],
+    "tabStops": [
+      {
+        "tag": "BUTTON",
+        "cls": "day is-selected is-today",
+        "label": "Thursday, October 8",
+        "w": 252,
+        "h": 153
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Friday, October 9, Main Street Tavern Se",
+        "w": 163,
+        "h": 96
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Saturday, October 10, Headline Comedy - ",
+        "w": 167,
+        "h": 96
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Sunday, October 11",
+        "w": 173,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Monday, October 12",
+        "w": 168,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Tuesday, October 13",
+        "w": 163,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Wednesday, October 14",
+        "w": 160,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Thursday, October 15",
+        "w": 163,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Friday, October 16, Main Street Tavern S",
+        "w": 168,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Saturday, October 17, Downtown Sound: Th",
+        "w": 174,
+        "h": 102
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day has-shows",
+        "label": "Sunday, October 18, 2026 Norbay Theater ",
+        "w": 179,
+        "h": 110
+      },
+      {
+        "tag": "BUTTON",
+        "cls": "day",
+        "label": "Monday, October 19",
+        "w": 175,
+        "h": 110
+      }
+    ],
+    "textUnder12px": [
+      "p.footer 11.52px ×3",
+      "span. 10.4px ×7",
+      "span.obj-label 10.88px ×19",
+      "span.more 10.4px ×2"
+    ],
+    "targetsUnder44px": {
+      "skip 155×34": 1,
+      "ctrl 60×31": 1,
+      "ctrl 84×31": 1,
+      "ctrl 116×31": 1,
+      "ctrl 92×31": 1,
+      "ctrl 160×31": 1,
+      "room 32×32": 18
+    }
+  }
+}

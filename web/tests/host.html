@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Embed host test page</title></head>
+<body>
+<h1>Someone else's page</h1>
+<div id="slot" data-nightcal="calendar-week" data-params="scope=nights" data-theme='{"textScale":1.25}'></div>
+<script src="/embed.js"></script>
+<script>
+  window.events = [];
+  const slot = document.getElementById("slot");
+  ["ready", "resize", "select", "themechange"].forEach(t => slot.addEventListener("nightcal:" + t, e => window.events.push(e.detail)));
+</script>
+</body>
+</html>

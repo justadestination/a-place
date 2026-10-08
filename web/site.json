@@ -1,0 +1,10 @@
+{
+  "$description": "Site identity used for headings, page titles and social metadata. tools/build_pages.py reads it and writes web/js/core/site.js.",
+  "name": "NightCal",
+  "place": "Downtown Santa Rosa",
+  "tagline": "What's on downtown tonight, from listings that cite their source.",
+  "origin": "https://nightcal.justadestination.com",
+  "zineName": "AVR+JIT",
+  "twitter": "",
+  "locale": "en_US"
+}

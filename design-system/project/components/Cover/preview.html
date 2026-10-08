@@ -1,0 +1,54 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Cover</title>
+<style>
+  html, body { margin: 0; background: var(--bg); }
+  .cover { position: relative; width: 960px; height: 288px; background: var(--bg); }
+  svg { position: absolute; left: 0; top: 0; }
+  .accent { fill: var(--accent); }
+  .ink { fill: var(--text); }
+  .music { fill: var(--kind-music-mark); }
+  .show { fill: var(--kind-show-mark); }
+  .comedy { fill: var(--kind-comedy-mark); }
+  .cut { fill: var(--bg); }
+  .cut-line { fill: none; stroke: var(--bg); stroke-width: 5px; }
+  .text { position: absolute; left: 40px; top: 152px; max-width: 880px; }
+  .name { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 64px; line-height: .95; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
+  .tag { margin: 16px 0 0; max-width: 440px; font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 14px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <svg width="960" height="112" viewBox="0 0 960 112" aria-hidden="true">
+    <!--
+      blocks: accent 384px (bulb amber, the brand) · text/ink 216px · kind-music-mark 144px · kind-show-mark 120px · kind-comedy-mark 96px; all 112px tall
+      arrangement: top-band skeleton, one strip of unequal bands, like a night's listings laid out by hour (the name is too wide for the 440px zone)
+      pattern: the system's own kind glyphs (circle, diamond, square, triangle, hexagon, ring) cut out of the blocks in bg; the README says shape always pairs with colour
+      scales: glyph unit 24px = space-5, pitch 48px = space-7, ring stroke 5px, band inset 40px = space-6 + space-2; square corners as in the listing strip
+    -->
+    <rect class="accent" x="0" y="0" width="384" height="112"/>
+    <rect class="ink" x="384" y="0" width="216" height="112"/>
+    <rect class="music" x="600" y="0" width="144" height="112"/>
+    <rect class="show" x="744" y="0" width="120" height="112"/>
+    <rect class="comedy" x="864" y="0" width="96" height="112"/>
+    <circle class="cut" cx="408" cy="56" r="12"/>
+    <polygon class="cut" points="456,44 468,56 456,68 444,56"/>
+    <rect class="cut" x="493.5" y="45.5" width="21" height="21"/>
+    <polygon class="cut" points="552,45 564,66 540,66"/>
+    <polygon class="cut" points="594.0,45.56 606.0,45.56 612,56 606.0,66.44 594.0,66.44 588,56"/>
+    <circle class="cut-line" cx="648" cy="56" r="9.5"/>
+    <circle class="cut" cx="696" cy="56" r="12"/>
+    <polygon class="cut" points="744,44 756,56 744,68 732,56"/>
+    <rect class="cut" x="781.5" y="45.5" width="21" height="21"/>
+    <polygon class="cut" points="840,45 852,66 828,66"/>
+    <polygon class="cut" points="882.0,45.56 894.0,45.56 900,56 894.0,66.44 882.0,66.44 876,56"/>
+    <circle class="cut-line" cx="936" cy="56" r="9.5"/>
+  </svg>
+  <div class="text">
+    <p class="name">NightCal Design System</p>
+    <p class="tag">What's on downtown tonight, from listings that cite their source.</p>
+  </div>
+</div>
+</body>
+</html>

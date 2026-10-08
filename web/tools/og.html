@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG card</title>
+<link rel="stylesheet" href="/css/nightcal.css">
+<style>
+  /* Social card template for tools/og.mjs (1200x630). Tokens only. */
+  body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  .og { box-sizing: border-box; width: 1200px; height: 630px; padding: 72px 80px; display: grid; grid-template-rows: auto 1fr auto; background: var(--nc-color-bg); color: var(--nc-color-text); }
+  .og__eyebrow { font-size: 30px; font-weight: var(--nc-font-weight-bold); letter-spacing: var(--nc-font-tracking-caps); text-transform: uppercase; color: var(--nc-color-text-muted); }
+  .og__title { align-self: center; font-size: 84px; line-height: 1.02; font-weight: var(--nc-font-weight-heavy); letter-spacing: var(--nc-font-tracking-tight); max-width: 18ch; text-wrap: balance; }
+  .og__foot { display: flex; align-items: center; justify-content: space-between; gap: 32px; font-size: 30px; color: var(--nc-color-text-muted); }
+  .og__mark { display: flex; align-items: center; gap: 18px; font-size: 40px; font-weight: var(--nc-font-weight-heavy); color: var(--nc-color-text); }
+  .og__dot { width: 44px; height: 44px; border-radius: 50%; background: var(--nc-color-accent); }
+  .og__desc { max-width: 34ch; text-align: right; }
+</style>
+</head>
+<body>
+<div class="og">
+  <div class="og__eyebrow" id="eyebrow"></div>
+  <div class="og__title" id="title"></div>
+  <div class="og__foot"><div class="og__mark"><span class="og__dot"></span><span id="name"></span></div><div class="og__desc" id="desc"></div></div>
+</div>
+<script type="module">
+  const q = new URLSearchParams(location.search);
+  for (const k of ["eyebrow", "title", "name", "desc"]) document.getElementById(k).textContent = q.get(k) || "";
+</script>
+</body>
+</html>

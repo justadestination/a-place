@@ -1,0 +1,6 @@
+.nc-theme-controls { display: grid; gap: var(--nc-space-4); }
+.nc-theme-controls__group { margin: 0; padding: 0; border: 0; min-width: 0; }
+.nc-theme-controls__group .nc-segmented__options { display: flex; flex-wrap: wrap; }
+.nc-theme-controls__group .nc-segmented__option { flex: 1 1 auto; }
+.nc-theme-controls__group .nc-segmented__option span { flex: 1; justify-content: center; }
+.nc-theme-controls__footer { display: flex; justify-content: flex-end; }
