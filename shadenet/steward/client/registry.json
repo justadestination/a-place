@@ -1,0 +1,83 @@
+{
+  "$comment": [
+    "Venue steward registry — DATA, not code.",
+    "",
+    "One entry per venue that has a steward. Adding a venue means adding a",
+    "row here; it never means a new branch anywhere in the steward. That is the",
+    "whole point: when a venue moves to its own node, you change `endpoint` and",
+    "nothing else.",
+    "",
+    "Co-located stewards currently listen on this machine. That is a",
+    "deployment fact recorded in one field, not an architectural one — the",
+    "steward never in-process-calls a venue steward and never imports one.",
+    "",
+    "authority: what this steward is allowed to assert. A venue steward may",
+    "only speak for its own venueId (enforced at intake, and the registry is",
+    "what makes that check possible while they are co-located).",
+    "'suggest' may file listings but may not assert urgency or choose a tier.",
+    "No entry may grant any authority over another venue."
+  ],
+
+  "version": 1,
+  "updated": "2026-10-03",
+
+  "venues": {
+    "ven_common_room": {
+      "name": "The Common Room",
+      "endpoint": "http://127.0.0.1:8851",
+      "authority": "venue",
+      "kinds": ["music", "comedy", "show", "trivia", "other", "market"],
+      "contact": "hello@commonroom.example",
+      "registered": "2026-10-03",
+      "note": "Reading room + music. First venue steward, co-located for now."
+    },
+    "ven_hall": {
+      "name": "The Hall",
+      "endpoint": "http://127.0.0.1:8852",
+      "authority": "venue",
+      "kinds": ["music", "show"],
+      "contact": "bookings@hall.example",
+      "registered": "2026-10-03",
+      "note": "Recital and chamber series."
+    }
+  },
+
+  "personal": {
+    "$comment": [
+      "Personal stewards are readers' own agents. They reach the same intake",
+      "with a different authority: they may SUGGEST a listing, never assert one",
+      "on a venue's behalf. A personal steward is not in `venues` because it has",
+      "no venue authority at all — which is exactly why it cannot impersonate",
+      "one.",
+      "",
+      "Known personal stewards, by the reader's chosen handle. Unlisted",
+      "handles are still accepted; they simply land as 'unregistered' and are",
+      "held rather than listed."
+    ],
+    "registered": {
+      "handle:operator": {
+        "authority": "self",
+        "registered": "2026-10-03",
+        "note": "The reader. May file notes and suggestions against their own calendar."
+      }
+    }
+  },
+
+  "policy": {
+    "$comment": [
+      "Invariants that hold for every caller regardless of entry above.",
+      "These are refused at intake and never granted by configuration."
+    ],
+    "refusedFields": [
+      "urgent", "urgency", "priority", "interrupt", "deadlineUrgent",
+      "tier", "focusTier", "deliveryTier", "rail", "shown"
+    ],
+    "refusedRationale": [
+      "A submission cannot assert urgency, and cannot set its own tier or rail.",
+      "Whether anything reaches a reader is the steward's decision, made from the",
+      "reader's own history — not from the sender's claim. A venue steward is a",
+      "first-party source about its OWN venue and that authority is real; it",
+      "does not extend to interrupting anybody."
+    ]
+  }
+}

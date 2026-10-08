@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-steward-phase="dormant" data-steward-register="article">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hold Still — issue 0</title>
+<link rel="stylesheet" href="steward.css">
+</head>
+<body data-substrate="pending">
+
+<!-- ================= substrate dev panel ================= -->
+<aside id="substrate-debug" class="dev" aria-label="substrate enforcement report">
+  <details>
+    <summary>substrate — what the policy actually did</summary>
+    <div id="substrate-debug-body"></div>
+  </details>
+</aside>
+
+<!-- ================= refusal =================
+     Shown INSTEAD of the reading surface. Not a warning banner above it.
+     A floor that lives only in JSON is a preference with better formatting. -->
+<section id="refusal" class="refusal" hidden role="alert" data-contrast-check>
+  <h1>This surface was refused.</h1>
+  <p id="refusal-reason" class="hint" data-contrast-check>
+    The policy document states floors. The render layer refuses to violate them.
+  </p>
+  <h2>What failed</h2>
+  <ul id="refusal-list"></ul>
+  <p class="hint" data-contrast-check>
+    Nothing below the fold was rendered. Fix the policy, or uncheck the simulation
+    switches in the panel above.
+  </p>
+</section>
+
+<!-- ================= the reading surface ================= -->
+<main id="reading-surface" class="surface">
+
+  <header class="masthead">
+    <p class="kicker" data-contrast-check>issue zero · a thing that cannot be read by hand</p>
+    <h1>Hold Still</h1>
+    <p class="standfirst" data-contrast-check>
+      Everything on this page is unreadable at arm's length on purpose. That is
+      not a gimmick; it is the argument.
+    </p>
+  </header>
+
+  <article class="article-body" id="article-body">
+
+    <h2 data-contrast-check>The trouble with a square of print</h2>
+
+    <p>You have this in your hands. Ninety millimetres across, coated, slightly
+    too heavy for the price, and from where you are sitting it is a rectangle of
+    grey-blue noise that resolves into nothing at all. Somewhere in there is
+    this sentence. You cannot get at it with your eyes, which is why your phone
+    is already in your hand — and the phone will get it out of you.</p>
+
+    <p>That is the whole mechanism, and it is worth being honest about what it
+    is. The print is not carrying the text in a way a person can use. It is
+    carrying the text in a way a <em>camera</em> can use. Every comfortable
+    reading surface in your life now arrives through a device, and this thing
+    just declines to pretend otherwise.</p>
+
+    <p>The interesting question is not whether that works. It is what we do
+    with the reading that follows. Because the moment the text resolves, an
+    agent has your attention, and attention is the only resource we are actually
+    short of.</p>
+
+    <!-- the paragraph the steward drifts into -->
+    <p class="anchor-paragraph">Nobody has ever come back from a small
+    circulation saying they wished the magazine had interrupted them more
+    often. The entire history of publishing is a sequence of people discovering
+    that the reader will leave, and being annoyed about it, and building a
+    louder page — which is how you get a page that is loud enough to be left.</p>
+
+    <p>So the interesting design decision is not how often to interrupt. It is
+    whether the thing that interrupts can be told to stop, by someone who never
+    asked it to speak, and whether that instruction survives the session.</p>
+
+    <h2 data-contrast-check>A budget, not a preference</h2>
+
+    <p>Three tiers. The first one costs nothing: the agent knows, reads, files,
+    and says nothing. The second is a bundle, delivered when you said you would
+    look. The third breaks your flow, unasked, mid-sentence, and is nearly
+    unreachable — not because it is forbidden but because a source has to earn
+    it, repeatedly, with evidence that the urgency is real.</p>
+
+    <p>A site may assert urgency. It may never grant it. That distinction is the
+    whole design, and it is one line of code: the check is against what you said
+    you care about, never against what the sender's metrics reward.</p>
+
+    <p>A week where you spent nothing is a successful week. That is not a
+    nicety. It is the definition.</p>
+
+    <h2 data-contrast-check>What the reader can see</h2>
+
+    <p>At any moment you should be able to see what reached you, what was held
+    back, and why. Held-back items are not discarded. They are filed, and they
+    are retrievable, because an agent that hides what it swallowed is an agent
+    you are merely agreeing with.</p>
+
+    <p>When the agent changes its behaviour because of something it learned, it
+    says so, names the cause, and offers one tap to undo it. From where you
+    noticed it, not from a settings page three screens away.</p>
+
+  </article>
+
+  <!-- ================= the steward =================
+       Three separate elements on purpose: a message, a control that replaces it,
+       and a smile. They overlap in time but not in role, and conflating them is
+       how you end up with an acknowledgement you cannot tap. -->
+  <section id="steward" class="steward-region" aria-live="polite">
+
+    <div id="steward-line" class="steward-line" hidden></div>
+
+    <div id="steward-smile" class="steward-smile" hidden></div>
+
+    <p id="steward-note" class="hint steward-note" hidden></p>
+
+    <div class="steward-bar">
+      <button id="steward-revoke" class="steward-revoke" type="button" hidden
+              data-contrast-check data-competing>
+        forget this
+      </button>
+      <span id="steward-register" class="register-badge" data-contrast-check>
+        article (calibrating)
+      </span>
+    </div>
+
+    <div id="steward-ack" class="steward-ack" hidden aria-label="the steward received your answer"></div>
+    <div id="steward-live" class="visually-hidden" aria-live="polite"></div>
+  </section>
+
+  <!-- ================= gesture vocabulary =================
+       Shown, not named. Includes the channels that are NOT available, because a
+       vocabulary you cannot see is a vocabulary you have to guess at. -->
+  <section class="panel" id="gesture-panel">
+    <h2 data-contrast-check>What the steward is listening for</h2>
+    <div id="gesture-list" data-contrast-check></div>
+    <p class="hint" data-contrast-check>
+      Every channel means the same thing whether or not it is wired up here.
+      Tap carries the whole vocabulary on its own, which is why it is the one
+      that works everywhere.
+    </p>
+  </section>
+
+  <!-- ================= the log =================
+       Rule 4: the user model belongs to the user. Readable, exportable, and a
+       correction never removes what it corrects. -->
+  <section class="panel" id="log-panel">
+    <h2 data-contrast-check>What has been written down about you</h2>
+    <p class="hint" data-contrast-check>
+      This list is the whole record. Correcting an entry does not delete it — the
+      correction outranks and the original stays visible underneath, because a
+      log you can edit into agreeing with you is not a log.
+    </p>
+    <ol id="inference-log" data-contrast-check></ol>
+    <p class="hint" data-contrast-check>
+      <button id="export-log" class="linkish" type="button">export as JSON</button>
+    </p>
+  </section>
+
+  <footer class="colophon" data-contrast-check>
+    <p>Rendered from <code>policy.generated.json</code>. Every measurement on this
+    page was taken off the live DOM, after layout, and checked against the floors
+    in that file.</p>
+  </footer>
+
+</main>
+
+<script src="policy.generated.js"></script>
+<script src="substrate.js"></script>
+<script src="gestures.js"></script>
+<script src="steward.js"></script>
+<script>
+(function () {
+  // Hand the policy document to the substrate, then measure what rendered.
+  // substrate.js renders its report into #substrate-debug, which is the <aside>
+  // above, so no remounting is needed.
+  Substrate.state.policy = window.__POLICY__ || null;
+  if (!Substrate.state.policy) {
+    document.getElementById('reading-surface').hidden = true;
+    document.getElementById('refusal').hidden = false;
+    document.getElementById('refusal-reason').textContent =
+      'No policy document loaded. The surface refuses to render ungoverned.';
+    return;
+  }
+
+  Gestures.render(document.getElementById('gesture-list'));
+
+  Substrate.run();
+  Steward.run();
+
+  document.getElementById('export-log').addEventListener('click', () => {
+    const log = window.__stewardLog || [];
+    const blob = new Blob([JSON.stringify(log, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'steward-inference-log.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+})();
+</script>
+</body>
+</html>

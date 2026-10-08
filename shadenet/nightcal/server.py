@@ -137,6 +137,23 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/catalog.json":
             self._send(200, (STATIC / "catalog.json").read_bytes(), "application/json; charset=utf-8")
             return
+        static_file = STATIC / "static" / path.lstrip("/")
+        if static_file.is_file() and not path.startswith("/api/"):
+            mime = "text/plain"
+            if path.endswith(".js"):
+                mime = "application/javascript; charset=utf-8"
+            elif path.endswith(".css"):
+                mime = "text/css; charset=utf-8"
+            elif path.endswith(".html"):
+                mime = "text/html; charset=utf-8"
+            elif path.endswith(".json"):
+                mime = "application/json; charset=utf-8"
+            elif path.endswith(".webmanifest"):
+                mime = "application/manifest+json"
+            elif path.endswith(".svg"):
+                mime = "image/svg+xml"
+            self._send(200, static_file.read_bytes(), mime)
+            return
         if path == "/api/surface":
             with _lock:
                 store = open_store(_db_path())

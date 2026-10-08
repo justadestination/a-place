@@ -13,13 +13,17 @@ Server side (Python):
   subscriptions.py      A2A protocol + per-agent mailboxes
 
 Client side (vanilla JS):
-- steward.js            keygen, attestation binding, verbose guidelines,
+- steward.js            keygen, attestation binding, verbose guardrails,
                         adaptive filtering (localStorage/IndexedDB)
 - manifest.webmanifest  installable PWA
 - sw.js                 offline service worker
 - index.html            Steward UI with settings view
 """
+from pathlib import Path
+
+CLIENT_DIR = Path(__file__).resolve().parent / "client"
+
 __all__ = [
     "command_engine", "inboxes", "personal_agent", "venue_agent",
-    "public_board", "subscriptions", "mcp_server",
+    "public_board", "subscriptions", "mcp_server", "CLIENT_DIR",
 ]

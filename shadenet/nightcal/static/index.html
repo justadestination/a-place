@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Downtown Metropolis</title>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/steward.css">
 <style>
   :root {
     --night: #080808;
@@ -525,7 +526,67 @@ function render() {
   const active = document.activeElement; const restore = !active ? null : active.classList.contains("day") ? {kind:"day"} : active.classList.contains("room") ? {kind:"room", name:active.textContent} : active.classList.contains("thumb") ? {kind:"thumb", dir:active.dataset.dir, eventId:active.dataset.eventId} : null;
   const surface = processor.surface; app.replaceChildren();
   if (!surface || !surface.components.has("root")) { app.append(el("p", "boot", "The calendar surface did not arrive.")); return; }
-  themeVars(surface.theme || {}); const root = renderComponent(surface, "root"); if (root) app.append(root); applyLens(); if (!restore) return;
+  themeVars(surface.theme || {}); const root = renderComponent(surface, "root"); if (root) app.append(root); applyLens();
+
+  // Mount the Steward persona on the surface
+  let stewardSection = document.getElementById("steward");
+  if (!stewardSection) {
+    stewardSection = el("section", "steward-region");
+    stewardSection.id = "steward";
+    stewardSection.setAttribute("aria-live", "polite");
+    stewardSection.innerHTML = `
+      <div id="steward-line" class="steward-line" hidden></div>
+      <div id="steward-smile" class="steward-smile" hidden></div>
+      <p id="steward-note" class="hint steward-note" hidden></p>
+      <div class="steward-bar">
+        <button id="steward-revoke" class="steward-revoke" type="button" hidden data-contrast-check data-competing>forget this</button>
+        <span id="steward-register" class="register-badge" data-contrast-check>article (calibrating)</span>
+      </div>
+      <div id="steward-ack" class="steward-ack" hidden aria-label="the steward received your answer"></div>
+      <div id="steward-live" class="visually-hidden" aria-live="polite"></div>
+    `;
+    app.append(stewardSection);
+
+    const logPanel = el("section", "panel");
+    logPanel.id = "log-panel";
+    logPanel.style = "margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem;";
+    logPanel.innerHTML = `
+      <h3 style="font-size: 0.9rem; color: var(--bulb); margin-bottom: 0.5rem;" data-contrast-check>Steward • Learned User Model</h3>
+      <p class="hint" style="font-size: 0.75rem; color: var(--quiet-on-night); margin-bottom: 0.5rem;" data-contrast-check>
+        Transparent explainability record. Correcting a choice appends a higher-confidence rule; older choices remain audit-visible.
+      </p>
+      <ol id="inference-log" data-contrast-check style="font-size: 0.8rem; font-family: var(--mono); padding-left: 1.2rem;"></ol>
+      <p class="hint" style="margin-top: 0.5rem;">
+        <button id="export-log" class="ctrl" type="button" style="font-size: 0.75rem;">export model as JSON</button>
+      </p>
+    `;
+    app.append(logPanel);
+
+    const exportBtn = document.getElementById("export-log");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        const log = window.__stewardLog || [];
+        const blob = new Blob([JSON.stringify(log, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "steward-user-model.json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+    }
+
+    if (typeof Substrate !== "undefined" && window.__POLICY__) {
+      Substrate.state.policy = window.__POLICY__;
+      Substrate.run();
+    }
+    if (typeof Steward !== "undefined" && !Steward.state.listenerInstalled) {
+      Steward.run();
+    }
+  } else if (!app.contains(stewardSection)) {
+    app.append(stewardSection);
+  }
+
+  if (!restore) return;
   if (restore.kind === "day") { const cur = app.querySelector(".day.is-selected"); if (cur) cur.focus(); } else if (restore.kind === "room") { for (const r of app.querySelectorAll("button.room")) { if (r.textContent === restore.name) r.focus(); } }
 }
 
@@ -539,5 +600,15 @@ document.addEventListener("pointerdown", (ev) => { if (!lens.sticky) return; con
 load();
 setInterval(() => { if (busy || !processor.surface) return; fetch("/api/model").then(r => r.json()).then(message => { const before = JSON.stringify(processor.surface.data.events || []); processor.apply(message); const after = JSON.stringify(processor.surface.data.events || []); if (before !== after) render(); }).catch(() => {}); }, 45000);
 </script>
+
+<aside id="refusal" class="refusal-panel" hidden style="position:fixed;inset:0;background:#111;color:#fff;padding:2rem;z-index:9999;">
+  <h1 style="font-size:1.5rem;margin-bottom:0.5rem;color:var(--comedy);">Surface Refused</h1>
+  <p id="refusal-reason" style="font-size:0.95rem;"></p>
+</aside>
+
+<script src="/policy.generated.js"></script>
+<script src="/substrate.js"></script>
+<script src="/gestures.js"></script>
+<script src="/steward.js"></script>
 </body>
 </html>
