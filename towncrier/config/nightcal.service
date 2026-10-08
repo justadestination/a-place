@@ -1,0 +1,27 @@
+# systemd unit for the night calendar.
+# Install on the host that should serve the sheet:
+#   sudo cp config/nightcal.service /etc/systemd/system/nightcal.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now nightcal.service
+# Edit WorkingDirectory and NIGHTCAL_HOST before installing.
+# This file is a template. The live unit on fly binds 127.0.0.1 and 10.0.0.6.
+
+[Unit]
+Description=Downtown Metropolis night calendar
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=shadenet
+Group=shadenet
+WorkingDirectory=/opt/shadenet/towncrier
+Environment=NIGHTCAL_HOST=127.0.0.1
+Environment=NIGHTCAL_PORT=8765
+# Environment=NIGHTCAL_DB=/opt/shadenet/towncrier/data/shadenet.db
+ExecStart=/usr/bin/python3 -m nightcal.server
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

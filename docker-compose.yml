@@ -1,0 +1,127 @@
+# docker-compose.yml — Shadenet multi-service packaging (TASK-02)
+#
+# Services:
+#   shadenet    — the autonomous daemon: first-boot geographic bootstrap
+#                 (SHADENET_LAT/LON/RADIUS_KM present) or pure fill+serve.
+#                 Bundles Python 3.11, Caddy (TLS front door), Tor (darknet
+#                 hidden service / syndication), and the zine compile job.
+#
+# Volumes (persistent):
+#   data        — SQLite database + scanned OSM findings
+#   tor-data    — Tor hidden-service keypairs (darknet .onion)
+#   logs        — Caddy + Shadenet runtime logs
+#
+# Secrets are injected via environment (compose .env or runtime env). Nothing
+# committed. The .env.example shipped at config/shadenet.env.example lists the
+# full, redacted shape of the variables below.
+#
+# Run:
+#   cp config/shadenet.env.example .env
+#   (edit .env; no secrets committed — redacted template only)
+#   docker compose up -d
+#   docker compose logs -f shadenet
+#
+# Example .env (redacted, real values outside this repo):
+#   SHADENET_LAT=37.7749
+#   SHADENET_LON=-122.4194
+#   SHADENET_RADIUS_KM=25
+#   SHADENET_DB=/data/shadenet.db
+#   NIGHTCAL_PORT=8765
+#   NIGHTCAL_HOST=0.0.0.0
+#   SHADENET_DEV_MODE=0          # 1 = ZKP 21+ dev bypass for CI
+#   SHADENET_PRIMARY=hetzner
+#   SHADENET_DARKNET=tor-onion
+#   SHADENET_EDGE=raspberrypi
+#   CADDY_MASTER_PASSWORD=<pick-a-strong-one>
+#   TOR_DATA_DIRECTORY=/var/lib/tor/shadenet
+
+services:
+  # ---------------------------------------------------------------- shadenet
+  # Autonomous single container: Python 3.11 + SQLite + Caddy + Tor + zine compile.
+  # On first boot with SHADENET_LAT/LON/RADIUS_KM set, it discovers venues via
+  # OSM Overpass and populates the database before serving the web surface.
+  shadenet:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: shadenet:latest
+    container_name: shadenet
+    restart: unless-stopped
+    ports:
+      - "8765:8765"    # NightCal web surface (internal networking)
+      - "8766:8766"    # Tor hidden service (darknet syndication)
+    volumes:
+      - data:/data
+      - tor-data:/var/lib/tor/shadenet
+      - logs:/var/log/shadenet
+    # Caddyfile + Torrc are baked into the shadenet image at /etc/shadenet/
+    environment:
+      # Geographic bootstrap — uncomment to enable autonomous discovery.
+      # SHADENET_LAT: "37.7749"        # Metropolis centre latitude
+      # SHADENET_LON: "-122.4194"      # Metropolis centre longitude
+      # SHADENET_RADIUS_KM: "25"       # discovery radius in km
+      SHADENET_DB: "/data/shadenet.db"
+      NIGHTCAL_PORT: "8765"
+      NIGHTCAL_HOST: "0.0.0.0"
+      SHADENET_DEV_MODE: "0"       # set 1 for ZKP 21+ dev bypass (CI)
+      SHADENET_PRIMARY: "${SHADENET_PRIMARY:-primary-vps}"
+      SHADENET_DARKNET: "${SHADENET_DARKNET:-tor-onion}"
+      SHADENET_EDGE: "${SHADENET_EDGE:-edge-mesh}"
+      # Caddy / Tor configuration are mounted; passwords come from .env.
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8765/"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      retries: 3
+
+  # ---------------------------------------------------------- caddy (TLS)
+  # Reverse proxy: terminates TLS, proxies the clearnet NightCal surface, and
+  # exposes the Tor-onion target locally for syndication (darknet).
+  caddy:
+    image: caddy:2
+    container_name: shadenet-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - shadenet
+    healthcheck:
+      test: ["CMD", "sh", "-c", "timeout 15 sh -c 'echo > /dev/tcp/127.0.0.1/2019' && echo caddy-api-ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # --------------------------------------------------------------- tor (darknet)
+  # Tor daemon providing the .onion hidden service for darknet syndication.
+  # Shares the Tor data dir with the Caddy-onion target so the two speak over
+  # localhost ports inside the compose network.
+  tor:
+    image: debian:trixie-slim
+    container_name: shadenet-tor
+    restart: unless-stopped
+    user: tor:tor
+    volumes:
+      - tor-data:/var/lib/tor
+      - /etc/tor/torrc:/etc/tor/torrc:ro
+    environment:
+      TOR_USER: tor
+      TOR_GROUP: tor
+    command: tor -f /etc/tor/torrc -L /var/log/tor/shadenet.log
+    healthcheck:
+      test: ["CMD", "sh", "-c", "timeout 10 sh -c 'echo > /dev/tcp/127.0.0.1/9050' && echo tor-ok"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  data:
+  tor-data:
+  logs:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,13 @@
+# HTTP backend snippet. Append to the reverse proxy that sits in front of
+# the night calendar and behind the TLS front door. On this fleet that
+# proxy is node-primary, and the sheet listens on the nebula address of fly.
+# Do not replace a live Caddyfile with this fragment.
+#
+# Ardra is HTTP only. The TLS front door owns certificates.
+
+http://nightcal.example.org {
+	import privacy
+	reverse_proxy 10.0.0.6:8765 {
+		header_up X-Forwarded-Proto https
+	}
+}

@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Downtown Metropolis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,560;9..144,680&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #12161A;
+    --sheet: #D7E3E4;
+    --ink: #172326;
+    --bulb: #FFC14D;
+    --comedy: #8E2F2F;
+    --quiet: #5C7276;
+    --quiet-on-night: #A7B7BB;
+    --wire: #3EE0FF;
+    --comedy-on-night: #F0A09A;
+    --display: "Fraunces", "Iowan Old Style", Palatino, serif;
+    --text: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--night);
+    color: var(--sheet);
+    font-family: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.45;
+  }
+
+  .skip {
+    position: absolute;
+    left: 0.75rem;
+    top: -3rem;
+    background: var(--bulb);
+    color: var(--ink);
+    padding: 0.4rem 0.7rem;
+  }
+  .skip:focus { top: 0.75rem; z-index: 5; }
+
+  #app {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1.25rem 0 3rem;
+  }
+
+  .boot {
+    padding: 4rem 0;
+    font-family: var(--display);
+    font-size: 2rem;
+  }
+
+  .a2ui-column { display: flex; flex-direction: column; gap: 1.1rem; }
+  .a2ui-row { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; align-items: center; }
+
+  .marquee { padding-top: 0.4rem; }
+  .place {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 400;
+  }
+  .month {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 680;
+    font-size: clamp(4.4rem, 16vw, 8.6rem);
+    line-height: 0.82;
+    letter-spacing: -0.045em;
+    color: var(--sheet);
+  }
+  .count {
+    margin: 0.35rem 0 0;
+    color: var(--quiet-on-night);
+  }
+  .status {
+    margin: 0.2rem 0 0;
+    color: var(--bulb);
+  }
+
+  button.ctrl, button.room, button.day, button.thumb {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+  }
+  button.ctrl, button.room, button.thumb {
+    border: 0;
+    padding: 0;
+  }
+  button.ctrl {
+    color: var(--sheet);
+    border-bottom: 2px solid transparent;
+    padding-bottom: 0.1rem;
+  }
+  button.ctrl.is-primary { border-bottom-color: var(--bulb); }
+  button.ctrl:hover { border-bottom-color: var(--sheet); }
+  button.ctrl[aria-busy="true"] { opacity: 0.6; }
+
+  .rail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.95rem;
+    padding: 0.2rem 0 0.4rem;
+  }
+  .contact {
+    margin: 0.15rem 0 0;
+    color: var(--quiet-on-night);
+    font-size: 0.95rem;
+  }
+  .contact a { color: var(--sheet); }
+  button.room {
+    color: var(--quiet-on-night);
+    font-size: 0.98rem;
+  }
+  button.room[data-music="true"] { color: var(--sheet); }
+  button.room[data-music="true"]::before {
+    content: "";
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    margin-right: 0.35rem;
+    background: var(--bulb);
+    vertical-align: 0.05rem;
+  }
+  button.room.is-on {
+    color: var(--ink);
+    background: var(--bulb);
+    padding: 0 0.3rem;
+  }
+
+  .board {
+    perspective: 1720px;
+    perspective-origin: 50% 30%;
+    padding: 0.35rem 0 6rem;
+  }
+  .sheet {
+    background: var(--sheet);
+    color: var(--ink);
+  }
+  .night-cal {
+    --tilt: var(--tilt-pref, 22);
+    --depth: var(--depth-pref, 16);
+    /* A steep tip turns lift into a slide. Cap the slide so a show stays in its day. */
+    --depth-used: min(var(--depth), calc(8 / max(0.2, sin(calc(var(--tilt) * 1deg)))));
+    --focus: var(--focus-pref, 1.2);
+    /* How far a hovered or touched day opens past its own edges, from the middle.
+       The resting day stays in the grid. */
+    --open: min(2.15, calc(1 + (var(--focus) - 1) * 4));
+    --day: 8.6rem;
+    width: 100%;
+    padding: 0.85rem 0.85rem 1.2rem;
+    transform: rotateX(calc(var(--tilt) * 1deg));
+    transform-origin: center 36%;
+    transform-style: preserve-3d;
+  }
+  .night-cal.is-suspended {
+    background: transparent;
+    color: var(--sheet);
+  }
+  .night-cal.is-suspended .cells { align-items: stretch; }
+  .night-cal.is-suspended .dow {
+    border-bottom: 1px solid var(--wire);
+    box-shadow: 0 1px 10px rgba(62, 224, 255, 0.35);
+  }
+  .night-cal.is-suspended .dow span {
+    color: var(--wire);
+    text-shadow: 0 0 8px rgba(62, 224, 255, 0.55);
+  }
+  .dow, .cells { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .cells { align-items: start; }
+  .slot { position: relative; min-height: var(--day); }
+  .slot.is-open { z-index: 5; }
+  .dow span {
+    padding: 0.15rem 0.35rem 0.45rem;
+    color: var(--quiet);
+    font-size: 0.82rem;
+  }
+  .day {
+    container-type: inline-size;
+    height: var(--day);
+    min-height: var(--day);
+    padding: 0.32rem 0.4rem 0.4rem;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    display: block;
+    width: 100%;
+    appearance: none;
+    color: var(--ink);
+    text-align: left;
+    /* Hidden or scrolling overflow would flatten the show's lift. */
+    overflow: visible;
+    perspective: 1100px;
+    perspective-origin: 0 0;
+  }
+  .day > * + * { margin-top: 0.16rem; }
+  .day.is-outside { visibility: hidden; }
+  .night-cal.is-suspended .day.is-outside { visibility: visible; }
+  .night-cal.is-suspended .day.is-outside > * { visibility: hidden; }
+  .night-cal.is-suspended .day {
+    color: var(--sheet);
+    height: auto;
+  }
+  .night-cal.is-suspended .slot {
+    border-right: 1px solid var(--wire);
+    border-bottom: 1px solid var(--wire);
+    box-shadow:
+      1px 0 8px rgba(62, 224, 255, 0.45),
+      0 1px 8px rgba(62, 224, 255, 0.35);
+  }
+  .night-cal.is-suspended .slot:nth-child(7n + 1) { border-left: 1px solid var(--wire); }
+  .night-cal.is-suspended .cells .slot:nth-child(-n + 7) { border-top: 1px solid var(--wire); }
+  .day.is-selected { border-bottom-color: var(--bulb); }
+  /* The hole is the day under the pointer, not the day left selected.
+     pointer-events stay on the cell, so a covered neighbor can still be reached.
+     Links and votes keep their own hits. */
+  .slot.is-open > .day {
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    top: 50%;
+    width: calc(100% * var(--open));
+    height: auto;
+    min-height: calc(var(--day) * var(--open));
+    transform: translate(-50%, -50%);
+    transform-style: preserve-3d;
+    border-bottom-color: var(--bulb);
+    background: var(--sheet);
+    pointer-events: none;
+  }
+  .slot.is-opening > .day {
+    animation: hole-open 420ms cubic-bezier(.16, .84, .28, 1);
+  }
+  .slot.is-open > .day a,
+  .slot.is-open > .day button.thumb { pointer-events: auto; }
+  .night-cal.is-suspended .slot.is-open > .day {
+    background: var(--night);
+    border: 1px solid var(--wire);
+    border-bottom: 3px solid var(--bulb);
+    box-shadow:
+      0 0 12px rgba(62, 224, 255, 0.45),
+      0 0 18px rgba(255, 193, 77, 0.28);
+  }
+  @keyframes hole-open {
+    from { clip-path: inset(48% 48% 48% 48%); }
+    to { clip-path: inset(0); }
+  }
+  .day .num {
+    font-family: var(--display);
+    font-size: 1.55rem;
+    line-height: 1;
+    font-weight: 560;
+    display: inline-block;
+  }
+
+  .day.is-today .num { box-shadow: inset 0 -2px 0 var(--ink); }
+  .night-cal.is-suspended .day.is-today .num { box-shadow: inset 0 -2px 0 var(--bulb); }
+  .night-cal.is-suspended a.gig-name,
+  .night-cal.is-suspended button.thumb { color: var(--sheet); }
+  .night-cal.is-suspended button.thumb:hover { border-bottom-color: var(--bulb); }
+  .night-cal.is-suspended .gig.comedy .gig-name { color: var(--comedy-on-night); }
+  .night-cal.is-suspended .gig-score.is-down,
+  .night-cal.is-suspended .tally.is-down,
+  .night-cal.is-suspended .day .more { color: var(--quiet-on-night); }
+  .night-cal.is-suspended .bar { background: rgba(215, 227, 228, 0.16); }
+  .night-cal.is-suspended .bar-fill.is-up {
+    background: var(--sheet);
+    box-shadow: 0 0 8px rgba(215, 227, 228, 0.35);
+  }
+  .night-cal.is-suspended .bar-fill.is-down { background: var(--quiet-on-night); }
+  .gig {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0.35rem;
+    row-gap: 0.1rem;
+    align-items: baseline;
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.78rem;
+    line-height: 1.15;
+    --share: var(--share-rest, 0);
+    --z: calc(var(--share, 0) * var(--depth) * 1px);
+    transform: translateZ(var(--z));
+    transform-origin: 0 0;
+  }
+  .slot.is-open .gig { --share: var(--share-full, var(--share-rest, 0)); }
+  .gig.is-extra { display: none; }
+  .slot.is-open .gig.is-extra { display: grid; }
+  /* Open night: hour across, room down, duration along the wire, tally off the sheet. */
+  .slot.is-open > .day {
+    min-height: max(calc(var(--day) * var(--open)), calc(var(--lanes, 1) * 4.5rem + 2.4rem));
+  }
+  .slot.is-open > .day::before,
+  .slot.is-open > .day::after {
+    content: "";
+    position: absolute;
+    background: var(--wire);
+    pointer-events: none;
+    box-shadow: 0 0 8px rgba(62, 224, 255, 0.45);
+  }
+  .slot.is-open > .day::before {
+    left: 0.4rem;
+    right: 0.5rem;
+    bottom: 0.42rem;
+    height: 1px;
+  }
+  .slot.is-open > .day::after {
+    left: 0.4rem;
+    top: 1.85rem;
+    bottom: 0.42rem;
+    width: 1px;
+  }
+  /* A button centers its one leftover line. Pin the date to the corner. */
+  .slot.is-open .num {
+    position: absolute;
+    top: 0.28rem;
+    left: 0.45rem;
+    z-index: 8;
+  }
+  .slot.is-open .gig {
+    position: absolute;
+    left: calc(0.5rem + var(--x, 0) * 34%);
+    top: calc(2.05rem + var(--y, 0) * (100% - 3rem));
+    width: min(94%, calc(100% - 0.7rem));
+    max-width: calc(100% - 0.45rem - (0.5rem + var(--x, 0) * 34%));
+    z-index: calc(3 + max(0, var(--share, 0)) * 6);
+    /* Signed lift, held in front of the night fill so a down night stays readable. */
+    --z: calc((clamp(-1, var(--share, 0), 1) * 0.48 + 0.52) * var(--depth) * 2.6px);
+  }
+  .slot.is-open .gig-name { grid-column: 1 / -1; grid-row: 1; }
+  .slot.is-open .gig-score,
+  .slot.is-open .gig-actions { grid-column: 2; grid-row: 2; align-self: center; justify-self: end; }
+  .meta { display: none; }
+  .slot.is-open .meta {
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--quiet-on-night);
+    font-size: 0.68rem;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .filament { display: none; }
+  .slot.is-open .filament {
+    display: block;
+    grid-column: 1 / -1;
+    height: 2px;
+    width: calc(var(--len, 0.08) * 100cqi);
+    max-width: calc((1 - var(--x, 0)) * 92cqi);
+    background: var(--ink);
+    box-shadow: 0 0 6px rgba(23, 35, 38, 0.25);
+  }
+  .night-cal.is-suspended .slot.is-open .filament {
+    background: var(--wire);
+    box-shadow: 0 0 8px rgba(62, 224, 255, 0.75);
+  }
+  .slot.is-open .gig.comedy .filament { background: var(--comedy); }
+  .night-cal.is-suspended .slot.is-open .gig.comedy .filament {
+    background: var(--comedy-on-night);
+    box-shadow: 0 0 8px rgba(240, 160, 154, 0.7);
+  }
+  .gig-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  a.gig-name { color: var(--ink); }
+  .checks { grid-column: 1 / -1; display: none; }
+  a.check { color: var(--ink); margin-right: 0.55rem; }
+  .night-cal.is-suspended a.check { color: var(--wire); }
+  .gig-score, .tally {
+    font-family: var(--display);
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .gig-score.is-down, .tally.is-down { color: var(--quiet); }
+  .gig-actions { display: none; align-items: baseline; gap: 0.4rem; }
+  .slot.is-open .gig-actions { display: flex; }
+  .slot.is-open .gig-score { display: none; }
+  .gig.comedy .gig-name { color: var(--comedy); }
+  .bar {
+    grid-column: 1 / -1;
+    display: block;
+    height: 0.38rem;
+    max-width: 100%;
+    background: rgba(23, 35, 38, 0.1);
+  }
+  .slot.is-open .bar { display: none; }
+  .slot.is-open .more { display: none; }
+  @container (max-width: 150px) {
+    .gig-actions, .gig-score { display: none; }
+    .gig-name { grid-column: 1 / -1; }
+  }
+  .bar-fill { display: block; height: 100%; width: 0; }
+  .bar-fill.is-up {
+    background: var(--ink);
+    box-shadow: 0 max(0px, calc(var(--z) * 0.1)) max(0px, calc(var(--z) * 0.22)) rgba(23, 35, 38, 0.28);
+  }
+  .bar-fill.is-down { background: var(--quiet); }
+  .day .more { font-size: 0.75rem; color: var(--quiet); }
+  button.thumb {
+    color: var(--ink);
+    border-bottom: 2px solid transparent;
+    min-height: 0;
+    font-size: 0.78rem;
+  }
+  button.thumb:hover { border-bottom-color: var(--ink); }
+  .empty { max-width: 28ch; margin: 0; }
+
+  .footer {
+    margin: 0.4rem 0 0;
+    color: var(--quiet-on-night);
+    font-size: 0.92rem;
+    max-width: 46ch;
+  }
+
+  button:focus-visible, a:focus-visible {
+    outline: 2px solid var(--bulb);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 860px) {
+    .board { perspective: 1200px; padding-bottom: 2.4rem; }
+    .night-cal {
+      width: 100%;
+      --tilt: calc(var(--tilt-pref, 22) * 0.55);
+      --depth: calc(var(--depth-pref, 16) * 0.6);
+    }
+    .day { perspective: 1600px; }
+    .rail {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 0.6rem;
+    }
+    button.room { flex: 0 0 auto; }
+    .night-cal { --day: 5.6rem; }
+    .day { padding: 0.28rem 0.2rem 0.35rem; }
+    .day .num, .day.is-selected .num { font-size: 1.15rem; }
+    .gig { font-size: 0.68rem; }
+    .bar { height: 0.38rem; }
+    .slot.is-open > .day {
+      width: calc(100vw - 1.6rem);
+      min-height: max(calc(var(--day) * var(--open)), calc(var(--lanes, 1) * 3.15rem + 1.7rem));
+      left: calc(0.8rem - var(--inset, 0px));
+      transform: translate(0, -50%);
+    }
+    .slot.is-open .meta { font-size: 0.64rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .board { perspective: none; }
+    .night-cal { --tilt: 0; --depth: 0; transform: none; }
+    .day { perspective: none; }
+    .slot.is-opening > .day { animation: none; }
+    .gig { transform: none; }
+    * { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Skip to the calendar</a>
+<div id="app"><p class="boot">Opening the calendar…</p></div>
+<script>
+const NIGHT_KINDS = new Set(["music", "comedy", "show", "trivia"]);
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function parts(path) {
+  if (!path || path === "/") return [];
+  return path.split("/").slice(1).map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+}
+function getPath(obj, path) {
+  let cur = obj;
+  for (const part of parts(path)) {
+    if (cur == null) return undefined;
+    cur = cur[part];
+  }
+  return cur;
+}
+function setPath(obj, path, value) {
+  const keys = parts(path);
+  if (!keys.length) return value;
+  const root = obj && typeof obj === "object" ? obj : {};
+  let cur = root;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (cur[keys[i]] == null || typeof cur[keys[i]] !== "object") cur[keys[i]] = {};
+    cur = cur[keys[i]];
+  }
+  cur[keys[keys.length - 1]] = value;
+  return root;
+}
+function dyn(data, value) {
+  if (value == null) return "";
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value;
+  if (typeof value === "object" && typeof value.path === "string") return getPath(data, value.path);
+  return value;
+}
+
+class Processor {
+  constructor() { this.surface = null; }
+  apply(msg) {
+    if (!msg || typeof msg !== "object") return;
+    if (msg.createSurface) {
+      const created = msg.createSurface;
+      if (this.surface && this.surface.id === created.surfaceId) {
+        this.surface.catalogId = created.catalogId;
+        this.surface.theme = created.theme || this.surface.theme;
+        return;
+      }
+      this.surface = {
+        id: created.surfaceId,
+        catalogId: created.catalogId,
+        theme: created.theme || {},
+        components: new Map(),
+        data: {},
+      };
+    } else if (msg.updateComponents && this.surface) {
+      for (const component of msg.updateComponents.components || []) {
+        this.surface.components.set(component.id, component);
+      }
+    } else if (msg.updateDataModel && this.surface) {
+      this.surface.data = setPath(this.surface.data, msg.updateDataModel.path, msg.updateDataModel.value);
+    } else if (msg.deleteSurface && this.surface && this.surface.id === msg.deleteSurface.surfaceId) {
+      this.surface = null;
+    }
+  }
+  applyStream(text) {
+    for (const line of text.split("\n")) {
+      const trimmed = line.trim();
+      if (trimmed) this.apply(JSON.parse(trimmed));
+    }
+  }
+}
+
+const processor = new Processor();
+const app = document.getElementById("app");
+let busy = false;
+let selectGen = 0;
+let selectTimer = 0;
+let lastTouch = 0;
+let touchStart = null;
+const lens = { date: null, sticky: false, chosen: null };
+
+function calendarStamp(data) {
+  if (!data || !data.ui) return "";
+  const ui = data.ui;
+  const events = data.events || [];
+  const rows = events.map((event) => [
+    event.id, event.score, event.suppressed, event.title, event.date, event.venueId,
+  ].join(":")).join("|");
+  return [
+    ui.month, ui.venueId, ui.scope, ui.showCount, ui.status,
+    ui.closedNote, ui.depthNote, JSON.stringify(ui.view || {}), rows,
+  ].join("~");
+}
+
+function themeVars(theme) {
+  const root = document.documentElement;
+  if (theme.background) root.style.setProperty("--night", theme.background);
+  if (theme.foreground) root.style.setProperty("--sheet", theme.foreground);
+  if (theme.sheet) root.style.setProperty("--sheet", theme.sheet);
+  if (theme.ink) root.style.setProperty("--ink", theme.ink);
+  if (theme.primaryColor) root.style.setProperty("--bulb", theme.primaryColor);
+}
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function shownEvents(data) {
+  const venue = (data.ui && data.ui.venueId) || "";
+  const scope = (data.ui && data.ui.scope) || "nights";
+  return (data.events || []).filter((event) => {
+    if (venue && event.venueId !== venue) return false;
+    if (scope === "nights" && !NIGHT_KINDS.has(event.kind)) return false;
+    return true;
+  });
+}
+
+function send(action, extra, gen) {
+  if (!action || !action.event) return;
+  const name = action.event.name;
+  const context = Object.assign({}, action.event.context || {}, extra || {});
+  const refresh = name === "refresh";
+  if (refresh) {
+    busy = true;
+    render();
+  }
+  fetch(refresh ? "/api/refresh" : "/api/action", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, context }),
+  }).then((response) => {
+    if (!response.ok) throw new Error("The calendar could not update.");
+    return response.json();
+  }).then((message) => {
+    if (gen != null && gen !== selectGen) return;
+    const before = calendarStamp(processor.surface && processor.surface.data);
+    processor.apply(message);
+    const quiet = gen != null && calendarStamp(processor.surface.data) === before;
+    if (quiet) {
+      const ui = processor.surface.data.ui || {};
+      if (!lens.chosen || lens.chosen === ui.selectedDate) markSelected(ui.selectedDate);
+      applyLens();
+      return;
+    }
+    if (name !== "selectDate" && name !== "vote") {
+      lens.chosen = null;
+      lens.date = null;
+      lens.sticky = false;
+    }
+    render();
+  }).catch((error) => {
+    const data = processor.surface && processor.surface.data;
+    if (data && data.ui) data.ui.status = error.message || "The calendar could not update.";
+    render();
+  }).finally(() => {
+    busy = false;
+  });
+}
+
+function renderText(component, data) {
+  const text = dyn(data, component.text);
+  if (text == null || text === "") return null;
+  const node = el("p", component.variant === "caption" ? "footer" : "", String(text));
+  return node;
+}
+
+function renderButton(component, surface) {
+  const label = surface.components.get(component.child);
+  const text = label ? dyn(surface.data, label.text) : component.child;
+  const button = el("button", "ctrl", String(text || ""));
+  button.type = "button";
+  const variant = dyn(surface.data, component.variant);
+  if (variant === "primary") button.classList.add("is-primary");
+  if (busy && component.action && component.action.event && component.action.event.name === "refresh") {
+    button.setAttribute("aria-busy", "true");
+    button.disabled = true;
+  }
+  button.addEventListener("click", () => send(component.action));
+  return button;
+}
+
+function renderMarquee(component, data) {
+  const wrap = el("header", "marquee");
+  const place = dyn(data, component.place);
+  if (place) wrap.append(el("p", "place", String(place)));
+  wrap.append(el("h1", "month", String(dyn(data, component.month) || "")));
+  const count = dyn(data, component.count);
+  if (count) wrap.append(el("p", "count", String(count)));
+  const status = dyn(data, component.status);
+  if (status) wrap.append(el("p", "status", String(status)));
+  return wrap;
+}
+
+function renderRail(component, data) {
+  const venues = dyn(data, component.venues) || [];
+  const selected = String(dyn(data, component.selected) || "");
+  const rail = el("nav", "rail");
+  rail.setAttribute("aria-label", "Rooms");
+  const all = el("button", "room" + (selected ? "" : " is-on"), "Every room");
+  all.type = "button";
+  all.addEventListener("click", () => {
+    if (selected) send(component.action, { venueId: selected });
+  });
+  rail.append(all);
+  for (const venue of venues) {
+    const button = el("button", "room" + (venue.id === selected ? " is-on" : ""), venue.name);
+    button.type = "button";
+    if (venue.music) {
+      button.dataset.music = "true";
+      button.setAttribute("aria-label", venue.name + ", music room");
+    }
+    button.addEventListener("click", () => send(component.action, { venueId: venue.id }));
+    rail.append(button);
+  }
+  const wrap = el("div", "room-block");
+  wrap.append(rail);
+  const chosen = venues.find((venue) => venue.id === selected);
+  const line = contactLine(chosen);
+  if (line) wrap.append(line);
+  return wrap;
+}
+
+function contactLine(venue) {
+  const contact = venue && venue.contact;
+  if (!contact) return null;
+  const bits = [];
+  for (const phone of contact.phones || []) {
+    if (phone.href) bits.push({ href: phone.href, text: phone.text });
+    else if (phone.text) bits.push({ text: phone.text });
+  }
+  for (const mail of contact.emails || []) {
+    if (mail.href) bits.push({ href: mail.href, text: mail.text });
+  }
+  for (const site of contact.websites || []) {
+    if (site.href) bits.push({ href: site.href, text: site.text });
+  }
+  for (const social of contact.socials || []) {
+    if (social.href) bits.push({ href: social.href, text: social.text });
+  }
+  if (!bits.length) return null;
+  const line = el("p", "contact");
+  line.append(document.createTextNode(venue.name));
+  for (const bit of bits) {
+    line.append(document.createTextNode(" · "));
+    if (bit.href && /^(https:|tel:|mailto:)/.test(bit.href)) {
+      const link = el("a", "", bit.text);
+      link.href = bit.href;
+      if (bit.href.startsWith("https:")) {
+        link.rel = "noreferrer";
+        link.target = "_blank";
+      }
+      line.append(link);
+    } else {
+      line.append(document.createTextNode(bit.text));
+    }
+  }
+  return line;
+}
+
+function monthGrid(monthKey) {
+  const [year, month] = monthKey.split("-").map(Number);
+  const first = new Date(year, month - 1, 1);
+  const start = new Date(first);
+  start.setDate(1 - first.getDay());
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const day = new Date(start);
+    day.setDate(start.getDate() + i);
+    cells.push(day);
+    if (i > 27 && day.getDay() === 6 && day.getMonth() !== month - 1) break;
+  }
+  return { year, month, cells };
+}
+
+function monthPeak(events, monthKey) {
+  let peak = 0;
+  for (const event of events) {
+    if (!event.date || !String(event.date).startsWith(monthKey)) continue;
+    peak = Math.max(peak, Math.abs(Number(event.score) || 0));
+  }
+  return peak;
+}
+
+function readView(raw) {
+  const source = raw && typeof raw === "object" ? raw : {};
+  const num = (value, fallback, lo, hi) => {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.min(hi, Math.max(lo, n));
+  };
+  const flag = (value, fallback) => {
+    if (value == null) return fallback;
+    if (typeof value === "string") return !/^(0|false|no|off)$/i.test(value.trim());
+    return Boolean(value);
+  };
+  return {
+    tilt: num(source.tilt, 22, 0, 24),
+    depth: num(source.depth, 16, 0, 24),
+    bars: flag(source.bars, true),
+    focus: num(source.focus, 1.2, 1, 1.6),
+    suspended: flag(source.suspended, true),
+  };
+}
+
+const NIGHT_FROM = 11 * 60;
+const NIGHT_SPAN = 15 * 60;
+
+function clockMinutes(label) {
+  const match = /^(\d{1,2}):(\d{2})\s*(am|pm)$/i.exec(String(label || "").trim());
+  if (!match) return null;
+  let hour = Number(match[1]) % 12;
+  if (match[3].toLowerCase() === "pm") hour += 12;
+  return hour * 60 + Number(match[2]);
+}
+
+function nightMinutes(minutes) {
+  let value = Number(minutes);
+  if (!Number.isFinite(value)) return NIGHT_FROM;
+  if (value < 5 * 60) value += 24 * 60;
+  return value;
+}
+
+function placeNight(gigs) {
+  const rooms = [];
+  for (const gig of gigs) {
+    const room = gig.venue || "";
+    if (!rooms.includes(room)) rooms.push(room);
+  }
+  const laneOf = new Map();
+  let next = 0;
+  for (const room of rooms) {
+    for (const gig of gigs) {
+      if ((gig.venue || "") !== room) continue;
+      laneOf.set(gig, next);
+      next += 1;
+    }
+  }
+  const total = Math.max(next, 1);
+  const spots = gigs.map((gig) => {
+    const start = nightMinutes(gig.minutes);
+    const clock = clockMinutes(gig.endLabel);
+    let end = clock == null ? start + 45 : nightMinutes(clock);
+    if (end <= start) end = start + 45;
+    const x = Math.min(1, Math.max(0, (start - NIGHT_FROM) / NIGHT_SPAN));
+    const len = Math.min(1, Math.max(0.06, (end - start) / NIGHT_SPAN));
+    const y = (laneOf.get(gig) || 0) / total;
+    return { x, y, len };
+  });
+  return { rooms: total, spots };
+}
+
+function renderGig(gig, peak, voteAction, view) {
+  const score = Number(gig.score) || 0;
+  const line = el("span", "gig" + (gig.kind === "comedy" ? " comedy" : ""));
+  const share = peak > 0 ? score / peak : 0;
+  // A resting cell cannot spare the full lift without crossing into the next day.
+  line.style.setProperty("--share-full", share.toFixed(4));
+  line.style.setProperty("--share-rest", (share * 0.55).toFixed(4));
+  if (gig.sourceUrl && /^https:\/\//.test(gig.sourceUrl)) {
+    const link = el("a", "gig-name", gig.title);
+    link.href = gig.sourceUrl;
+    link.rel = "noreferrer";
+    link.target = "_blank";
+    line.append(link);
+  } else {
+    line.append(el("span", "gig-name", gig.title));
+  }
+  const meta = el("span", "meta");
+  const bits = [];
+  if (gig.venue) bits.push(gig.venue);
+  if (gig.startLabel) bits.push(gig.startLabel);
+  if (bits.length) meta.textContent = bits.join(", ");
+  line.append(meta);
+  const filament = el("span", "filament");
+  filament.setAttribute("aria-hidden", "true");
+  line.append(filament);
+  if (Array.isArray(gig.checks) && gig.checks.length) {
+    const extra = el("span", "checks");
+    for (const check of gig.checks) {
+      if (!check || !check.url || !/^https:\/\//.test(check.url)) continue;
+      const link = el("a", "check", check.name || "Source");
+      link.href = check.url;
+      link.rel = "noreferrer";
+      link.target = "_blank";
+      extra.append(link);
+    }
+    if (extra.childNodes.length) line.append(extra);
+  }
+  if (score) {
+    const mark = score > 0 ? "+" + score : String(score);
+    line.append(el("span", "gig-score" + (score < 0 ? " is-down" : ""), mark));
+  }
+  if (voteAction) line.append(renderVotes(gig, voteAction));
+  if (view.bars) {
+    const shareAbs = Math.abs(share);
+    const bar = el("span", "bar");
+    bar.setAttribute("role", "img");
+    const against = peak > 0 ? ", against a strongest night of " + peak : "";
+    bar.setAttribute("aria-label", (score > 0 ? "+" : "") + score + against);
+    const fill = el("span", "bar-fill" + (score < 0 ? " is-down" : score > 0 ? " is-up" : ""));
+    fill.style.width = (shareAbs * 100).toFixed(1) + "%";
+    bar.append(fill);
+    line.append(bar);
+  }
+  return line;
+}
+
+function renderCalendar(component, surface) {
+  const data = surface.data;
+  const monthKey = String(dyn(data, component.month) || "");
+  const selected = String(dyn(data, component.selectedDate) || "");
+  const events = shownEvents(data);
+  const byDate = new Map();
+  for (const event of events) {
+    if (!byDate.has(event.date)) byDate.set(event.date, []);
+    byDate.get(event.date).push(event);
+  }
+  const sheet = el("section", "sheet night-cal");
+  sheet.setAttribute("aria-label", "Month");
+  if (!/^\d{4}-\d{2}$/.test(monthKey)) {
+    sheet.append(el("p", "empty", "No month to show."));
+    return sheet;
+  }
+  const view = readView(dyn(data, component.view));
+  const peak = monthPeak(events, monthKey);
+  sheet.dataset.peak = String(peak);
+  sheet.dataset.tilt = String(view.tilt);
+  sheet.dataset.depth = String(view.depth);
+  sheet.dataset.focus = String(view.focus);
+  sheet.dataset.bars = view.bars ? "true" : "false";
+  sheet.dataset.suspended = view.suspended ? "true" : "false";
+  sheet.classList.toggle("is-suspended", view.suspended);
+  sheet.style.setProperty("--tilt-pref", String(view.tilt));
+  sheet.style.setProperty("--depth-pref", String(view.depth));
+  sheet.style.setProperty("--focus-pref", String(view.focus));
+  const grid = monthGrid(monthKey);
+  const head = el("div", "dow");
+  for (const name of DOW) head.append(el("span", "", name));
+  const cells = el("div", "cells");
+  const today = new Date();
+  const todayKey = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
+
+  for (const day of grid.cells) {
+    const key = [
+      day.getFullYear(),
+      String(day.getMonth() + 1).padStart(2, "0"),
+      String(day.getDate()).padStart(2, "0"),
+    ].join("-");
+    const outside = day.getMonth() !== grid.month - 1;
+    const focused = key === selected && !outside;
+    const node = el("button", "day" + (focused ? " is-selected" : ""));
+    node.type = "button";
+    node.dataset.date = key;
+    if (outside) node.classList.add("is-outside");
+    if (key === todayKey) node.classList.add("is-today");
+    node.append(el("span", "num", String(day.getDate())));
+    const gigs = (byDate.get(key) || []).slice().sort((a, b) => (a.minutes || 0) - (b.minutes || 0));
+    if (gigs.length) node.classList.add("has-shows");
+    const placed = placeNight(gigs);
+    node.style.setProperty("--lanes", String(placed.rooms));
+    const labelBits = [day.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })];
+    gigs.forEach((gig, index) => {
+      const score = Number(gig.score) || 0;
+      const line = renderGig(gig, peak, component.vote, view);
+      const spot = placed.spots[index];
+      line.style.setProperty("--x", spot.x.toFixed(4));
+      line.style.setProperty("--y", spot.y.toFixed(4));
+      line.style.setProperty("--len", spot.len.toFixed(4));
+      if (index >= 2) line.classList.add("is-extra");
+      node.append(line);
+      const mark = score > 0 ? "+" + score : String(score);
+      labelBits.push(score ? gig.title + " " + mark : gig.title);
+    });
+    if (gigs.length > 2) node.append(el("span", "more", (gigs.length - 2) + " more"));
+    node.setAttribute("aria-label", labelBits.join(", "));
+    if (focused) node.setAttribute("aria-current", "date");
+    else if (!outside) node.setAttribute("aria-pressed", "false");
+    if (!outside) {
+      node.addEventListener("click", (event) => {
+        if (event.detail === 0) setOpen(key, { sticky: true, animate: true });
+        queueSelect(component.action, key);
+      });
+    } else {
+      node.tabIndex = -1;
+      node.disabled = true;
+    }
+    const slot = el("div", "slot");
+    slot.dataset.date = key;
+    slot.append(node);
+    cells.append(slot);
+  }
+  sheet.append(head, cells);
+  bindSheet(sheet, component);
+  const board = el("div", "board");
+  board.append(sheet);
+  return board;
+}
+
+function markSelected(date) {
+  const sheet = app.querySelector(".night-cal");
+  if (!sheet) return;
+  for (const day of sheet.querySelectorAll(".day")) {
+    const on = day.dataset.date === date && !day.classList.contains("is-outside");
+    day.classList.toggle("is-selected", on);
+    if (on) {
+      day.setAttribute("aria-current", "date");
+      day.removeAttribute("aria-pressed");
+    } else if (!day.classList.contains("is-outside")) {
+      day.removeAttribute("aria-current");
+      day.setAttribute("aria-pressed", "false");
+    }
+  }
+}
+
+function pinInset(sheet, slot, on) {
+  if (!on) {
+    slot.style.removeProperty("--inset");
+    return;
+  }
+  const sheetBox = sheet.getBoundingClientRect();
+  const box = slot.getBoundingClientRect();
+  slot.style.setProperty("--inset", (box.left - sheetBox.left).toFixed(1) + "px");
+}
+
+function setOpen(date, opts) {
+  const sheet = app.querySelector(".night-cal");
+  if (!sheet) return;
+  const sticky = Boolean(opts && opts.sticky);
+  const same = date === lens.date;
+  lens.sticky = sticky;
+  if (same) return;
+  const animate = Boolean(opts && opts.animate && date);
+  lens.date = date;
+  for (const slot of sheet.querySelectorAll(".slot")) {
+    const on = Boolean(date) && slot.dataset.date === date;
+    slot.classList.toggle("is-open", on);
+    slot.classList.toggle("is-opening", on && animate);
+    pinInset(sheet, slot, on);
+  }
+}
+
+function applyLens() {
+  const sheet = app.querySelector(".night-cal");
+  if (!sheet) return;
+  for (const slot of sheet.querySelectorAll(".slot")) {
+    const on = Boolean(lens.date) && slot.dataset.date === lens.date;
+    slot.classList.toggle("is-open", on);
+    slot.classList.remove("is-opening");
+    pinInset(sheet, slot, on);
+  }
+  if (lens.chosen) markSelected(lens.chosen);
+}
+
+function pointIn(box, x, y) {
+  return x >= box.left && x < box.right && y >= box.top && y < box.bottom;
+}
+
+function slotFromPoint(sheet, x, y) {
+  // The open night is drawn larger than its cell, and its titles fill that
+  // box. Hit-testing the painted titles traps the hole on that night.
+  // The cell under the cursor decides, even when a title is painted over it.
+  let under = null;
+  for (const slot of sheet.querySelectorAll(".slot")) {
+    const day = slot.querySelector(".day");
+    if (!day || day.classList.contains("is-outside")) continue;
+    if (pointIn(slot.getBoundingClientRect(), x, y)) {
+      under = slot;
+      break;
+    }
+  }
+  if (under && !under.classList.contains("is-open")) return under;
+  const open = sheet.querySelector(".slot.is-open");
+  if (open) {
+    const day = open.querySelector(".day");
+    if (day && pointIn(day.getBoundingClientRect(), x, y)) return open;
+  }
+  return under;
+}
+
+function queueSelect(action, date) {
+  markSelected(date);
+  if (lens.chosen === date) return;
+  lens.chosen = date;
+  clearTimeout(selectTimer);
+  const gen = ++selectGen;
+  selectTimer = setTimeout(() => {
+    selectTimer = 0;
+    const ui = processor.surface && processor.surface.data && processor.surface.data.ui;
+    if (lens.chosen !== date) return;
+    if (ui && ui.selectedDate === date) return;
+    send(action, { date }, gen);
+  }, 70);
+}
+
+function bindSheet(sheet, component) {
+  sheet.addEventListener("pointermove", (event) => {
+    if (event.pointerType === "touch") return;
+    if (Date.now() - lastTouch < 800) return;
+    const slot = slotFromPoint(sheet, event.clientX, event.clientY);
+    if (!slot) {
+      if (!lens.sticky) setOpen(null, { sticky: false, animate: false });
+      return;
+    }
+    const date = slot.dataset.date;
+    setOpen(date, { sticky: false, animate: true });
+    queueSelect(component.action, date);
+  });
+  sheet.addEventListener("pointerleave", () => {
+    if (Date.now() - lastTouch < 800) return;
+    if (!lens.sticky) setOpen(null, { sticky: false, animate: false });
+  });
+  sheet.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch") return;
+    lastTouch = Date.now();
+    touchStart = { x: event.clientX, y: event.clientY };
+  });
+  sheet.addEventListener("pointerup", (event) => {
+    if (event.pointerType !== "touch") return;
+    lastTouch = Date.now();
+    const start = touchStart;
+    touchStart = null;
+    if (!start) return;
+    if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > 12) return;
+    const slot = slotFromPoint(sheet, event.clientX, event.clientY);
+    if (!slot) return;
+    const date = slot.dataset.date;
+    setOpen(date, { sticky: true, animate: true });
+    queueSelect(component.action, date);
+  });
+  sheet.addEventListener("keydown", (event) => onCalendarKey(event, component));
+}
+
+function onCalendarKey(event, component) {
+  const arrows = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 };
+  const ui = processor.surface && processor.surface.data && processor.surface.data.ui;
+  const selected = lens.chosen || (ui && ui.selectedDate) || "";
+  if (!(event.key in arrows) || !/^\d{4}-\d{2}-\d{2}$/.test(selected)) return;
+  if (event.target.closest("button.thumb, a")) return;
+  event.preventDefault();
+  const [year, month, day] = selected.split("-").map(Number);
+  const next = new Date(year, month - 1, day + arrows[event.key]);
+  const key = [
+    next.getFullYear(),
+    String(next.getMonth() + 1).padStart(2, "0"),
+    String(next.getDate()).padStart(2, "0"),
+  ].join("-");
+  setOpen(key, { sticky: true, animate: true });
+  queueSelect(component.action, key);
+}
+
+function renderVotes(event, action) {
+  const row = el("span", "gig-actions");
+  const score = Number(event.score) || 0;
+  const up = el("button", "thumb", "Up");
+  up.type = "button";
+  up.dataset.dir = "up";
+  up.dataset.eventId = event.id;
+  up.setAttribute("aria-label", "Thumbs up for " + event.title);
+  up.addEventListener("click", () => send(action, { eventId: event.id, direction: "up" }));
+  const down = el("button", "thumb", "Down");
+  down.type = "button";
+  down.dataset.dir = "down";
+  down.dataset.eventId = event.id;
+  down.setAttribute("aria-label", "Thumbs down for " + event.title);
+  down.addEventListener("click", () => send(action, { eventId: event.id, direction: "down" }));
+  const tally = el("span", "tally" + (score < 0 ? " is-down" : ""), score > 0 ? "+" + score : String(score));
+  tally.setAttribute("aria-label", (score > 0 ? "+" : "") + score + " so far");
+  row.append(up, tally, down);
+  return row;
+}
+
+function renderChildren(ids, surface, host) {
+  for (const id of ids || []) {
+    const child = renderComponent(surface, id);
+    if (child) host.append(child);
+  }
+}
+
+function renderComponent(surface, id) {
+  const component = surface.components.get(id);
+  if (!component) return null;
+  const data = surface.data;
+  if (component.component === "Column" || component.component === "Row") {
+    const node = el("div", component.component === "Row" ? "a2ui-row" : "a2ui-column");
+    renderChildren(component.children, surface, node);
+    return node;
+  }
+  if (component.component === "Text") return renderText(component, data);
+  if (component.component === "Button") return renderButton(component, surface);
+  if (component.component === "Marquee") return renderMarquee(component, data);
+  if (component.component === "VenueRail") return renderRail(component, data);
+  if (component.component === "NightCalendar") return renderCalendar(component, surface);
+  return el("p", "footer", "Unsupported component " + component.component);
+}
+
+function render() {
+  const active = document.activeElement;
+  const restore = !active ? null
+    : active.classList.contains("day") ? { kind: "day" }
+    : active.classList.contains("room") ? { kind: "room", name: active.textContent }
+    : active.classList.contains("thumb") ? { kind: "thumb", dir: active.dataset.dir, eventId: active.dataset.eventId }
+    : null;
+  const surface = processor.surface;
+  app.replaceChildren();
+  if (!surface || !surface.components.has("root")) {
+    app.append(el("p", "boot", "The calendar surface did not arrive."));
+    return;
+  }
+  themeVars(surface.theme || {});
+  const root = renderComponent(surface, "root");
+  if (root) app.append(root);
+  applyLens();
+  if (!restore) return;
+  if (restore.kind === "day") {
+    const current = app.querySelector(".day.is-selected");
+    if (current) current.focus();
+  } else if (restore.kind === "room") {
+    for (const room of app.querySelectorAll("button.room")) {
+      if (room.textContent === restore.name) room.focus();
+    }
+  } else if (restore.kind === "thumb") {
+    const thumb = app.querySelector(
+      "button.thumb[data-dir='" + restore.dir + "'][data-event-id='" + restore.eventId + "']"
+    );
+    if (thumb) thumb.focus();
+  }
+}
+
+function load() {
+  fetch("/api/surface").then((response) => {
+    if (!response.ok) throw new Error("The calendar surface did not load.");
+    return response.text();
+  }).then((text) => {
+    processor.applyStream(text);
+    render();
+  }).catch((error) => {
+    app.replaceChildren(el("p", "boot", error.message || "The calendar surface did not load."));
+  });
+}
+
+document.addEventListener("pointerdown", (event) => {
+  if (!lens.sticky) return;
+  const sheet = app.querySelector(".night-cal");
+  if (!sheet || sheet.contains(event.target)) return;
+  setOpen(null, { sticky: false, animate: false });
+});
+
+load();
+setInterval(() => {
+  if (busy || !processor.surface) return;
+  fetch("/api/model").then((response) => response.json()).then((message) => {
+    const before = JSON.stringify(processor.surface.data.events || []);
+    processor.apply(message);
+    const after = JSON.stringify(processor.surface.data.events || []);
+    if (before !== after) render();
+  }).catch(() => {});
+}, 45000);
+</script>
+</body>
+</html>

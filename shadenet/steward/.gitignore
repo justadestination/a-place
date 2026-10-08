@@ -1,0 +1,8 @@
+# Runtime state — auto-generated, do not commit
+state/
+*.jsonl
+*.log
+.env
+
+# Archived instead of deleted — see the no-permanent-deletion convention
+.graveyard/

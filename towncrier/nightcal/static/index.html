@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Downtown Metropolis</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #080808;
+    --sheet: #ecece4;
+    --ink: #111;
+    --bulb: #FFC14D;
+    --comedy: #e74c3c;
+    --quiet: #8a8f98;
+    --quiet-on-night: #b8bcc4;
+    --wire: #3EE0FF;
+    --comedy-on-night: #f5a09a;
+    --music: #2ecc71;
+    --show: #3498db;
+    --trivia: #9b59b6;
+    --display: 'Geist', 'Inter', system-ui, sans-serif;
+    --text: 'Geist', 'Inter', system-ui, sans-serif;
+    --mono: 'Geist Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--night); color: var(--sheet); font-family: var(--text); }
+  body { font-size: 1rem; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+
+  #app { width: min(1100px, calc(100% - 1.5rem)); margin: 0 auto; padding: 1.5rem 0 2rem; }
+  .skip { position: absolute; left: 0.75rem; top: -3rem; background: var(--bulb); color: var(--ink); padding: 0.4rem 0.7rem; font-size: 0.9rem; }
+  .skip:focus { top: 0.75rem; z-index: 5; }
+
+  /* Marquee — minimal */
+  .marquee { padding-top: 0.15rem; }
+  .place { font-size: 0.75rem; color: var(--quiet-on-night); margin: 0 0 0.15rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
+  .month { font-family: var(--display); font-weight: 600; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; letter-spacing: -0.02em; color: var(--sheet); margin: 0; }
+  .count { margin: 0.15rem 0 0; color: var(--quiet-on-night); font-size: 0.8rem; }
+  .status { margin: 0.1rem 0 0; color: var(--bulb); font-size: 0.8rem; }
+
+  /* Controls — icon-only, no text labels */
+  .ctrl-row { display: flex; flex-wrap: wrap; gap: 0.35rem 0.6rem; align-items: center; padding: 0.4rem 0; }
+  button.ctrl {
+    border: 0; padding: 0.35rem 0.55rem; font-family: var(--text); font-size: 0.85rem; font-weight: 500;
+    color: var(--sheet); background: transparent; cursor: pointer; border-bottom: 2px solid transparent; border-radius: 4px;
+  }
+  button.ctrl:hover { border-bottom-color: var(--sheet); background: rgba(255,255,255,0.03); }
+  button.ctrl.is-primary { border-bottom-color: var(--bulb); color: var(--bulb); }
+  button.ctrl[aria-busy="true"] { opacity: 0.5; }
+  button.ctrl:focus-visible { outline: 2px solid var(--bulb); outline-offset: 2px; }
+  .ctrl-sep { width: 1px; height: 1.2rem; background: rgba(255,255,255,0.08); margin: 0 0.2rem; }
+
+  /* Rail — dots, not text */
+  .rail-wrap { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; padding: 0.2rem 0; }
+  .rail-wrap nav[aria-label="Rooms"] { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+  button.room {
+    width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.12);
+    background: transparent; color: var(--quiet-on-night); font-size: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    position: relative;
+  }
+  button.room::after { content: attr(data-short); font-size: 0.65rem; font-weight: 500; color: inherit; }
+  button.room[data-music="true"] { border-color: var(--bulb); }
+  button.room[data-music="true"]::before {
+    content: ""; position: absolute; inset: -3px; border-radius: 50%;
+    border: 1px solid rgba(255,193,77,0.2); pointer-events: none;
+  }
+  button.room.is-on { background: var(--bulb); color: var(--ink); border-color: var(--bulb); }
+  button.room:hover { border-color: var(--sheet); }
+  button.room:focus-visible { outline: 2px solid var(--bulb); outline-offset: 2px; }
+  .contact-line { margin: 0.15rem 0 0; color: var(--quiet-on-night); font-size: 0.78rem; }
+  .contact-line a { color: var(--sheet); text-decoration: none; }
+  .contact-line a:hover { text-decoration: underline; }
+
+  /* Calendar — 3D sheet */
+  .board { perspective: 1200px; perspective-origin: 50% 26%; padding: 0.2rem 0 3rem; }
+  .sheet { background: var(--sheet); color: var(--ink); border-radius: 12px; overflow: hidden; position: relative; }
+  .night-cal {
+    --tilt: var(--tilt-pref, 16);
+    --depth: var(--depth-pref, 10);
+    --focus: var(--focus-pref, 1.1);
+    --open: min(1.8, calc(1 + (var(--focus) - 1) * 3));
+    --day: 6.5rem;
+    width: 100%; padding: 0.5rem 0.5rem 0.7rem;
+    transform: rotateX(calc(var(--tilt) * 1deg));
+    transform-origin: center 32%; transform-style: preserve-3d;
+  }
+  .night-cal.is-suspended { background: transparent; color: var(--sheet); }
+  .night-cal.is-suspended .dow { border-bottom: 1px solid var(--wire); box-shadow: 0 1px 6px rgba(62,224,255,0.2); }
+  .night-cal.is-suspended .dow span { color: var(--wire); text-shadow: 0 0 5px rgba(62,224,255,0.35); }
+  .dow, .cells { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .slot { position: relative; min-height: var(--day); }
+  .slot.is-open { z-index: 5; }
+  .dow span { padding: 0.1rem 0.2rem 0.3rem; color: var(--quiet); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+  .day {
+    height: var(--day); min-height: var(--day); padding: 0.2rem 0.25rem 0.25rem;
+    border: 0; border-bottom: 2px solid transparent; display: block; width: 100%;
+    appearance: none; color: var(--ink); text-align: left; overflow: visible;
+    cursor: pointer; background: transparent; font-family: var(--text);
+  }
+  .day.is-outside { visibility: hidden; }
+  .night-cal.is-suspended .day.is-outside { visibility: visible; }
+  .night-cal.is-suspended .day.is-outside > * { visibility: hidden; }
+  .night-cal.is-suspended .day { color: var(--sheet); height: auto; }
+  .night-cal.is-suspended .slot { border-right: 1px solid var(--wire); border-bottom: 1px solid var(--wire); box-shadow: 1px 0 5px rgba(62,224,255,0.25), 0 1px 5px rgba(62,224,255,0.15); }
+  .night-cal.is-suspended .slot:nth-child(7n+1) { border-left: 1px solid var(--wire); }
+  .night-cal.is-suspended .cells .slot:nth-child(-n+7) { border-top: 1px solid var(--wire); }
+  .day.is-selected { border-bottom-color: var(--bulb); }
+  .slot.is-open > .day {
+    position: absolute; z-index: 1; left: 50%; top: 50%;
+    width: calc(100% * var(--open)); height: auto;
+    min-height: calc(var(--day) * var(--open));
+    transform: translate(-50%, -50%); transform-style: preserve-3d;
+    border-bottom-color: var(--bulb); background: var(--sheet); border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25); pointer-events: none;
+  }
+  .slot.is-opening > .day { animation: hole-open 340ms cubic-bezier(.16,.84,.28,1); }
+  .slot.is-open > .day a, .slot.is-open > .day button { pointer-events: auto; }
+  .night-cal.is-suspended .slot.is-open > .day { background: var(--night); border: 1px solid var(--wire); border-bottom: 2px solid var(--bulb); box-shadow: 0 0 8px rgba(62,224,255,0.3), 0 0 12px rgba(255,193,77,0.15); }
+  @keyframes hole-open { from { clip-path: inset(44% 44% 44% 44%); } to { clip-path: inset(0); } }
+  .day .num { font-family: var(--display); font-size: 1.15rem; line-height: 1; font-weight: 500; display: inline-block; }
+  .day.is-today .num { box-shadow: inset 0 -2px 0 var(--ink); }
+  .night-cal.is-suspended .day.is-today .num { box-shadow: inset 0 -2px 0 var(--bulb); }
+  .night-cal.is-suspended .wire-glow { color: var(--wire); }
+
+  /* ---- OBJECTS: geometric shapes instead of text cards ---- */
+  .obj-layer { position: relative; width: 100%; height: 100%; }
+  .obj {
+    position: absolute; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.18s cubic-bezier(.16,.84,.28,1), opacity 0.18s;
+    overflow: visible;
+  }
+  .obj:hover, .obj:focus-visible { z-index: 10; }
+  .obj:focus-visible { outline: 2px solid var(--bulb); outline-offset: 2px; }
+
+  /* Shape kinds — pure geometry, color coded, no text inside */
+  .obj-kind-music { background: var(--music); border-radius: 50%; }
+  .obj-kind-comedy { background: var(--comedy); border-radius: 4px; transform: rotate(45deg); }
+  .obj-kind-show { background: var(--show); border-radius: 3px; }
+  .obj-kind-trivia { background: var(--trivia); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+  .obj-kind-other { background: var(--quiet); border-radius: 50%; }
+
+  /* Resting size — proportional to confidence/score */
+  .obj-rest {
+    width: calc(var(--size, 1) * 1px); height: calc(var(--size, 1) * 1px);
+    opacity: 0.85;
+  }
+  .obj-rest::after {
+    content: attr(data-kind); position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0; color: transparent; /* text hidden */
+  }
+
+  /* Hovered/selected day: objects expand, reveal text */
+  .slot.is-open .obj-rest {
+    width: calc(var(--size, 1) * 1.3px); height: calc(var(--size, 1) * 1.3px);
+    opacity: 1;
+  }
+  .slot.is-open .obj-rest::after {
+    font-size: 0.62rem; font-weight: 500; color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    font-family: var(--text);
+  }
+  .slot.is-open .obj-kind-comedy::after { transform: rotate(-45deg); }
+
+  /* Object label on hover — the title, outside the shape */
+  .obj-label {
+    position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--sheet); padding: 0.2rem 0.5rem;
+    border-radius: 4px; font-size: 0.68rem; font-weight: 500; white-space: nowrap;
+    pointer-events: none; opacity: 0; transition: opacity 0.15s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .obj-label::after {
+    content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: var(--ink);
+  }
+  .obj:hover .obj-label, .obj:focus-visible .obj-label { opacity: 1; }
+  .night-cal.is-suspended .obj-label { background: var(--sheet); color: var(--ink); }
+  .night-cal.is-suspended .obj-label::after { border-top-color: var(--sheet); }
+
+  /* Score dot — tiny indicator under the shape */
+  .obj-score {
+    position: absolute; top: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+    width: 4px; height: 4px; border-radius: 50%; background: var(--bulb); opacity: 0.7;
+  }
+
+  /* Meta line in open day */
+  .meta { display: none; }
+  .slot.is-open .meta { display: block; grid-column: 1; grid-row: 2; color: var(--quiet-on-night); font-size: 0.62rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .filament { display: none; }
+  .slot.is-open .filament { display: block; grid-column: 1 / -1; height: 1.5px; width: calc(var(--len, 0.08) * 100cqi); max-width: calc((1 - var(--x, 0)) * 92cqi); background: var(--ink); box-shadow: 0 0 3px rgba(23,35,38,0.15); }
+  .night-cal.is-suspended .slot.is-open .filament { background: var(--wire); box-shadow: 0 0 5px rgba(62,224,255,0.5); }
+  .slot.is-open .gig.comedy .filament { background: var(--comedy); }
+  .night-cal.is-suspended .slot.is-open .gig.comedy .filament { background: var(--comedy-on-night); }
+
+  /* Open day: time axis, room column lines */
+  .slot.is-open > .day {
+    min-height: max(calc(var(--day) * var(--open)), calc(var(--lanes, 1) * 3rem + 1.8rem));
+  }
+  .slot.is-open > .day::before, .slot.is-open > .day::after { content: ""; position: absolute; background: var(--wire); pointer-events: none; }
+  .slot.is-open > .day::before { left: 0.35rem; right: 0.4rem; bottom: 0.3rem; height: 1px; opacity: 0.3; }
+  .slot.is-open > .day::after { left: 0.35rem; top: 1.5rem; bottom: 0.3rem; width: 1px; opacity: 0.3; }
+  .slot.is-open .num { position: absolute; top: 0.15rem; left: 0.35rem; z-index: 8; font-size: 1rem; }
+  .slot.is-open .gig { position: absolute; left: calc(0.35rem + var(--x, 0) * 30%); top: calc(1.6rem + var(--y, 0) * (100% - 2.4rem)); width: min(94%, calc(100% - 0.5rem)); max-width: calc(100% - 0.4rem - (0.35rem + var(--x, 0) * 30%)); z-index: calc(3 + max(0, var(--share, 0)) * 4); }
+
+  /* Checks */
+  .checks { grid-column: 1 / -1; display: none; }
+  .slot.is-open .checks { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  a.check { color: var(--ink); font-size: 0.65rem; text-decoration: none; padding: 0.1rem 0.3rem; border: 1px solid rgba(0,0,0,0.08); border-radius: 3px; }
+  a.check:hover { background: rgba(0,0,0,0.04); }
+  .night-cal.is-suspended a.check { color: var(--wire); border-color: rgba(255,255,255,0.15); }
+
+  /* Tally — compact */
+  .gig-score, .tally { font-family: var(--display); font-size: 0.75rem; line-height: 1; }
+  .gig-score.is-down, .tally.is-down { color: var(--quiet); }
+  .gig-actions { display: none; align-items: baseline; gap: 0.25rem; }
+  .slot.is-open .gig-actions { display: flex; }
+  .slot.is-open .gig-score { display: none; }
+  .gig.comedy .gig-name { color: var(--comedy); }
+
+  /* Bar */
+  .bar { grid-column: 1 / -1; display: block; height: 2px; max-width: 100%; background: rgba(23,35,38,0.06); }
+  .slot.is-open .bar { display: none; }
+  .bar-fill { display: block; height: 100%; width: 0; }
+  .bar-fill.is-up { background: var(--ink); }
+  .bar-fill.is-down { background: var(--quiet); }
+  .day .more { font-size: 0.65rem; color: var(--quiet); }
+
+  /* Thumb buttons */
+  button.thumb { color: var(--ink); border-bottom: 1.5px solid transparent; min-height: 0; font-size: 0.72rem; padding: 0.1rem 0.25rem; font-family: var(--text); font-weight: 500; background: transparent; cursor: pointer; }
+  button.thumb:hover { border-bottom-color: var(--ink); }
+  .empty { max-width: 28ch; margin: 0; font-size: 0.85rem; color: var(--quiet); }
+
+  /* Closed note */
+  .closed-note { font-size: 0.8rem; color: var(--quiet-on-night); margin: 0; padding: 0.1rem 0; }
+
+  /* Footer — minimal */
+  .footer { margin: 0.5rem 0 0; color: var(--quiet-on-night); font-size: 0.72rem; max-width: 42ch; line-height: 1.35; }
+
+  /* Object legend — tiny, bottom */
+  .obj-legend { display: flex; gap: 0.6rem; padding: 0.2rem 0 0; flex-wrap: wrap; }
+  .obj-legend-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.65rem; color: var(--quiet-on-night); }
+  .obj-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .obj-legend-dot.music { background: var(--music); border-radius: 50%; }
+  .obj-legend-dot.comedy { background: var(--comedy); border-radius: 3px; transform: rotate(45deg); }
+  .obj-legend-dot.show { background: var(--show); border-radius: 2px; }
+  .obj-legend-dot.trivia { background: var(--trivia); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+
+  /* Responsive */
+  @media (max-width: 860px) {
+    .board { perspective: 900px; padding-bottom: 1.5rem; }
+    .night-cal { width: 100%; --tilt: calc(var(--tilt-pref, 16) * 0.45); --depth: calc(var(--depth-pref, 10) * 0.5); }
+    .day { perspective: 1200px; }
+    .rail-wrap { flex-wrap: nowrap; overflow-x: auto; }
+    button.room { width: 1.7rem; height: 1.7rem; }
+    .night-cal { --day: 4.5rem; }
+    .day { padding: 0.15rem 0.1rem 0.2rem; }
+    .day .num { font-size: 0.9rem; }
+    .slot.is-open > .day { width: calc(100vw - 1.4rem); min-height: max(calc(var(--day) * var(--open)), calc(var(--lanes, 1) * 2.4rem + 1.2rem)); left: calc(0.7rem - var(--inset, 0px)); transform: translate(0, -50%); }
+    .slot.is-open .gig { left: calc(0.3rem + var(--x, 0) * 26%); top: calc(1.4rem + var(--y, 0) * (100% - 2rem)); }
+    .slot.is-open .meta { font-size: 0.58rem; }
+    .month { font-size: clamp(1.6rem, 8vw, 2.4rem); }
+    .obj-label { font-size: 0.6rem; }
+  }
+
+  /* Large screen */
+  @media (min-width: 1400px) {
+    .night-cal { --day: 7.5rem; }
+    .obj-rest { --size: calc(var(--size, 1) * 1.15); }
+    .slot.is-open .obj-rest { --size: calc(var(--size, 1) * 1.45); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .board { perspective: none; }
+    .night-cal { --tilt: 0; --depth: 0; transform: none; }
+    .day { perspective: none; }
+    .slot.is-opening > .day { animation: none; }
+    .obj { transition: none; }
+    * { scroll-behavior: auto; }
+  }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Skip to the calendar</a>
+<div id="app"><p class="boot" style="padding:4rem 0;font-family:var(--display);font-size:1.8rem;">Opening the calendar…</p></div>
+<script>
+const NIGHT_KINDS = new Set(["music","comedy","show","trivia"]);
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const KIND_SHAPE = { music: "circle", comedy: "diamond", show: "square", trivia: "diamond", other: "circle" };
+const KIND_COLORS = { music: "#2ecc71", comedy: "#e74c3c", show: "#3498db", trivia: "#9b59b6", other: "#8a8f98" };
+
+function parts(path) { if (!path || path === "/") return []; return path.split("/").slice(1).map(p => p.replace(/~1/g,"/").replace(/~0/g,"~")); }
+function getPath(obj, path) { let cur = obj; for (const p of parts(path)) { if (cur == null) return undefined; cur = cur[p]; } return cur; }
+function setPath(obj, path, value) { const keys = parts(path); if (!keys.length) return value; const root = obj && typeof obj === "object" ? obj : {}; let cur = root; for (let i = 0; i < keys.length - 1; i++) { if (cur[keys[i]] == null || typeof cur[keys[i]] !== "object") cur[keys[i]] = {}; cur = cur[keys[i]]; } cur[keys[keys.length - 1]] = value; return root; }
+function dyn(data, value) { if (value == null) return ""; if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") return value; if (typeof value === "object" && typeof value.path === "string") return getPath(data, value.path); return value; }
+
+class Processor {
+  constructor() { this.surface = null; }
+  apply(msg) {
+    if (!msg || typeof msg !== "object") return;
+    if (msg.createSurface) { const c = msg.createSurface; if (this.surface && this.surface.id === c.surfaceId) { this.surface.catalogId = c.catalogId; this.surface.theme = c.theme || this.surface.theme; return; } this.surface = { id: c.surfaceId, catalogId: c.catalogId, theme: c.theme || {}, components: new Map(), data: {} }; }
+    else if (msg.updateComponents && this.surface) { for (const comp of msg.updateComponents.components || []) this.surface.components.set(comp.id, comp); }
+    else if (msg.updateDataModel && this.surface) { this.surface.data = setPath(this.surface.data, msg.updateDataModel.path, msg.updateDataModel.value); }
+    else if (msg.deleteSurface && this.surface && this.surface.id === msg.deleteSurface.surfaceId) { this.surface = null; }
+  }
+  applyStream(text) { for (const line of text.split("\n")) { const t = line.trim(); if (t) this.apply(JSON.parse(t)); } }
+}
+
+const processor = new Processor();
+const app = document.getElementById("app");
+let busy = false, selectGen = 0, selectTimer = 0, lastTouch = 0, touchStart = null;
+const lens = { date: null, sticky: false, chosen: null };
+
+function calendarStamp(data) { if (!data || !data.ui) return ""; const ui = data.ui; const rows = (data.events || []).map(e => [e.id, e.score, e.suppressed, e.title, e.date, e.venueId].join(":")).join("|"); return [ui.month, ui.venueId, ui.scope, ui.showCount, ui.status, ui.closedNote, ui.depthNote, JSON.stringify(ui.view || {}), rows].join("~"); }
+
+function themeVars(theme) { const root = document.documentElement; if (theme.background) root.style.setProperty("--night", theme.background); if (theme.foreground) root.style.setProperty("--sheet", theme.foreground); if (theme.sheet) root.style.setProperty("--sheet", theme.sheet); if (theme.ink) root.style.setProperty("--ink", theme.ink); if (theme.primaryColor) root.style.setProperty("--bulb", theme.primaryColor); }
+
+function el(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text != null) node.textContent = text; return node; }
+
+function shownEvents(data) { const venue = (data.ui && data.ui.venueId) || ""; const scope = (data.ui && data.ui.scope) || "nights"; return (data.events || []).filter(e => { if (venue && e.venueId !== venue) return false; if (scope === "nights" && !NIGHT_KINDS.has(e.kind)) return false; return true; }); }
+
+function send(action, extra, gen) {
+  if (!action || !action.event) return;
+  const name = action.event.name; const context = Object.assign({}, action.event.context || {}, extra || {}); const refresh = name === "refresh";
+  if (refresh) { busy = true; render(); }
+  fetch(refresh ? "/api/refresh" : "/api/action", { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({name, context}) })
+    .then(r => { if (!r.ok) throw new Error("The calendar could not update."); return r.json(); })
+    .then(message => { if (gen != null && gen !== selectGen) return; const before = calendarStamp(processor.surface && processor.surface.data); processor.apply(message); const quiet = gen != null && calendarStamp(processor.surface.data) === before; if (quiet) { const ui = processor.surface.data.ui || {}; if (!lens.chosen || lens.chosen === ui.selectedDate) markSelected(ui.selectedDate); applyLens(); return; } if (name !== "selectDate" && name !== "vote") { lens.chosen = null; lens.date = null; lens.sticky = false; } render(); })
+    .catch(err => { const data = processor.surface && processor.surface.data; if (data && data.ui) data.ui.status = err.message || "The calendar could not update."; render(); })
+    .finally(() => { busy = false; });
+}
+
+function renderText(component, data) { const text = dyn(data, component.text); if (text == null || text === "") return null; return el("p", component.variant === "caption" ? "footer" : "", String(text)); }
+
+function renderButton(component, surface) { const label = surface.components.get(component.child); const text = label ? dyn(surface.data, label.text) : component.child; const button = el("button", "ctrl", String(text || "")); button.type = "button"; const variant = dyn(surface.data, component.variant); if (variant === "primary") button.classList.add("is-primary"); if (busy && component.action && component.action.event && component.action.event.name === "refresh") { button.setAttribute("aria-busy","true"); button.disabled = true; } button.addEventListener("click", () => send(component.action)); return button; }
+
+function renderMarquee(component, data) { const wrap = el("header", "marquee"); const place = dyn(data, component.place); if (place) wrap.append(el("p", "place", String(place))); wrap.append(el("h1", "month", String(dyn(data, component.month) || ""))); const count = dyn(data, component.count); if (count) wrap.append(el("p", "count", String(count))); const status = dyn(data, component.status); if (status) wrap.append(el("p", "status", String(status))); return wrap; }
+
+function renderRail(component, data) {
+  const venues = dyn(data, component.venues) || []; const selected = String(dyn(data, component.selected) || "");
+  const rail = el("nav", "rail"); rail.setAttribute("aria-label", "Rooms");
+  const all = el("button", "room" + (selected ? "" : " is-on"), "All"); all.type = "button"; all.dataset.short = "✦"; all.addEventListener("click", () => { if (selected) send(component.action, {venueId: selected}); });
+  rail.append(all);
+  for (const venue of venues) {
+    const btn = el("button", "room" + (venue.id === selected ? " is-on" : ""), venue.name); btn.type = "button"; btn.dataset.short = venue.name.charAt(0).toUpperCase();
+    if (venue.music) { btn.dataset.music = "true"; btn.setAttribute("aria-label", venue.name + ", music room"); }
+    btn.addEventListener("click", () => send(component.action, {venueId: venue.id}));
+    rail.append(btn);
+  }
+  const wrap = el("div", "rail-wrap"); wrap.append(rail);
+  const chosen = venues.find(v => v.id === selected);
+  const line = contactLine(chosen); if (line) wrap.append(line);
+  return wrap;
+}
+
+function contactLine(venue) {
+  const contact = venue && venue.contact; if (!contact) return null;
+  const bits = [];
+  for (const phone of contact.phones || []) { if (phone.href) bits.push({href: phone.href, text: phone.text}); else if (phone.text) bits.push({text: phone.text}); }
+  for (const mail of contact.emails || []) { if (mail.href) bits.push({href: mail.href, text: mail.text}); }
+  for (const site of contact.websites || []) { if (site.href) bits.push({href: site.href, text: site.text}); }
+  for (const social of contact.socials || []) { if (social.href) bits.push({href: social.href, text: social.text}); }
+  if (!bits.length) return null;
+  const line = el("p", "contact-line"); line.append(document.createTextNode(venue.name));
+  for (const bit of bits) { line.append(document.createTextNode(" · ")); if (bit.href && /^(https:|tel:|mailto:)/.test(bit.href)) { const link = el("a", "", bit.text); link.href = bit.href; if (bit.href.startsWith("https:")) { link.rel = "noreferrer"; link.target = "_blank"; } line.append(link); } else { line.append(document.createTextNode(bit.text)); } }
+  return line;
+}
+
+function monthGrid(monthKey) { const [year, month] = monthKey.split("-").map(Number); const first = new Date(year, month - 1, 1); const start = new Date(first); start.setDate(1 - first.getDay()); const cells = []; for (let i = 0; i < 42; i++) { const day = new Date(start); day.setDate(start.getDate() + i); cells.push(day); if (i > 27 && day.getDay() === 6 && day.getMonth() !== month - 1) break; } return { year, month, cells }; }
+
+function monthPeak(events, monthKey) { let peak = 0; for (const event of events) { if (!event.date || !String(event.date).startsWith(monthKey)) continue; peak = Math.max(peak, Math.abs(Number(event.score) || 0)); } return peak; }
+
+function readView(raw) { const source = raw && typeof raw === "object" ? raw : {}; const num = (v, fb, lo, hi) => { const n = Number(v); if (!Number.isFinite(n)) return fb; return Math.min(hi, Math.max(lo, n)); }; const flag = (v, fb) => { if (v == null) return fb; if (typeof v === "string") return !/^(0|false|no|off)$/i.test(v.trim()); return Boolean(v); }; return { tilt: num(source.tilt, 16, 0, 24), depth: num(source.depth, 10, 0, 24), bars: flag(source.bars, true), focus: num(source.focus, 1.1, 1, 1.6), suspended: flag(source.suspended, true) }; }
+
+const NIGHT_FROM = 11 * 60, NIGHT_SPAN = 15 * 60;
+function clockMinutes(label) { const m = /^(\d{1,2}):(\d{2})\s*(am|pm)$/i.exec(String(label || "").trim()); if (!m) return null; let h = Number(m[1]) % 12; if (m[3].toLowerCase() === "pm") h += 12; return h * 60 + Number(m[2]); }
+function nightMinutes(minutes) { let v = Number(minutes); if (!Number.isFinite(v)) return NIGHT_FROM; if (v < 5 * 60) v += 24 * 60; return v; }
+
+function placeNight(gigs) {
+  const rooms = []; for (const gig of gigs) { const r = gig.venue || ""; if (!rooms.includes(r)) rooms.push(r); }
+  const laneOf = new Map(); let next = 0; for (const room of rooms) { for (const gig of gigs) { if ((gig.venue || "") !== room) continue; laneOf.set(gig, next); next += 1; } }
+  const total = Math.max(next, 1); const spots = gigs.map(gig => { const start = nightMinutes(gig.minutes); const clock = clockMinutes(gig.endLabel); let end = clock == null ? start + 45 : nightMinutes(clock); if (end <= start) end = start + 45; const x = Math.min(1, Math.max(0, (start - NIGHT_FROM) / NIGHT_SPAN)); const len = Math.min(1, Math.max(0.06, (end - start) / NIGHT_SPAN)); const y = (laneOf.get(gig) || 0) / total; return { x, y, len }; });
+  return { rooms: total, spots };
+}
+
+/* --- Object renderer: shapes instead of text --- */
+function shapeFor(kind) {
+  switch (kind) {
+    case "music": return "50%";
+    case "comedy": return "3px";
+    case "show": return "3px";
+    case "trivia": return "0";
+    default: return "50%";
+  }
+}
+
+function renderObject(gig, peak, view) {
+  const score = Number(gig.score) || 0;
+  const share = peak > 0 ? Math.abs(score) / peak : 0;
+  const baseSize = Math.max(8, Math.min(32, 8 + share * 24));
+  const kind = gig.kind || "other";
+  const color = KIND_COLORS[kind] || KIND_COLORS.other;
+
+  const wrap = el("span", "gig");
+  wrap.style.setProperty("--share-full", share.toFixed(4));
+  wrap.style.setProperty("--share-rest", (share * 0.4).toFixed(4));
+
+  /* Object shape */
+  const obj = el("span", "obj obj-rest obj-kind-" + kind);
+  obj.dataset.kind = kind;
+  obj.style.setProperty("--size", baseSize.toFixed(1));
+  obj.style.setProperty("--share-rest", (share * 0.4).toFixed(4));
+  if (kind === "comedy") obj.style.transform = "rotate(45deg)";
+  obj.style.background = color;
+
+  /* Label — only visible on hover/focus */
+  const label = el("span", "obj-label");
+  label.textContent = gig.title || "";
+  obj.append(label);
+
+  /* Score dot */
+  if (score) {
+    const dot = el("span", "obj-score");
+    dot.style.background = score > 0 ? "var(--bulb)" : "var(--quiet)";
+    obj.append(dot);
+  }
+
+  wrap.append(obj);
+
+  /* Filament */
+  const filament = el("span", "filament"); filament.setAttribute("aria-hidden","true");
+  filament.style.setProperty("--len", (Math.min(1, Math.max(0.06, (clockMinutes(gig.endLabel) || gig.minutes ? nightMinutes(clockMinutes(gig.endLabel) || gig.minutes) : 0) - nightMinutes(gig.minutes)) / NIGHT_SPAN)).toFixed(4));
+  wrap.append(filament);
+
+  /* Meta */
+  const meta = el("span", "meta"); const bits = []; if (gig.venue) bits.push(gig.venue); if (gig.startLabel) bits.push(gig.startLabel); if (bits.length) meta.textContent = bits.join(", "); wrap.append(meta);
+
+  /* Checks */
+  if (Array.isArray(gig.checks) && gig.checks.length) { const extra = el("span", "checks"); for (const c of gig.checks) { if (!c || !c.url || !/^https:\/\//.test(c.url)) continue; const link = el("a", "check", c.name || "Source"); link.href = c.url; link.rel = "noreferrer"; link.target = "_blank"; extra.append(link); } if (extra.childNodes.length) wrap.append(extra); }
+
+  /* Score + votes */
+  if (score) { const mark = score > 0 ? "+" + score : String(score); wrap.append(el("span", "gig-score" + (score < 0 ? " is-down" : ""), mark)); }
+
+  return wrap;
+}
+
+function renderCalendar(component, surface) {
+  const data = surface.data; const monthKey = String(dyn(data, component.month) || ""); const selected = String(dyn(data, component.selectedDate) || "");
+  const events = shownEvents(data); const byDate = new Map(); for (const e of events) { if (!byDate.has(e.date)) byDate.set(e.date, []); byDate.get(e.date).push(e); }
+  const sheet = el("section", "sheet night-cal"); sheet.setAttribute("aria-label", "Month");
+  if (!/^\d{4}-\d{2}$/.test(monthKey)) { sheet.append(el("p", "empty", "No month to show.")); return sheet; }
+  const view = readView(dyn(data, component.view)); const peak = monthPeak(events, monthKey);
+  sheet.dataset.peak = String(peak); sheet.dataset.tilt = String(view.tilt); sheet.dataset.depth = String(view.depth); sheet.dataset.focus = String(view.focus); sheet.dataset.bars = view.bars ? "true" : "false"; sheet.dataset.suspended = view.suspended ? "true" : "false"; sheet.classList.toggle("is-suspended", view.suspended);
+  sheet.style.setProperty("--tilt-pref", String(view.tilt)); sheet.style.setProperty("--depth-pref", String(view.depth)); sheet.style.setProperty("--focus-pref", String(view.focus));
+  const grid = monthGrid(monthKey); const head = el("div", "dow"); for (const n of DOW) head.append(el("span", "", n)); const cells = el("div", "cells");
+  const today = new Date(); const todayKey = [today.getFullYear(), String(today.getMonth()+1).padStart(2,"0"), String(today.getDate()).padStart(2,"0")].join("-");
+
+  for (const day of grid.cells) {
+    const key = [day.getFullYear(), String(day.getMonth()+1).padStart(2,"0"), String(day.getDate()).padStart(2,"0")].join("-");
+    const outside = day.getMonth() !== grid.month - 1; const focused = key === selected && !outside; const node = el("button", "day" + (focused ? " is-selected" : "")); node.type = "button"; node.dataset.date = key;
+    if (outside) node.classList.add("is-outside"); if (key === todayKey) node.classList.add("is-today");
+    node.append(el("span", "num", String(day.getDate())));
+    const gigs = (byDate.get(key) || []).slice().sort((a,b) => (a.minutes||0) - (b.minutes||0)); if (gigs.length) node.classList.add("has-shows");
+    const placed = placeNight(gigs); node.style.setProperty("--lanes", String(placed.rooms));
+
+    /* Object layer */
+    const objLayer = el("span", "obj-layer"); objLayer.style.position = "relative"; objLayer.style.width = "100%"; objLayer.style.height = "100%";
+    gigs.forEach((gig, idx) => {
+      const score = Number(gig.score) || 0; const spot = placed.spots[idx]; const share = peak > 0 ? score / peak : 0;
+      const gigEl = renderObject(gig, peak, view);
+      gigEl.style.setProperty("--x", spot.x.toFixed(4)); gigEl.style.setProperty("--y", spot.y.toFixed(4));
+      gigEl.style.setProperty("--len", spot.len.toFixed(4));
+      if (idx >= 2) gigEl.classList.add("is-extra");
+      objLayer.append(gigEl);
+    });
+    node.append(objLayer);
+
+    if (gigs.length > 2) node.append(el("span", "more", (gigs.length - 2) + " more"));
+    const labelBits = [day.toLocaleDateString(undefined, {weekday:"long", month:"long", day:"numeric"})];
+    gigs.forEach(g => { const score = Number(g.score) || 0; labelBits.push(score ? g.title + " " + (score > 0 ? "+" + score : score) : g.title); });
+    node.setAttribute("aria-label", labelBits.join(", "));
+    if (focused) node.setAttribute("aria-current","date"); else if (!outside) node.setAttribute("aria-pressed","false");
+    if (!outside) { node.addEventListener("click", (ev) => { if (ev.detail === 0) setOpen(key, {sticky:true, animate:true}); queueSelect(component.action, key); }); } else { node.tabIndex = -1; node.disabled = true; }
+    const slot = el("div", "slot"); slot.dataset.date = key; slot.append(node); cells.append(slot);
+  }
+  sheet.append(head, cells); bindSheet(sheet, component); const board = el("div", "board"); board.append(sheet); return board;
+}
+
+function markSelected(date) { const sheet = app.querySelector(".night-cal"); if (!sheet) return; for (const d of sheet.querySelectorAll(".day")) { const on = d.dataset.date === date && !d.classList.contains("is-outside"); d.classList.toggle("is-selected", on); if (on) { d.setAttribute("aria-current","date"); d.removeAttribute("aria-pressed"); } else if (!d.classList.contains("is-outside")) { d.removeAttribute("aria-current"); d.setAttribute("aria-pressed","false"); } } }
+function pinInset(sheet, slot, on) { if (!on) { slot.style.removeProperty("--inset"); return; } const sb = sheet.getBoundingClientRect(); const b = slot.getBoundingClientRect(); slot.style.setProperty("--inset", (b.left - sb.left).toFixed(1) + "px"); }
+function setOpen(date, opts) { const sheet = app.querySelector(".night-cal"); if (!sheet) return; const sticky = Boolean(opts && opts.sticky); const same = date === lens.date; lens.sticky = sticky; if (same) return; const animate = Boolean(opts && opts.animate && date); lens.date = date; for (const slot of sheet.querySelectorAll(".slot")) { const on = Boolean(date) && slot.dataset.date === date; slot.classList.toggle("is-open", on); slot.classList.toggle("is-opening", on && animate); pinInset(sheet, slot, on); } }
+function applyLens() { const sheet = app.querySelector(".night-cal"); if (!sheet) return; for (const slot of sheet.querySelectorAll(".slot")) { const on = Boolean(lens.date) && slot.dataset.date === lens.date; slot.classList.toggle("is-open", on); slot.classList.remove("is-opening"); pinInset(sheet, slot, on); } if (lens.chosen) markSelected(lens.chosen); }
+function pointIn(box, x, y) { return x >= box.left && x < box.right && y >= box.top && y < box.bottom; }
+function slotFromPoint(sheet, x, y) { let under = null; for (const slot of sheet.querySelectorAll(".slot")) { const day = slot.querySelector(".day"); if (!day || day.classList.contains("is-outside")) continue; if (pointIn(slot.getBoundingClientRect(), x, y)) { under = slot; break; } } if (under && !under.classList.contains("is-open")) return under; const open = sheet.querySelector(".slot.is-open"); if (open) { const day = open.querySelector(".day"); if (day && pointIn(day.getBoundingClientRect(), x, y)) return open; } return under; }
+function queueSelect(action, date) { markSelected(date); if (lens.chosen === date) return; lens.chosen = date; clearTimeout(selectTimer); const gen = ++selectGen; selectTimer = setTimeout(() => { selectTimer = 0; const ui = processor.surface && processor.surface.data && processor.surface.data.ui; if (lens.chosen !== date) return; if (ui && ui.selectedDate === date) return; send(action, {date}, gen); }, 70); }
+
+function bindSheet(sheet, component) {
+  sheet.addEventListener("pointermove", (ev) => { if (ev.pointerType === "touch") return; if (Date.now() - lastTouch < 800) return; const slot = slotFromPoint(sheet, ev.clientX, ev.clientY); if (!slot) { if (!lens.sticky) setOpen(null, {sticky:false, animate:false}); return; } const date = slot.dataset.date; setOpen(date, {sticky:false, animate:true}); queueSelect(component.action, date); });
+  sheet.addEventListener("pointerleave", () => { if (Date.now() - lastTouch < 800) return; if (!lens.sticky) setOpen(null, {sticky:false, animate:false}); });
+  sheet.addEventListener("pointerdown", (ev) => { if (ev.pointerType !== "touch") return; lastTouch = Date.now(); touchStart = {x:ev.clientX, y:ev.clientY}; });
+  sheet.addEventListener("pointerup", (ev) => { if (ev.pointerType !== "touch") return; lastTouch = Date.now(); const s = touchStart; touchStart = null; if (!s) return; if (Math.hypot(ev.clientX - s.x, ev.clientY - s.y) > 12) return; const slot = slotFromPoint(sheet, ev.clientX, ev.clientY); if (!slot) return; const date = slot.dataset.date; setOpen(date, {sticky:true, animate:true}); queueSelect(component.action, date); });
+  sheet.addEventListener("keydown", (ev) => onCalendarKey(ev, component));
+}
+
+function onCalendarKey(event, component) { const arrows = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7}; const ui = processor.surface && processor.surface.data && processor.surface.data.ui; const sel = lens.chosen || (ui && ui.selectedDate) || ""; if (!(event.key in arrows) || !/^\d{4}-\d{2}-\d{2}$/.test(sel)) return; if (event.target.closest("button.thumb, a")) return; event.preventDefault(); const [yr,mo,dy] = sel.split("-").map(Number); const nx = new Date(yr, mo-1, dy + arrows[event.key]); const key = [nx.getFullYear(), String(nx.getMonth()+1).padStart(2,"0"), String(nx.getDate()).padStart(2,"0")].join("-"); setOpen(key, {sticky:true, animate:true}); queueSelect(component.action, key); }
+
+function renderChildren(ids, surface, host) { for (const id of ids || []) { const child = renderComponent(surface, id); if (child) host.append(child); } }
+
+function renderComponent(surface, id) {
+  const component = surface.components.get(id); if (!component) return null; const data = surface.data;
+  if (component.component === "Column" || component.component === "Row") { const node = el("div", component.component === "Row" ? "a2ui-row" : "a2ui-column"); renderChildren(component.children, surface, node); return node; }
+  if (component.component === "Text") return renderText(component, data);
+  if (component.component === "Button") return renderButton(component, surface);
+  if (component.component === "Marquee") return renderMarquee(component, data);
+  if (component.component === "VenueRail") return renderRail(component, data);
+  if (component.component === "NightCalendar") return renderCalendar(component, surface);
+  return el("p", "footer", "Unsupported component " + component.component);
+}
+
+function render() {
+  const active = document.activeElement; const restore = !active ? null : active.classList.contains("day") ? {kind:"day"} : active.classList.contains("room") ? {kind:"room", name:active.textContent} : active.classList.contains("thumb") ? {kind:"thumb", dir:active.dataset.dir, eventId:active.dataset.eventId} : null;
+  const surface = processor.surface; app.replaceChildren();
+  if (!surface || !surface.components.has("root")) { app.append(el("p", "boot", "The calendar surface did not arrive.")); return; }
+  themeVars(surface.theme || {}); const root = renderComponent(surface, "root"); if (root) app.append(root); applyLens(); if (!restore) return;
+  if (restore.kind === "day") { const cur = app.querySelector(".day.is-selected"); if (cur) cur.focus(); } else if (restore.kind === "room") { for (const r of app.querySelectorAll("button.room")) { if (r.textContent === restore.name) r.focus(); } }
+}
+
+function load() {
+  fetch("/api/surface").then(r => { if (!r.ok) throw new Error("The calendar surface did not load."); return r.text(); })
+    .then(text => { processor.applyStream(text); render(); })
+    .catch(err => { app.replaceChildren(el("p", "boot", err.message || "The calendar surface did not load.")); });
+}
+
+document.addEventListener("pointerdown", (ev) => { if (!lens.sticky) return; const sheet = app.querySelector(".night-cal"); if (!sheet || sheet.contains(ev.target)) return; setOpen(null, {sticky:false, animate:false}); });
+load();
+setInterval(() => { if (busy || !processor.surface) return; fetch("/api/model").then(r => r.json()).then(message => { const before = JSON.stringify(processor.surface.data.events || []); processor.apply(message); const after = JSON.stringify(processor.surface.data.events || []); if (before !== after) render(); }).catch(() => {}); }, 45000);
+</script>
+</body>
+</html>

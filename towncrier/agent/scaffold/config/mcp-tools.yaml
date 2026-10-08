@@ -1,0 +1,66 @@
+# Declarative MCP tool definitions
+# The mcp-server loads this and exposes the tools.
+# Keep implementations tiny; real work happens in the agent roles.
+
+server:
+  name: agent-tools
+  version: 0.1
+  transport: stdio          # or sse if you prefer
+  # host: 127.0.0.1
+  # port: 8765
+
+tools:
+  - name: task_list
+    description: Read or update the shared task list
+    inputSchema:
+      type: object
+      properties:
+        action: { type: string, enum: [list, get, update, add] }
+        id: { type: string }
+        patch: { type: object }   # for update
+        task: { type: object }    # for add
+      required: [action]
+
+  - name: lexicon_lookup
+    description: Look up a term or phrase from the shared lexicon
+    inputSchema:
+      type: object
+      properties:
+        term: { type: string }
+        section: { type: string, enum: [verbs, status, priority, tags, phrases, style] }
+      required: [term]
+
+  - name: matrix_signal
+    description: Post a short status message to the configured Matrix room
+    inputSchema:
+      type: object
+      properties:
+        message: { type: string }
+        level: { type: string, enum: [green, amber, red, docked] }
+      required: [message]
+
+  - name: local_infer
+    description: Force a local-model completion (bypasses escalation)
+    inputSchema:
+      type: object
+      properties:
+        prompt: { type: string }
+        max_tokens: { type: integer, default: 512 }
+      required: [prompt]
+
+  - name: run_shell
+    description: Run a shell command in the project workspace (Builder only)
+    inputSchema:
+      type: object
+      properties:
+        command: { type: string }
+        cwd: { type: string }
+        timeout_sec: { type: integer, default: 30 }
+      required: [command]
+
+# Implementation notes (for the server):
+# - task_list reads/writes state/tasks.json
+# - lexicon_lookup reads config/lexicon.yaml
+# - matrix_signal uses config/matrix.yaml credentials
+# - local_infer hits the endpoint in agent.yaml
+# - run_shell is sandboxed to the project root by default

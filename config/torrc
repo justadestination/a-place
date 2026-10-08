@@ -1,0 +1,33 @@
+# Shadenet (A place in the shade) — Tor Daemon config (TASK-02)
+#
+# Tor configuration for the darknet (Onion) fallback node.
+#
+# In production each node overrides this with its own .onion hostname.
+# The Docker image ships this as /etc/tor/torrc via the Dockerfile.
+#
+# Tor is used solely for the darknet hidden service:
+#   - Clearnet front door: Caddy on :80/443 (public, read-only surface)
+#   - Darknet .onion: Tor on :8766 (syndication fallback)
+#   - Internal API: NightCal on :8765 (white-listed from Tor into Caddy)
+
+# Data directory (mounted as a volume).
+DataDirectory /var/lib/tor/shadenet
+
+# IP V4/ V6 policy.
+AddressFamily IPv4
+
+# Logging.
+Log notice file /var/log/tor/shadenet.log
+Log info stderr
+
+# Do not emit server identity headers.
+ServerAlias shadenet-default
+
+# Disable the controllers (we run a standalone hidden service only).
+ControlPort 0
+ClientOnly 1
+
+# Hidden service on the internal compose network.
+# When running as a Tor-only node, publish the internal NightCal port.
+# This file is the host-side config; the compose file mounts the same path
+# and Tor derives the .onion hostname into /var/lib/tor/shadenet/hostname.

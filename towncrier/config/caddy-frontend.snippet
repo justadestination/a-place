@@ -1,0 +1,13 @@
+# TLS front-door snippet. Append to the Caddy that terminates HTTPS.
+# On this fleet that host is node-gateway (198.51.100.20). It proxies to
+# node-primary's public HTTP port. Caddy obtains the certificate once DNS for
+# the name points at this machine.
+# Do not replace a live Caddyfile with this fragment.
+
+nightcal.example.org {
+	import privacy
+	encode gzip
+	reverse_proxy 203.0.113.10:80 {
+		header_up X-Forwarded-For {remote_host}
+	}
+}

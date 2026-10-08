@@ -1,0 +1,49 @@
+# Task list schema + seed tasks
+# Runtime state lives in state/tasks.json (generated from this)
+
+schema:
+  id: string
+  title: string
+  role: builder | researcher | either
+  priority: now | next | later | park
+  status: pending | in_progress | blocked | done | cancelled
+  tags: [string]
+  description: string
+  acceptance: string          # what "done" looks like
+  depends_on: [id]
+  created: iso8601
+  updated: iso8601
+
+seed:
+  - id: T001
+    title: Confirm local Hermes endpoint
+    role: either
+    priority: now
+    status: pending
+    tags: [self, tool]
+    description: Verify the configured local model is reachable and responds to a simple tool-call probe.
+    acceptance: Successful chat completion + one tool call round-trip recorded in state.
+  - id: T002
+    title: Stand up MCP server
+    role: builder
+    priority: now
+    status: pending
+    tags: [code, tool]
+    description: Make the declarative MCP tools from mcp-tools.yaml actually serveable.
+    acceptance: MCP server starts, lists the tools, and a client can call at least one.
+  - id: T003
+    title: Matrix room handshake
+    role: either
+    priority: next
+    status: pending
+    tags: [room]
+    description: Post a short "green / loose" signal to the configured Matrix room and confirm receipt.
+    acceptance: Message visible in the room; agent records room_id and last_event_id.
+  - id: T004
+    title: Expand lexicon together
+    role: either
+    priority: later
+    status: pending
+    tags: [self]
+    description: Add 5–10 domain-specific terms that feel natural for the work we actually do.
+    acceptance: lexicon.yaml updated and both sides can use the new terms without confusion.

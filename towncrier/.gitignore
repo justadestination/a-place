@@ -1,0 +1,28 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Scratch databases and sqlite sidecars. The cited downtown store is
+# the exception: data/shadenet.db travels with this directory.
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+!data/shadenet.db
+
+# Caches
+.cache/
+.venv/
+venv/
+
+# Local artifacts
+*.log
+.DS_Store
+
+# Secrets. Copy .env.example and fill it in on the machine.
+.env
+
+# Agent log files. The seed task list in state/tasks.json stays.
+agent/scaffold/state/logs/
