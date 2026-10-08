@@ -37,7 +37,7 @@ node tests/run.mjs --quick    # skip LCP and screenshots
 
 * If the API is down, the site falls back to `data/sample-model.json`; the footer says so.
 * **The API server writes to its database on every request** (`cite_closures`). For local work, point `NIGHTCAL_DB` at a copy so the repo's `shadenet.db` stays clean.
-* `npm run build` runs `tokens/build.py`, `tools/build_zine.py` and `tools/build_pages.py`. Run `npm run og` (with the server up) after changing titles or components, and `npm run vendor` after bumping `three`.
+* `npm run build` runs `tokens/build.py`, `tools/build_zine.py`, `tools/build_pages.py` and `tools/build_artifact.py`. Run `npm run og` (with the server up) after changing titles or components, and `npm run vendor` after bumping `three`.
 
 ## Five rules that keep the system intact
 
@@ -91,6 +91,7 @@ Add an entry to `routes.json` (`path`, `title`, `description`, `module`, `og`) a
 * Anything under `shadenet/`. That's the backend's (non-goal: no backend or data changes).
 * Generated files: `css/tokens.css`, `css/nightcal.css`, `js/core/tokens.js`, `js/core/site.js`, `components/index.json`, every `index.html`, `data/zine.json`, `og/*.png`, `tokens/dist/*`, `tokens/theme.schema.json`.
 * `vendor/`: regenerate with `npm run vendor`.
+* `design-system/project/` (repo root): the published design-system artifact. `tokens.json`, `bundle.css`, the component READMEs and previews are generated (`npm run build`, `npm run artifact:previews`). See `design-system/README.md` for how to republish it.
 
 ## Docs
 
@@ -100,3 +101,4 @@ Add an entry to `routes.json` (`path`, `title`, `description`, `module`, `og`) a
 * `docs/ACCESSIBILITY.md`: the WCAG 2.2 AA audit of this layer
 * `docs/PERFORMANCE.md`: the budget and how it is measured
 * `docs/LANDING_OPTIONS.md`: three front doors, waiting on the owner's choice
+* `design-system/README.md`: the design-system artifact (https://claude.ai/artifact/DbbYzUsEryX4jx1246JpZN), its files, and how to republish it

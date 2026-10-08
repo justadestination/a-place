@@ -226,7 +226,16 @@ def main() -> int:
         "nodes": sorted(nodes.values(), key=lambda n: (n["type"] not in NOTE_TYPES, n["type"], n["title"].lower())),
         "edges": edges,
     }
-    Path(args.out).write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
+    # Keep the old timestamp when nothing else changed, so rebuilds don't churn git.
+    target = Path(args.out)
+    if target.exists():
+        try:
+            prev = json.loads(target.read_text())
+            if {k: v for k, v in prev.items() if k != "generatedAt"} == {k: v for k, v in out.items() if k != "generatedAt"}:
+                out["generatedAt"] = prev.get("generatedAt", out["generatedAt"])
+        except json.JSONDecodeError:
+            pass
+    target.write_text(json.dumps(out, indent=1, ensure_ascii=False) + "\n")
     counts = {}
     for n in out["nodes"]:
         counts[n["type"]] = counts.get(n["type"], 0) + 1
