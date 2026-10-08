@@ -1,7 +1,8 @@
 // NightCal front-end checks. Needs the dev server (python3 tools/serve.py).
 //   node tests/run.mjs            all checks
 //   node tests/run.mjs --quick    skip the throttled LCP runs and screenshots
-// Writes docs/audit/report.json and screenshots to docs/screens/. Exit 1 on any failure.
+//   node tests/run.mjs --screens  write screenshots to docs/screens/ (default: tests/output/, ignored)
+// Writes docs/audit/report.json and screenshots (see --screens). Exit 1 on any failure.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { createRequire } from "node:module";
 import { launch, VIEWPORTS } from "../tools/browser.mjs";
@@ -13,12 +14,14 @@ const BASE = process.env.BASE || "http://127.0.0.1:8080";
 const WEB = new URL("../", import.meta.url).pathname;
 const DOCS = new URL("../../docs/", import.meta.url).pathname;
 const quick = process.argv.includes("--quick");
+// Screenshots go to an ignored folder; --screens refreshes the curated set in docs/screens/.
+const SCREENS = process.argv.includes("--screens") ? DOCS + "screens/" : WEB + "tests/output/";
 const routes = JSON.parse(readFileSync(WEB + "routes.json", "utf8")).pages.map(p => p.path);
 const embeds = JSON.parse(readFileSync(WEB + "components/index.json", "utf8")).map(c => `/embed/${c.name}/`);
 const failures = [];
 const report = { routes: {}, checks: {} };
 const fail = (where, what) => { failures.push(`${where}: ${what}`); };
-mkdirSync(DOCS + "screens", { recursive: true });
+mkdirSync(SCREENS, { recursive: true });
 mkdirSync(DOCS + "audit", { recursive: true });
 
 const browser = await launch();
@@ -67,7 +70,7 @@ async function audit(path, vpName, scheme) {
   if (result.small.length) fail(key, `targets under 44px: ${result.small.slice(0, 4).join(", ")}`);
   if (result.og.length) fail(key, `missing social meta: ${result.og.join(", ")}`);
   if (result.hScroll) fail(key, "horizontal scroll");
-  if (!quick && !path.startsWith("/embed/")) await page.screenshot({ path: `${DOCS}screens/${(path.replace(/\//g, "_").replace(/^_|_$/g, "") || "calendar")}-${vpName}-${scheme}.png`, fullPage: true });
+  if (!quick && !path.startsWith("/embed/")) await page.screenshot({ path: `${SCREENS}${(path.replace(/\//g, "_").replace(/^_|_$/g, "") || "calendar")}-${vpName}-${scheme}.png`, fullPage: true });
   await page.close();
 }
 for (const path of [...routes, ...embeds]) for (const vp of ["mobile", "desktop"]) for (const s of ["light", "dark"]) await audit(path, vp, s);
