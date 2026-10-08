@@ -8,9 +8,12 @@ import tempfile
 from datetime import date
 from pathlib import Path
 
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from nightcal.social_hardened import (
+from shadenet.nightcal.social_hardened import (
     _fb_public_urls,
     _ig_public_urls,
     _x_public_urls,
@@ -92,7 +95,7 @@ def test_fetch_with_fallback_no_wall():
 
 
 def test_probe_social_hardened():
-    from nightcal.social_hardened import probe_social_hardened
+    from shadenet.nightcal.social_hardened import probe_social_hardened
     from towncrier.store import Store
     from towncrier.entities import ensure_entity, KIND_SOCIAL, add_item
 
