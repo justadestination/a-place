@@ -796,24 +796,6 @@
       "three": false,
       "errors": []
     },
-    "lcp /": {
-      "lcp": 964,
-      "jsFiles": 18,
-      "jsBytes": 72532,
-      "cssBytes": 54628
-    },
-    "lcp /zine/": {
-      "lcp": 2028,
-      "jsFiles": 22,
-      "jsBytes": 92433,
-      "cssBytes": 54628
-    },
-    "lcp /landing/a/": {
-      "lcp": 1764,
-      "jsFiles": 19,
-      "jsBytes": 75733,
-      "cssBytes": 54628
-    },
     "token discipline": []
   },
   "failures": []
