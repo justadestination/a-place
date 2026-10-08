@@ -1,0 +1,79 @@
+.nc-map { display: grid; gap: var(--nc-space-2); }
+.nc-map__stage {
+  position: relative;
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-lg);
+  background: var(--nc-color-surface-sunken);
+  overflow: hidden;
+}
+.nc-map__svg {
+  width: 100%;
+  height: clamp(22rem, 62vh, 46rem);
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.nc-map.is-panning .nc-map__svg { cursor: grabbing; }
+.nc-map__bg { fill: transparent; }
+.nc-map__tools {
+  position: absolute;
+  inset-block-start: var(--nc-space-3);
+  inset-inline-end: var(--nc-space-3);
+  display: flex;
+  gap: var(--nc-space-2);
+}
+.nc-map__help { font-size: var(--nc-font-size-sm); color: var(--nc-color-text-muted); }
+
+/* Edges keep a constant on-screen width; marks are counter-scaled in JS. */
+.nc-map__edges line {
+  stroke: var(--nc-color-graph-edge);
+  stroke-width: var(--nc-size-border-strong);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.nc-map__edges line[data-kind="events"], .nc-map__edges line[data-kind="venues"] { stroke-dasharray: var(--nc-size-dash) var(--nc-size-gap); }
+.nc-map__edges line.is-active { stroke: var(--nc-color-graph-edge-active); stroke-width: calc(var(--nc-size-border-strong) * 2); }
+
+.nc-map__node { cursor: pointer; outline: none; }
+.nc-map__hit { fill: transparent; }
+.nc-map__shape {
+  fill: var(--node);
+  stroke: var(--nc-color-surface-sunken);
+  stroke-width: var(--nc-size-border-strong);
+}
+.nc-map__node[data-node-type="missing"] .nc-map__shape {
+  fill: var(--nc-color-surface-sunken);
+  stroke: var(--node);
+  stroke-width: var(--nc-size-border-strong);
+  stroke-dasharray: var(--nc-size-gap) var(--nc-size-gap);
+}
+.nc-map__label {
+  fill: var(--nc-color-text);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  paint-order: stroke;
+  stroke: var(--nc-color-surface-sunken);
+  stroke-width: calc(var(--nc-size-border-strong) * 2);
+  stroke-linejoin: round;
+  pointer-events: none;
+  display: none;
+}
+/* Notes are always named; the rest when zoomed in, near the selection, or focused. */
+.nc-map__node[data-note] .nc-map__label,
+.nc-map[data-zoomed="true"] .nc-map__label,
+.nc-map__node.is-selected .nc-map__label,
+.nc-map__node.is-near .nc-map__label,
+.nc-map__node:hover .nc-map__label,
+.nc-map__node:focus-visible .nc-map__label { display: block; }
+
+.nc-map__node.is-selected .nc-map__shape { stroke: var(--nc-color-text); stroke-width: var(--nc-size-focus-ring); }
+.nc-map__node.is-near .nc-map__shape { stroke: var(--nc-color-graph-edge-active); }
+.nc-map__node:focus-visible .nc-map__hit {
+  fill: none;
+  stroke: var(--nc-color-focus);
+  stroke-width: var(--nc-size-focus-ring);
+}
+.nc-map__node:hover .nc-map__shape { stroke: var(--nc-color-text); }
+
+.nc-map-embed__card:empty { display: none; }

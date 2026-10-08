@@ -1,0 +1,19 @@
+{
+  "name": "nightcal-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "NightCal + AVR+JIT zine front-end: tokens, components, embeds, 2D and 3D renderers. No build step for the runtime; tools here only generate static files and run checks.",
+  "type": "module",
+  "scripts": {
+    "build": "python3 ../tokens/build.py && python3 tools/build_zine.py && python3 tools/build_pages.py",
+    "serve": "python3 tools/serve.py",
+    "og": "node tools/og.mjs",
+    "test": "node tests/run.mjs",
+    "vendor": "node tools/vendor.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.3",
+    "playwright-core": "1.56.1",
+    "three": "0.170.0"
+  }
+}

@@ -1,0 +1,445 @@
+{
+ "generatedAt": "2026-10-08T19:45:40+00:00",
+ "vault": "shadenet/horizon/vault",
+ "nodes": [
+  {
+   "id": "note:the-room-after-midnight",
+   "slug": "the-room-after-midnight",
+   "type": "article",
+   "title": "The Room After Midnight",
+   "date": "2026-10-06",
+   "author": "a2a://agent/personal_42",
+   "status": "draft",
+   "tags": [
+    "music",
+    "nightlife"
+   ],
+   "summary": "A review of the new late-night venue showing up in Metropolis's downtown.",
+   "source": "shadenet/horizon/vault/the-room-after-midnight.md",
+   "html": "<p>A review of the new late-night venue showing up in Metropolis&#x27;s downtown.</p>\n<p>The room has never been this full.</p>"
+  },
+  {
+   "id": "note:editorial-checklist",
+   "slug": "editorial-checklist",
+   "type": "editorial",
+   "title": "Downtown Zine Editorial Checklist",
+   "date": "2026-10-07",
+   "author": "a2a://agent/personal_42",
+   "status": "draft",
+   "tags": [
+    "editorial"
+   ],
+   "summary": "Pre-publication checklist for the downtown zine.",
+   "source": "shadenet/horizon/vault/editorial-checklist.md",
+   "html": "<p>Pre-publication checklist for the downtown zine.</p>\n<ul><li>Verify all <a href=\"?node=missing:venue\" data-node=\"missing:venue\" class=\"is-missing\">venue</a> IDs resolve before build</li><li>Confirm every event in {{events}} is in the store</li><li>Check broken <a href=\"?node=missing:wikilinks\" data-node=\"missing:wikilinks\" class=\"is-missing\">wikilinks</a> — they must block publication builds</li></ul>"
+  },
+  {
+   "id": "note:late-show-review",
+   "slug": "late-show-review",
+   "type": "review",
+   "title": "Late Show, Every Night",
+   "date": "2026-10-06",
+   "author": "a2a://agent/personal_42",
+   "status": "published",
+   "tags": [
+    "music",
+    "late-night"
+   ],
+   "summary": "Late Show keeps rolling every night of the week at The Royal.",
+   "source": "shadenet/horizon/vault/late-show-review.md",
+   "html": "<p>Late Show keeps rolling every night of the week at The Royal.</p>\n<p>Doors open at 10pm.</p>\n<p>No significant changes this week.</p>"
+  },
+  {
+   "id": "event:evt_d724c924e58bcad8",
+   "slug": "evt_d724c924e58bcad8",
+   "type": "event",
+   "title": "\"The Villains Ball\" - Halloween Party",
+   "ref": "evt_d724c924e58bcad8",
+   "date": "2026-10-30",
+   "summary": "2026-10-30 · 9:00 pm · The Grand Roxy",
+   "kind": "show"
+  },
+  {
+   "id": "event:evt_c417e9eb24773b48",
+   "slug": "evt_c417e9eb24773b48",
+   "type": "event",
+   "title": "2026 Norbay Theater Awards",
+   "ref": "evt_c417e9eb24773b48",
+   "date": "2026-10-18",
+   "summary": "2026-10-18 · 7:00 pm · The Grand Roxy",
+   "kind": "show"
+  },
+  {
+   "id": "event:evt_e8b61af5301ccd69",
+   "slug": "evt_e8b61af5301ccd69",
+   "type": "event",
+   "title": "@PerformanceLab Presents: AREA 54 The Alien Disco: Mos Eisely Cantina ed.",
+   "ref": "evt_e8b61af5301ccd69",
+   "date": "2026-10-23",
+   "summary": "2026-10-23 · 8:00 pm · The Neon Foundry",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_16c91131588a948d",
+   "slug": "evt_16c91131588a948d",
+   "type": "event",
+   "title": "Americana Afternoon - with Spike Sikes",
+   "ref": "evt_16c91131588a948d",
+   "date": "2026-10-25",
+   "summary": "2026-10-25 · 1:00 pm · The Grand Roxy",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_1be5361fa92bdb59",
+   "slug": "evt_1be5361fa92bdb59",
+   "type": "event",
+   "title": "Downtown Sound: LaiddBackZach & the .Wav",
+   "ref": "evt_1be5361fa92bdb59",
+   "date": "2026-10-24",
+   "summary": "2026-10-24 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_28944f468324c49e",
+   "slug": "evt_28944f468324c49e",
+   "type": "event",
+   "title": "Downtown Sound: The Psychedelic Fuzz",
+   "ref": "evt_28944f468324c49e",
+   "date": "2026-10-17",
+   "summary": "2026-10-17 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_942edd2c521301a8",
+   "slug": "evt_942edd2c521301a8",
+   "type": "event",
+   "title": "Forbidden Kiss LIVE - Chaos",
+   "ref": "evt_942edd2c521301a8",
+   "date": "2026-10-16",
+   "summary": "2026-10-16 · 7:30 pm · The Grand Roxy",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_479d6c76f40f669c",
+   "slug": "evt_479d6c76f40f669c",
+   "type": "event",
+   "title": "Headline Comedy - Joey Bragg – Live in Downtown Metropolis",
+   "ref": "evt_479d6c76f40f669c",
+   "date": "2026-10-10",
+   "summary": "2026-10-10 · 7:00 pm · The Neon Foundry",
+   "kind": "comedy"
+  },
+  {
+   "id": "event:evt_10c6b2c1a5a65e67",
+   "slug": "evt_10c6b2c1a5a65e67",
+   "type": "event",
+   "title": "Main Street Tavern Sessions: 945",
+   "ref": "evt_10c6b2c1a5a65e67",
+   "date": "2026-10-30",
+   "summary": "2026-10-30 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_43c6dfe40196a738",
+   "slug": "evt_43c6dfe40196a738",
+   "type": "event",
+   "title": "Main Street Tavern Sessions: MCHS Mariachi",
+   "ref": "evt_43c6dfe40196a738",
+   "date": "2026-10-23",
+   "summary": "2026-10-23 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_680e2d9e81e250a0",
+   "slug": "evt_680e2d9e81e250a0",
+   "type": "event",
+   "title": "Main Street Tavern Sessions: Paradise Inferno",
+   "ref": "evt_680e2d9e81e250a0",
+   "date": "2026-10-09",
+   "summary": "2026-10-09 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_d1441515df9b3e4f",
+   "slug": "evt_d1441515df9b3e4f",
+   "type": "event",
+   "title": "Main Street Tavern Sessions: School of Rock House Band",
+   "ref": "evt_d1441515df9b3e4f",
+   "date": "2026-10-16",
+   "summary": "2026-10-16 · 6:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_47e8e5f545d9cc94",
+   "slug": "evt_47e8e5f545d9cc94",
+   "type": "event",
+   "title": "Mistah F.A.B. & Philthy Rich – Motion Detected Tour | Metropolis",
+   "ref": "evt_47e8e5f545d9cc94",
+   "date": "2026-10-17",
+   "summary": "2026-10-17 · 9:00 pm · The Neon Foundry",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_ff1bbfea976d8d11",
+   "slug": "evt_ff1bbfea976d8d11",
+   "type": "event",
+   "title": "Norbays Awards at Main Street Tavern Sessions Oct 23 7pm",
+   "ref": "evt_ff1bbfea976d8d11",
+   "date": "2026-10-23",
+   "summary": "2026-10-23 · 7:00 pm · Main Street Tavern",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_0c2748f5e902b56d",
+   "slug": "evt_0c2748f5e902b56d",
+   "type": "event",
+   "title": "P.U.R.R. Presents: A Punk Clown Takeover — Mutual Aid Benefit",
+   "ref": "evt_0c2748f5e902b56d",
+   "date": "2026-10-09",
+   "summary": "2026-10-09 · 6:00 pm · The Neon Foundry",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_9500619b9853c530",
+   "slug": "evt_9500619b9853c530",
+   "type": "event",
+   "title": "Pro Jam - with special guest Mark Hummel",
+   "ref": "evt_9500619b9853c530",
+   "date": "2026-10-26",
+   "summary": "2026-10-26 · 6:00 pm · The Grand Roxy",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_541973ec2a085e21",
+   "slug": "evt_541973ec2a085e21",
+   "type": "event",
+   "title": "The 5th Annual Sonoma County Americana Music Festival",
+   "ref": "evt_541973ec2a085e21",
+   "date": "2026-10-10",
+   "summary": "2026-10-10 · 7:30 pm · The Grand Roxy",
+   "kind": "music"
+  },
+  {
+   "id": "event:evt_5deefc4eb9a232bb",
+   "slug": "evt_5deefc4eb9a232bb",
+   "type": "event",
+   "title": "Trivia Night At Ausiello's",
+   "ref": "evt_5deefc4eb9a232bb",
+   "date": "2026-10-28",
+   "summary": "2026-10-28 · 7:00 pm · The Copper Fox Grill",
+   "kind": "trivia"
+  },
+  {
+   "id": "event:evt_ba6364715e5e0ab2",
+   "slug": "evt_ba6364715e5e0ab2",
+   "type": "event",
+   "title": "Trivia Night At Ausiello's",
+   "ref": "evt_ba6364715e5e0ab2",
+   "date": "2026-11-25",
+   "summary": "2026-11-25 · 7:00 pm · The Copper Fox Grill",
+   "kind": "trivia"
+  },
+  {
+   "id": "event:evt_72ecb087696c30eb",
+   "slug": "evt_72ecb087696c30eb",
+   "type": "event",
+   "title": "Turn of the Century – High Energy Party Rock in Downtown Metropolis",
+   "ref": "evt_72ecb087696c30eb",
+   "date": "2026-10-10",
+   "summary": "2026-10-10 · 9:00 pm · The Neon Foundry",
+   "kind": "music"
+  },
+  {
+   "id": "missing:evt-456",
+   "slug": "evt-456",
+   "type": "missing",
+   "title": "evt_456",
+   "summary": "Linked from the zine but that event is not in the calendar."
+  },
+  {
+   "id": "missing:venue",
+   "slug": "venue",
+   "type": "missing",
+   "title": "venue",
+   "summary": "Linked from the zine but nothing with that name exists yet."
+  },
+  {
+   "id": "missing:venue-123",
+   "slug": "venue-123",
+   "type": "missing",
+   "title": "venue_123",
+   "summary": "Linked from the zine but that venue is not in the calendar."
+  },
+  {
+   "id": "missing:wikilinks",
+   "slug": "wikilinks",
+   "type": "missing",
+   "title": "wikilinks",
+   "summary": "Linked from the zine but nothing with that name exists yet."
+  },
+  {
+   "id": "venue:ven_47b8847d9089d868",
+   "slug": "ven_47b8847d9089d868",
+   "type": "venue",
+   "title": "Main Street Tavern",
+   "ref": "ven_47b8847d9089d868",
+   "summary": ""
+  },
+  {
+   "id": "venue:ven_f69a7f14016c17e7",
+   "slug": "ven_f69a7f14016c17e7",
+   "type": "venue",
+   "title": "The Copper Fox Grill",
+   "ref": "ven_f69a7f14016c17e7",
+   "summary": ""
+  },
+  {
+   "id": "venue:ven_e743921f1a49d21b",
+   "slug": "ven_e743921f1a49d21b",
+   "type": "venue",
+   "title": "The Grand Roxy",
+   "ref": "ven_e743921f1a49d21b",
+   "summary": ""
+  },
+  {
+   "id": "venue:ven_097c696c87a03f80",
+   "slug": "ven_097c696c87a03f80",
+   "type": "venue",
+   "title": "The Neon Foundry",
+   "ref": "ven_097c696c87a03f80",
+   "summary": ""
+  }
+ ],
+ "edges": [
+  {
+   "source": "note:editorial-checklist",
+   "target": "missing:venue",
+   "kind": "link"
+  },
+  {
+   "source": "note:editorial-checklist",
+   "target": "missing:wikilinks",
+   "kind": "link"
+  },
+  {
+   "source": "note:editorial-checklist",
+   "target": "missing:venue-123",
+   "kind": "venues"
+  },
+  {
+   "source": "note:late-show-review",
+   "target": "missing:evt-456",
+   "kind": "events"
+  },
+  {
+   "source": "note:the-room-after-midnight",
+   "target": "missing:evt-456",
+   "kind": "events"
+  },
+  {
+   "source": "note:the-room-after-midnight",
+   "target": "missing:venue-123",
+   "kind": "venues"
+  },
+  {
+   "source": "event:evt_680e2d9e81e250a0",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_0c2748f5e902b56d",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_479d6c76f40f669c",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_541973ec2a085e21",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_72ecb087696c30eb",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_d1441515df9b3e4f",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_942edd2c521301a8",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_28944f468324c49e",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_47e8e5f545d9cc94",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_c417e9eb24773b48",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_43c6dfe40196a738",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_ff1bbfea976d8d11",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_e8b61af5301ccd69",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_1be5361fa92bdb59",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_16c91131588a948d",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_9500619b9853c530",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_5deefc4eb9a232bb",
+   "target": "venue:ven_f69a7f14016c17e7",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_10c6b2c1a5a65e67",
+   "target": "venue:ven_47b8847d9089d868",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_d724c924e58bcad8",
+   "target": "venue:ven_e743921f1a49d21b",
+   "kind": "at"
+  },
+  {
+   "source": "event:evt_ba6364715e5e0ab2",
+   "target": "venue:ven_f69a7f14016c17e7",
+   "kind": "at"
+  }
+ ]
+}

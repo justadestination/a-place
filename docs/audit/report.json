@@ -1,0 +1,820 @@
+{
+  "routes": {
+    "/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/zine/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/zine/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/zine/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/zine/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/3d/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/3d/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/3d/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/3d/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/system/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/system/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/system/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/system/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/a/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/a/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/a/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/a/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/b/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/b/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/b/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/b/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/c/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/c/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/c/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/landing/c/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/button/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/button/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/button/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/button/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-month/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-month/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-month/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-month/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-week/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-week/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-week/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/calendar-week/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/day-agenda/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/day-agenda/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/day-agenda/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/day-agenda/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-card/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-card/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-card/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-card/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-row/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-row/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-row/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/event-row/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/filter-bar/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/filter-bar/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/filter-bar/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/filter-bar/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/kind-tag/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/kind-tag/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/kind-tag/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/kind-tag/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/node-map/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/node-map/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/node-map/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/node-map/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/share-button/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/share-button/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/share-button/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/share-button/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-footer/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-footer/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-footer/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-footer/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-header/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-header/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-header/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/site-header/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/theme-controls/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/theme-controls/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/theme-controls/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/theme-controls/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-card/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-card/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-card/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-card/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-reader/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-reader/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-reader/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zine-reader/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    }
+  },
+  "checks": {
+    "keyboard /": {
+      "stops": 29,
+      "withoutRing": []
+    },
+    "keyboard /zine/": {
+      "stops": 29,
+      "withoutRing": []
+    },
+    "month arrows": {
+      "from": "2026-10-08",
+      "to": "2026-10-16",
+      "days": 8
+    },
+    "node map keys": {
+      "from": "note:the-room-after-midnight",
+      "to": "event:evt_c417e9eb24773b48",
+      "opened": "event:evt_c417e9eb24773b48"
+    },
+    "theme api": {
+      "before": "16px",
+      "after": "24px",
+      "bg": "rgb(18, 18, 20)",
+      "errors": [],
+      "rejected": [
+        "color-text-muted"
+      ],
+      "accent": "#FF7A00",
+      "muted": "#B8B3A8",
+      "still": true,
+      "afterReloadFirstPaint": {
+        "theme": "dark",
+        "scale": "1.5",
+        "override": true
+      }
+    },
+    "embed bridge": {
+      "iframeHeight": 213,
+      "inner": {
+        "theme": "dark",
+        "scale": "1.25"
+      },
+      "events": [
+        "ready",
+        "resize",
+        "themechange",
+        "select"
+      ]
+    },
+    "reduced motion": {
+      "scale": "0",
+      "btn": "0s, 0s"
+    },
+    "3d without webgl": {
+      "status": "This browser can't draw 3D, so here is the same content as a list. Everything is also on the 2D calendar and zine.",
+      "rows": 5,
+      "three": false,
+      "errors": []
+    },
+    "lcp /": {
+      "lcp": 964,
+      "jsFiles": 18,
+      "jsBytes": 72532,
+      "cssBytes": 54628
+    },
+    "lcp /zine/": {
+      "lcp": 2028,
+      "jsFiles": 22,
+      "jsBytes": 92433,
+      "cssBytes": 54628
+    },
+    "lcp /landing/a/": {
+      "lcp": 1764,
+      "jsFiles": 19,
+      "jsBytes": 75733,
+      "cssBytes": 54628
+    },
+    "token discipline": []
+  },
+  "failures": []
+}
