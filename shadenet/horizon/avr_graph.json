@@ -1,0 +1,95 @@
+{
+  "nodes": [
+    {
+      "id": "node_downtown-zine-editorial-checklist_1791351586563932538",
+      "title": "Downtown Zine Editorial Checklist",
+      "type": "editorial",
+      "author": "a2a://agent/personal_42",
+      "date": "2026-10-07",
+      "venues": [
+        "venue_123"
+      ],
+      "events": [],
+      "tags": [
+        "editorial"
+      ],
+      "status": "draft",
+      "body": "# Editorial Checklist\n\nPre-publication checklist for the downtown zine.\n\n- Verify all [[venue]] IDs resolve before build\n- Confirm every event in {{events}} is in the store\n- Check broken [[wikilinks]] \u2014 they must block publication builds\n\n",
+      "revision": "rev_1791351586563932538",
+      "source": "shadenet/horizon/vault/editorial-checklist.md"
+    },
+    {
+      "id": "node_late-show--every-night_1791352105785843417",
+      "title": "Late Show, Every Night",
+      "type": "review",
+      "author": "a2a://agent/personal_42",
+      "date": "2026-10-06",
+      "venues": [],
+      "events": [
+        "evt_456"
+      ],
+      "tags": [
+        "music",
+        "late-night"
+      ],
+      "status": "published",
+      "body": "# Late Show\n\nLate Show keeps rolling every night of the week at The Royal.\n\nDoors open at 10pm.\n\nNo significant changes this week.\n\n",
+      "revision": "rev_1791352105785843417",
+      "source": "shadenet/horizon/vault/late-show-review.md"
+    },
+    {
+      "id": "node_hab-retro-night-slot_1791417898446583598",
+      "title": "Hab Retro Night Slot",
+      "type": "syndicated",
+      "author": "R. Alvarez",
+      "date": "2026-10-01",
+      "venues": [],
+      "events": [],
+      "tags": [
+        "night",
+        "syndicated"
+      ],
+      "status": "published",
+      "body": "Partner: Hab Retro Vault\n\nSource: https://example.org/hab/2026-10-15\nCheck out the new slot at Hab Retro on the 15th.\n",
+      "revision": "rev_1791417898446583598",
+      "source": "shadenet/horizon/vault/syndicated-test.md"
+    },
+    {
+      "id": "node_the-room-after-midnight_1791352105788812494",
+      "title": "The Room After Midnight",
+      "type": "article",
+      "author": "a2a://agent/personal_42",
+      "date": "2026-10-06",
+      "venues": [
+        "venue_123"
+      ],
+      "events": [
+        "evt_456"
+      ],
+      "tags": [
+        "music",
+        "nightlife"
+      ],
+      "status": "draft",
+      "body": "# The Room After Midnight\n\nA review of the new late-night venue showing up in Metropolis's downtown.\n\nThe room has never been this full.\n\n",
+      "revision": "rev_1791352105788812494",
+      "source": "shadenet/horizon/vault/the-room-after-midnight.md"
+    }
+  ],
+  "edges": [
+    {
+      "from": "",
+      "to": "venue",
+      "kind": "tag"
+    },
+    {
+      "from": "",
+      "to": "wikilinks",
+      "kind": "tag"
+    }
+  ],
+  "rendered_at": "2026-10-07",
+  "zone": "America/Los_Angeles",
+  "node_count": 4,
+  "edge_count": 2
+}

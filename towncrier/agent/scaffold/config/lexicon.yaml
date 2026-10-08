@@ -1,0 +1,48 @@
+# Shared lexicon — intuitive, low-signal vocabulary
+# Expand this together. Prefer ordinary words that map to precise meanings.
+
+# Core verbs
+verbs:
+  scout: "research / gather information without acting"
+  forge: "build or write code / create an artifact"
+  polish: "refactor, clean, or improve existing work"
+  check: "verify status of a task or external system"
+  hold: "pause current work and wait for rendezvous"
+  signal: "post a short status to the Matrix room"
+  escalate: "switch from local model to cloud for this step"
+
+# Status nouns
+status:
+  green: "on track, no blockers"
+  amber: "progressing but needs attention soon"
+  red: "blocked or failed"
+  docked: "waiting at rendezvous point"
+  loose: "running autonomously with current goals"
+
+# Task priorities (keep short)
+priority:
+  now: "immediate"
+  next: "this cycle"
+  later: "backlog"
+  park: "intentionally deferred"
+
+# Domains / tags (extend as needed)
+tags:
+  code: "software / scripts / configs"
+  info: "research / facts / sources"
+  self: "agent improvements or meta"
+  room: "Matrix / chat related"
+  tool: "MCP tool changes"
+
+# Short phrases the agent may use (and human can echo)
+phrases:
+  "all quiet": "no outstanding high-priority tasks"
+  "need eyes": "requesting human review at next rendezvous"
+  "local only": "staying on local inference for this"
+  "stepping up": "escalating to cloud for reasoning"
+  "packing up": "preparing to hold / rendezvous"
+
+# Response style
+style:
+  default: concise, action-oriented, one clear next step
+  avoid: long explanations unless asked, marketing language, unnecessary hedges

@@ -1,0 +1,23 @@
+# Shadenet build context exclusions (kept out of Docker images)
+#
+# Secrets and runtime state must never enter the image:
+#   .env                    # real secrets — access denied by policy
+#   towncrier/.env
+#   towncrier/data/shadenet.db
+#
+# Runtime-only artifacts:
+#   state/
+#   __pycache__/
+#   *.pyc
+#
+# Test/runner noise:
+#   .pytest_cache/
+#   /tmp/build/
+#   agent-scaffold/
+#   towncrier/
+#   zine/
+#   scaffold-reviewer/
+#   SHADENET_SPEC.md
+#   SHADENET_PLAN.md
+#   TODO.md
+#   ROADMAP.md

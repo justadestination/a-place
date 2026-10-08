@@ -1,0 +1,39 @@
+# Shadenet (A place in the shade) — Caddyfile (TASK-02)
+#
+# Caddy reverse proxy: terminates TLS on :80/443, serves the public read-only
+# NightCal + Umwelt Horizon surfaces, and proxies the internal NightCal web
+# server on :8765. The Steward PWA is served from /app/shadenet/static.
+#
+# The Docker image ships this as /etc/shadenet/Caddyfile via the Dockerfile.
+# In production each node overrides it with its own domain (public, .onion,
+# or localhost).
+#
+# Environment of record (from docker-compose.yml):
+#   SHADENET_HOST           public domain (e.g. nightcal.example.org)
+#   NIGHTCAL_PORT           internal web port (default 8765)
+#   SHADENET_DEV_MODE       1 = serve unauthenticated dev surface
+
+:80 {
+    tls internal
+    handle / {
+        # Static Steward PWA assets (manifest + service worker + index).
+        root * /app/shadenet/static
+        try_files {path} /index.html 404
+
+        # Public read-only NightCal surface.
+        handle /api/models   { respond "model: shadenet latest" }
+        handle /api/surface  { respond "read-only surface" }
+        handle /api/events   { respond "read-only" }
+
+        # Legacy /api/action vote path — now sits behind the A2A airlock only.
+        handle /api/action   { respond "403: mutations require A2A JSON-RPC envelope" }
+    }
+
+    # Internal NightCal web server.
+    handle /api/* {
+        reverse_proxy localhost:{$NIGHTCAL_PORT}
+    }
+}
+
+# Darknet fallback: Tor hidden service (configured by Tor, not Caddy).
+# The .onion target is exposed on :8766 in docker-compose.yml.

@@ -1,0 +1,14 @@
+allowed_senders:
+- '@operator:matrix.example.org'
+- '@elder:matrix.example.org'
+device_id: CZVYKEKFCI
+homeserver: http://matrix.example.org:8008
+message_prefix: '[derivee] '
+room_id: '!rendezvous:matrix.example.org'
+status_reactions:
+  amber: "\u26A0\uFE0F"
+  docked: "\u2693"
+  green: "\u2705"
+  red: "\U0001F6D1"
+sync_timeout_ms: 30000
+user_id: '@hermes:matrix.example.org'

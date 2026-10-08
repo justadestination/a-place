@@ -1,0 +1,12 @@
+allowed_senders: []
+device_id: null
+homeserver: https://your-synapse.example.com
+message_prefix: ''
+room_id: '!yourRoomId:your-synapse.example.com'
+status_reactions:
+  amber: "\u26A0\uFE0F"
+  docked: "\u2693"
+  green: "\u2705"
+  red: "\U0001F6D1"
+sync_timeout_ms: 30000
+user_id: '@agent:your-synapse.example.com'

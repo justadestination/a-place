@@ -1,0 +1,8 @@
+# Runtime logs. state/tasks.json is the seed list and stays in the tree.
+state/logs/
+*.jsonl
+*.log
+.env
+
+# Archived instead of deleted — see the no-permanent-deletion convention
+.graveyard/

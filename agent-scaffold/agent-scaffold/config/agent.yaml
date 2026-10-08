@@ -1,0 +1,52 @@
+# Agent core config — edit the placeholders
+
+name: hermes-local
+version: 0.1
+
+roles:
+  builder:
+    description: Constructs, refactors, and self-extends code and tools
+    primary_mode: building
+    allowed_tools: [read_file, write_file, run_shell, list_dir, git_status]
+  researcher:
+    description: Gathers, synthesizes, and verifies information
+    primary_mode: research
+    allowed_tools: [web_search, fetch_url, summarize, matrix_post]
+
+inference:
+  policy: local_first
+  local:
+    provider: ollama          # or llama.cpp, vllm, etc.
+    model: hermes-3-llama-3.1-8b   # or whatever local Hermes quant you run
+    endpoint: http://127.0.0.1:11434
+    context: 8192
+    temperature: 0.3
+  cloud_fallback:
+    enabled: true
+    trigger:          # escalate only when these conditions met
+      - reasoning_depth: high
+      - tool_failure_streak: 3
+      - explicit_request: true
+    provider: openai   # or anthropic, etc. — fill only if needed
+    model: gpt-4o      # placeholder
+    # api_key: ${CLOUD_API_KEY}   # never hard-code; use env
+
+escalation_rules:
+  - if: local_confidence < 0.6 and task.priority >= high
+    then: cloud
+  - if: task.tags contains "deep-reason"
+    then: cloud
+  - default: local
+
+rendezvous:
+  channel: matrix
+  check_interval_minutes: 30
+  conditions:
+    - task_status: blocked
+    - human_message_received: true
+    - time_since_last_report: 4h
+
+persistence:
+  state_dir: ./state
+  task_file: ./state/tasks.json
+  memory_file: ./state/memory.jsonl
