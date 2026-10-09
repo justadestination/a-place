@@ -48,6 +48,7 @@ from shadenet.operator import (
     moderate_queue_item,
     rotate_active_key,
 )
+from shadenet.ratelimit import limiter
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -102,11 +103,35 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return body
 
+    def _check_rate_limit(self, category: str = "api") -> bool:
+        client_ip = self.client_address[0] if getattr(self, "client_address", None) else "127.0.0.1"
+        auth = self.headers.get("Authorization") or self.headers.get("X-Operator-Token") or ""
+        allowed, retry_after = limiter.check(client_ip, category=category, auth_token=auth)
+        if not allowed:
+            self.send_response(429)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Retry-After", str(retry_after))
+            self.send_header("Cache-Control", "no-store")
+            payload = json.dumps({
+                "error": "Rate limit exceeded. Please back off.",
+                "code": "ERR_RATE_LIMITED",
+                "retry_after": retry_after,
+                "next_step": f"Wait {retry_after} seconds before retrying this request.",
+            }).encode()
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return False
+        return True
+
     def _events(self, method: str) -> bool:
         parsed = urllib.parse.urlsplit(self.path)
         path = parsed.path
         if path != "/api/events" and not path.startswith("/api/events/"):
             return False
+        cat = "submissions" if method in {"POST", "PATCH", "DELETE"} else "api"
+        if not self._check_rate_limit(cat):
+            return True
         body: dict = {}
         if method in {"POST", "PATCH", "DELETE"}:
             read = self._read_json()
@@ -138,6 +163,10 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("GET"):
             return
         path = self.path.split("?", 1)[0]
+        if path.startswith("/api/"):
+            cat = "operator" if path.startswith("/api/operator/") else "api"
+            if not self._check_rate_limit(cat):
+                return
         if path in ("/", "/index.html"):
             body = (STATIC / "static" / "index.html").read_bytes()
             self._send(200, body, "text/html; charset=utf-8")
@@ -197,6 +226,10 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("POST"):
             return
         path = self.path.split("?", 1)[0]
+        if path.startswith("/api/"):
+            cat = "operator" if path.startswith("/api/operator/") else "submissions"
+            if not self._check_rate_limit(cat):
+                return
         body = self._read_json()
         if body is None:
             return

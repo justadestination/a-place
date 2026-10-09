@@ -1,10 +1,10 @@
 {
   "active_key": {
-    "key_id": "key_2026_10_09_e5add90d",
+    "key_id": "key_2026_10_09_ed472505",
     "algorithm": "Ed25519",
-    "created_at": "2026-10-09T04:07:26.684328-07:00",
+    "created_at": "2026-10-09T04:16:05.892749-07:00",
     "expires_at": "2027-01-01T00:00:00Z",
-    "rotation_count": 4,
+    "rotation_count": 6,
     "rotated_by": "http-test-runner"
   },
   "key_history": [
@@ -42,19 +42,27 @@
       "rotation_count": 3,
       "rotated_by": "automated-test",
       "retired_at": "2026-10-09T04:07:26.684220-07:00"
-    }
-  ],
-  "moderation_queue": [
+    },
     {
-      "id": "mod-103",
-      "item_type": "thought",
-      "title": "Abusive dispatch to public board",
-      "reporter": "steward-0x77ff",
-      "reason": "Harassment keyword match",
-      "status": "pending",
-      "reported_at": "2026-10-09T04:05:47.388588-07:00"
+      "key_id": "key_2026_10_09_e5add90d",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:07:26.684328-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 4,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T04:16:05.832567-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_70097b32",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:16:05.832620-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 5,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T04:16:05.892671-07:00"
     }
   ],
+  "moderation_queue": [],
   "moderation_history": [
     {
       "id": "mod-101",
@@ -76,6 +84,17 @@
       "status": "approve",
       "reported_at": "2026-10-09T04:05:47.388581-07:00",
       "resolved_at": "2026-10-09T04:07:26.582595-07:00",
+      "operator_note": "Approved by test"
+    },
+    {
+      "id": "mod-103",
+      "item_type": "thought",
+      "title": "Abusive dispatch to public board",
+      "reporter": "steward-0x77ff",
+      "reason": "Harassment keyword match",
+      "status": "approve",
+      "reported_at": "2026-10-09T04:05:47.388588-07:00",
+      "resolved_at": "2026-10-09T04:16:05.829842-07:00",
       "operator_note": "Approved by test"
     }
   ],
