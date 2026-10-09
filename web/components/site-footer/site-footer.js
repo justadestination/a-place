@@ -11,7 +11,6 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
     h("summary", {}, "About this data"),
     h("div.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-3)" } },
       h("p", {}, "Listings come from the downtown events calendar and are checked against each venue's own pages. Nothing is added from a page that does not list the show."),
-      notes.closed ? h("p", {}, notes.closed) : null,
       notes.status ? h("p", {}, h("strong", {}, "Last check: "), notes.status) : null,
       source === "sample" ? h("p", {}, "The live listings service did not answer, so this page is showing a saved copy.") : null,
     ),

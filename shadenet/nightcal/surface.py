@@ -9,6 +9,7 @@ leaves the tree alone.
 from __future__ import annotations
 
 import json
+import logging
 import re
 from datetime import date, datetime
 from pathlib import Path
@@ -23,6 +24,7 @@ from shadenet.towncrier.store import Store
 CATALOG_ID = "https://towncrier.local/catalogs/nightcal/v1/catalog.json"
 SURFACE_ID = "downtown-nights"
 LA = ZoneInfo("America/Los_Angeles")
+logger = logging.getLogger("shadenet.nightcal.surface")
 
 NIGHT_KINDS = {"music", "comedy", "show", "trivia"}
 
@@ -339,6 +341,14 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
                 meta = {}
         music = bool(handles.get("music") or meta.get("music"))
         entity_id = handles.get("entity_id") or (entity["id"] if entity else "")
+        closed_flag = bool(
+            is_closed(row["name"])
+            or meta.get("closed")
+            or meta.get("is_closed")
+            or handles.get("closed")
+            or handles.get("is_closed")
+            or (isinstance(meta.get("status"), str) and meta.get("status").lower() == "closed")
+        )
         venues.append({
             "id": row["id"],
             "name": row["name"],
@@ -351,6 +361,8 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             "score": meta.get("score") or 0,
             "reasons": meta.get("reasons") or [],
             "osm": bool(meta.get("osm_id")),
+            "closed": closed_flag,
+            "is_closed": closed_flag,
         })
 
     events = []
@@ -478,15 +490,18 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
     for venue in venues:
         if venue["id"] in music_rooms:
             venue["music"] = True
-    # A closed room with a cited show still stays. The listing is the
-    # evidence that something is happening there, and it outranks the notice.
+    # Closed venues are never listed per Phase 2.3 spec. Log closures and exclude them.
     hidden = []
     open_rooms = []
+    closed_ids = set()
     for venue in venues:
-        if is_closed(venue["name"]) and venue["id"] not in booked:
+        if venue.get("closed") or is_closed(venue["name"]):
             hidden.append(venue["name"])
+            closed_ids.add(venue["id"])
+            logger.info("Closed venue detected and excluded: %s (id=%s)", venue["name"], venue["id"])
             continue
         open_rooms.append(venue)
+    events = [event for event in events if event.get("venueId") not in closed_ids]
     return open_rooms, events, hidden
 
 

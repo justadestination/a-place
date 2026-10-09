@@ -250,6 +250,29 @@ if (!quick) {
   report.checks["billboard curve"] = { min: billboardScale(0), mid: billboardScale(50), max: billboardScale(10000) };
 }
 
+// --- 10. closed venues isolation (Task 2.3) ----------------------------------
+{
+  const { normalize, roomsWithEvents } = await import("../js/data/calendar.js");
+  const seeded = {
+    venues: [
+      { id: "v1", name: "Open Room" },
+      { id: "v2", name: "Closed Pub", is_closed: true },
+      { id: "v3", name: "Shuttered Bar", closed: true },
+    ],
+    events: [
+      { id: "e1", title: "Show at Open", date: "2026-10-09", venueId: "v1" },
+      { id: "e2", title: "Show at Closed", date: "2026-10-09", venueId: "v2" },
+    ],
+    ui: { closedNote: "Closed Pub is closed." },
+  };
+  const m = normalize(seeded);
+  if (m.venues.some(v => v.id === "v2" || v.id === "v3")) fail("closed venues", "closed venue present in normalized venues");
+  if (m.events.some(e => e.venueId === "v2" || e.venueId === "v3")) fail("closed venues", "events at closed venue present in normalized events");
+  if (roomsWithEvents(m).some(v => v.id === "v2" || v.id === "v3")) fail("closed venues", "closed venue present in filter rooms");
+  if (m.notes.closed) fail("closed venues", "closed note not stripped from notes");
+  report.checks["closed venues isolation"] = { filtered: 2, openRemaining: m.venues.length };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

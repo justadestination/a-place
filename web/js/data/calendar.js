@@ -52,15 +52,39 @@ async function fetchJSON(url, timeoutMs) {
 
 const unwrap = msg => msg?.updateDataModel?.value || msg || {};
 
+/**
+ * Task 2.3: Closed venues are never listed. Data layer flags them;
+ * if the flag doesn't exist on incoming data, detect and log it.
+ */
+export function isClosedVenue(v) {
+  if (!v) return false;
+  if (v.closed || v.is_closed) return true;
+  if (typeof v.status === "string" && v.status.toLowerCase() === "closed") return true;
+  if (typeof v.amenity === "string" && v.amenity.toLowerCase() === "closed") return true;
+  if (v.meta && (v.meta.closed || v.meta.is_closed)) return true;
+  return false;
+}
+
 /** Pure: raw server model -> CalendarModel. Exported for tests and the 3D page. */
 export function normalize(raw, source = "live") {
-  const venues = (raw.venues || []).map(v => ({
-    id: v.id, name: v.name, address: v.address || "", lat: v.lat, lon: v.lon,
-    amenity: v.amenity || "", music: !!v.music, contact: v.contact || {},
-  }));
+  const closedVenueIds = new Set();
+  for (const v of raw.venues || []) {
+    if (isClosedVenue(v)) {
+      closedVenueIds.add(v.id);
+      console.log(`[calendar] Closed venue filtered: ${v.name} (${v.id})`);
+    }
+  }
+
+  const venues = (raw.venues || [])
+    .filter(v => !closedVenueIds.has(v.id))
+    .map(v => ({
+      id: v.id, name: v.name, address: v.address || "", lat: v.lat, lon: v.lon,
+      amenity: v.amenity || "", music: !!v.music, contact: v.contact || {},
+      closed: false, is_closed: false,
+    }));
   const venuesById = new Map(venues.map(v => [v.id, v]));
   const events = (raw.events || [])
-    .filter(e => !e.suppressed && e.date)
+    .filter(e => !e.suppressed && e.date && !closedVenueIds.has(e.venueId))
     .map(e => {
       const kind = KINDS[e.kind] ? e.kind : "other";
       const meta = KINDS[kind];
@@ -105,7 +129,7 @@ export function normalize(raw, source = "live") {
     events, eventsById: new Map(events.map(e => [e.id, e])),
     notes: {
       status: ui.status || "",
-      closed: ui.closedNote || "",
+      closed: "", // Closed venues never listed in public notes
       attribution: ui.attribution || "Rooms from OpenStreetMap contributors.",
     },
   };

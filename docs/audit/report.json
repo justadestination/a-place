@@ -801,6 +801,10 @@
       "min": 1,
       "mid": 1.3224097018833947,
       "max": 1.75
+    },
+    "closed venues isolation": {
+      "filtered": 2,
+      "openRemaining": 1
     }
   },
   "failures": []

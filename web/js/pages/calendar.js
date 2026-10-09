@@ -126,7 +126,7 @@ new IntersectionObserver((entries, obs) => {
   obs.disconnect();
   import("../../components/calendar-month/calendar-month.js").then(mod => { monthModule = mod; drawMonth(); });
 }, { rootMargin: "400px" }).observe(monthSlot);
-monthSlot.append(h("p.nc-muted", {}, `${label.monthYear(state.month)} — loading the month view…`));
+monthSlot.append(h("p.nc-muted", {}, label.monthYear(state.month)));
 
 drawControls();
 drawWeek();

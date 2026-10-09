@@ -10,7 +10,7 @@ __pycache__/
 *.db-shm
 *.sqlite
 *.sqlite3
-data/
+/data/
 
 # Caches & environments
 .cache/
