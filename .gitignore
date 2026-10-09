@@ -1,5 +1,25 @@
+# Bytecode
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+
+# Scratch databases and sqlite sidecars
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Caches & environments
+.cache/
+.venv/
+venv/
+
+# Local artifacts
+*.log
 .DS_Store
+
+# Secrets
+.env
+node_modules/
+web/tests/output/

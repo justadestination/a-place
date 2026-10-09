@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://nightcal.example.org/</loc></url>
+  <url><loc>https://nightcal.example.org/zine/</loc></url>
+  <url><loc>https://nightcal.example.org/3d/</loc></url>
+  <url><loc>https://nightcal.example.org/system/</loc></url>
+  <url><loc>https://nightcal.example.org/landing/</loc></url>
+  <url><loc>https://nightcal.example.org/landing/a/</loc></url>
+  <url><loc>https://nightcal.example.org/landing/b/</loc></url>
+  <url><loc>https://nightcal.example.org/landing/c/</loc></url>
+</urlset>

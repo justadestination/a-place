@@ -1,0 +1,14 @@
+.nc-day-agenda { display: grid; gap: var(--nc-space-5); }
+.nc-day-agenda__header { display: grid; gap: var(--nc-space-1); }
+.nc-day-agenda__title { font-size: var(--nc-font-size-display); }
+.nc-day-agenda__count { font-size: var(--nc-font-size-lg); color: var(--nc-color-text-muted); font-weight: var(--nc-font-weight-medium); }
+.nc-day-agenda__list { display: grid; gap: var(--nc-space-3); margin: 0; padding: 0; }
+.nc-day-agenda__empty {
+  display: grid;
+  gap: var(--nc-space-4);
+  justify-items: start;
+  padding: var(--nc-space-5);
+  border: var(--nc-size-border) dashed var(--nc-color-border-strong);
+  border-radius: var(--nc-radius-lg);
+  font-size: var(--nc-font-size-lg);
+}

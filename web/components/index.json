@@ -1,0 +1,145 @@
+[
+  {
+    "name": "button",
+    "title": "Button",
+    "summary": "The one control style. Primary is reserved for the single main action on a screen.",
+    "params": {
+      "label": "text",
+      "variant": "primary | secondary | ghost",
+      "href": "optional URL"
+    },
+    "readme": true
+  },
+  {
+    "name": "calendar-month",
+    "title": "Calendar month",
+    "summary": "Month grid with date-picker keyboard support (arrows, Home/End, PageUp/PageDown). Counts on narrow screens, titles on wide.",
+    "params": {
+      "month": "YYYY-MM (defaults to this month)",
+      "date": "selected day",
+      "scope": "nights | all",
+      "venue": "venue id"
+    },
+    "readme": true
+  },
+  {
+    "name": "calendar-week",
+    "title": "Calendar week",
+    "summary": "A seven-day strip. Counts on narrow screens, counts plus event titles on wide ones. Emits nc-select and nc-shift.",
+    "params": {
+      "date": "any day in the week (defaults to today)",
+      "scope": "nights | all",
+      "venue": "venue id"
+    },
+    "readme": true
+  },
+  {
+    "name": "day-agenda",
+    "title": "Day agenda",
+    "summary": "One night as a billboard: the date as a headline and every event as a large row. Has an empty state that jumps to the next night with events.",
+    "params": {
+      "date": "YYYY-MM-DD (defaults to today)",
+      "scope": "nights | all",
+      "venue": "venue id"
+    },
+    "readme": true
+  },
+  {
+    "name": "event-card",
+    "title": "Event card",
+    "summary": "One event in full: kind, title, when, where, lineup, sources, and the single primary action (the listing).",
+    "params": {
+      "id": "event id (defaults to the next night out)",
+      "image": "0 to hide the listing image"
+    },
+    "readme": true
+  },
+  {
+    "name": "event-row",
+    "title": "Event row",
+    "summary": "A list item for one event: time, title, room and kind in one 44px+ target. Emits nc-select.",
+    "params": {
+      "id": "event id (defaults to the next night out)"
+    },
+    "readme": true
+  },
+  {
+    "name": "filter-bar",
+    "title": "Filter bar",
+    "summary": "Nights out vs everything, and one room. Native radios and select, so keyboard and screen readers work without extra code. Emits nc-filter.",
+    "params": {
+      "scope": "nights | all",
+      "venue": "venue id"
+    },
+    "readme": true
+  },
+  {
+    "name": "kind-tag",
+    "title": "Kind tag",
+    "summary": "What sort of night it is, as text plus a shape. Six kinds: live music, comedy, show, trivia, food trucks, other.",
+    "params": {
+      "kind": "see source"
+    },
+    "readme": true
+  },
+  {
+    "name": "node-map",
+    "title": "Zine node map",
+    "summary": "The zine as a force-directed graph: notes, events, venues and unresolved links. Pan, zoom, keyboard navigation, select to read.",
+    "params": {
+      "node": "node id to highlight"
+    },
+    "readme": true
+  },
+  {
+    "name": "share-button",
+    "title": "Share button",
+    "summary": "Native share sheet when available; otherwise copy link, X, Bluesky, Facebook and email intents.",
+    "params": {
+      "url": "URL to share (defaults to the page)",
+      "title": "share title",
+      "text": "share text"
+    },
+    "readme": true
+  },
+  {
+    "name": "site-footer",
+    "title": "Site footer",
+    "summary": "About this data (status, closures), the required OpenStreetMap attribution, and secondary links.",
+    "params": {},
+    "readme": true
+  },
+  {
+    "name": "site-header",
+    "title": "Site header",
+    "summary": "Wordmark, Calendar and Zine links, and the Display settings disclosure. Page chrome only.",
+    "params": {},
+    "readme": true
+  },
+  {
+    "name": "theme-controls",
+    "title": "Display settings",
+    "summary": "Theme, text size, spacing and motion, applied live through the public theme API.",
+    "params": {},
+    "readme": true
+  },
+  {
+    "name": "zine-card",
+    "title": "Zine card",
+    "summary": "One zine node as a card: type, title link, byline, summary. Works without script.",
+    "params": {
+      "node": "node id (defaults to the first note)",
+      "type": "article | review | letter | editorial | event | venue | missing"
+    },
+    "readme": true
+  },
+  {
+    "name": "zine-reader",
+    "title": "Zine reader",
+    "summary": "Reads one zine node (note, event, venue or unresolved link) and lists what it links to.",
+    "params": {
+      "node": "node id (defaults to the first note)"
+    },
+    "readme": true
+  }
+]

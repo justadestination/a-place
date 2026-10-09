@@ -1,0 +1,1937 @@
+{
+ "version": "v0.9",
+ "updateDataModel": {
+  "surfaceId": "downtown-nights",
+  "path": "/",
+  "value": {
+   "place": "Downtown Metropolis",
+   "venues": [
+    {
+     "id": "ven_a643f31b440ba2f2",
+     "name": "Central Playhouse",
+     "music": true,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "theatre",
+     "address": "",
+     "lat": 38.4375302,
+     "lon": -122.7233848,
+     "score": 4,
+     "reasons": [
+      "amenity=theatre (unconfirmed live music)"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_a261886187f23bb1",
+     "name": "Echo Music Hall",
+     "music": true,
+     "contact": {
+      "phones": [
+       {
+        "text": "+1-707-542-1455",
+        "href": "tel:+17075421455"
+       }
+      ],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "events_venue",
+     "address": "120 5th Street, Santa Rosa",
+     "lat": 38.4383393,
+     "lon": -122.7199914,
+     "score": 5,
+     "reasons": [
+      "amenity=events_venue"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_47b8847d9089d868",
+     "name": "Main Street Tavern",
+     "music": true,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": null,
+     "lon": null,
+     "score": 0,
+     "reasons": [],
+     "osm": false
+    },
+    {
+     "id": "ven_7b78ac5037e44975",
+     "name": "Metropolis Civic Auditorium",
+     "music": true,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "theatre",
+     "address": "",
+     "lat": 38.4343411,
+     "lon": -122.7011741,
+     "score": 4,
+     "reasons": [
+      "amenity=theatre (unconfirmed live music)"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_e743921f1a49d21b",
+     "name": "The Grand Roxy",
+     "music": true,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": null,
+     "lon": null,
+     "score": 0,
+     "reasons": [],
+     "osm": false
+    },
+    {
+     "id": "ven_097c696c87a03f80",
+     "name": "The Neon Foundry",
+     "music": true,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": null,
+     "lon": null,
+     "score": 0,
+     "reasons": [],
+     "osm": false
+    },
+    {
+     "id": "ven_7fc45d69ab08c63e",
+     "name": "Club 404",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "bar",
+     "address": "440 College Avenue",
+     "lat": 38.4455132,
+     "lon": -122.719232,
+     "score": 1,
+     "reasons": [
+      "amenity=bar"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_e32016a696ef1860",
+     "name": "Coastline Social",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "pub",
+     "address": "523 4th Street",
+     "lat": 38.4401896,
+     "lon": -122.7149243,
+     "score": 1,
+     "reasons": [
+      "amenity=pub"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_d7dc3f0531b1cf63",
+     "name": "Metropolis Brewing Company",
+     "music": false,
+     "contact": {
+      "phones": [
+       {
+        "text": "+1 707-545-2337",
+        "href": "tel:+17075452337"
+       }
+      ],
+      "emails": [
+       {
+        "text": "info@russianriverbrewing.com",
+        "href": "mailto:info@russianriverbrewing.com"
+       },
+       {
+        "text": "inquire@russianriverbrewing.com",
+        "href": "mailto:inquire@russianriverbrewing.com"
+       }
+      ],
+      "websites": [
+       {
+        "text": "www.russianriverbrewing.com",
+        "href": "https://www.russianriverbrewing.com/"
+       }
+      ],
+      "socials": [
+       {
+        "text": "Facebook",
+        "href": "https://www.facebook.com/russianriverbrewing"
+       },
+       {
+        "text": "Instagram",
+        "href": "https://www.instagram.com/russianriverbrewingofficial"
+       }
+      ]
+     },
+     "amenity": "pub",
+     "address": "725 4th Street, Santa Rosa",
+     "lat": 38.4417991,
+     "lon": -122.7116623,
+     "score": 1,
+     "reasons": [
+      "amenity=pub"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_82e432725af99674",
+     "name": "Solstice Cantina",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": null,
+     "lon": null,
+     "score": 0,
+     "reasons": [],
+     "osm": false
+    },
+    {
+     "id": "ven_ec8b03ba7a0e89ad",
+     "name": "The Brick Oven Lounge",
+     "music": false,
+     "contact": {
+      "phones": [
+       {
+        "text": "+1-707-545-6900",
+        "href": "tel:+17075456900"
+       }
+      ],
+      "emails": [
+       {
+        "text": "jacksonsoven@live.com",
+        "href": "mailto:jacksonsoven@live.com"
+       }
+      ],
+      "websites": [
+       {
+        "text": "www.jacksonsbarandoven.com",
+        "href": "https://www.jacksonsbarandoven.com/"
+       }
+      ],
+      "socials": [
+       {
+        "text": "Facebook",
+        "href": "https://fb.com/JacksonsOven"
+       },
+       {
+        "text": "X",
+        "href": "https://twitter.com/syrahchef"
+       }
+      ]
+     },
+     "amenity": "bar",
+     "address": "135 4th Street, Santa Rosa",
+     "lat": 38.4380657,
+     "lon": -122.71966,
+     "score": 1,
+     "reasons": [
+      "amenity=bar"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_f1cd390c98fc2a92",
+     "name": "The Commons Arts Center",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": 38.4391047,
+     "lon": -122.722156,
+     "score": 0,
+     "reasons": [],
+     "osm": true
+    },
+    {
+     "id": "ven_f69a7f14016c17e7",
+     "name": "The Copper Fox Grill",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "",
+     "address": "",
+     "lat": null,
+     "lon": null,
+     "score": 0,
+     "reasons": [],
+     "osm": false
+    },
+    {
+     "id": "ven_d86476a92fed95b4",
+     "name": "The Silver Fern",
+     "music": false,
+     "contact": {
+      "phones": [
+       {
+        "text": "+1-707-843-4235",
+        "href": "tel:+17078434235"
+       }
+      ],
+      "emails": [
+       {
+        "text": "thegooseandfern@gmail.com",
+        "href": "mailto:thegooseandfern@gmail.com"
+       }
+      ],
+      "websites": [
+       {
+        "text": "thegooseandfern.com",
+        "href": "https://thegooseandfern.com/"
+       }
+      ],
+      "socials": [
+       {
+        "text": "Instagram",
+        "href": "https://www.instagram.com/gooseandfern"
+       },
+       {
+        "text": "Facebook",
+        "href": "https://www.facebook.com/thegooseandfern"
+       }
+      ]
+     },
+     "amenity": "pub",
+     "address": "116 5th Street, Santa Rosa",
+     "lat": 38.438339,
+     "lon": -122.720284,
+     "score": 1,
+     "reasons": [
+      "amenity=pub"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_2c9e0810fb65ed37",
+     "name": "The Velvet Tap",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "bar",
+     "address": "614 4th Street, Santa Rosa",
+     "lat": 38.4406527,
+     "lon": -122.7133191,
+     "score": 1,
+     "reasons": [
+      "amenity=bar"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_594e46697ba2dd6d",
+     "name": "Timberline Tavern",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "bar",
+     "address": "609 5th Street, Santa Rosa",
+     "lat": 38.4413524,
+     "lon": -122.7142125,
+     "score": 1,
+     "reasons": [
+      "amenity=bar"
+     ],
+     "osm": true
+    },
+    {
+     "id": "ven_023b78ea13d93aaa",
+     "name": "Trinity Brewing",
+     "music": false,
+     "contact": {
+      "phones": [],
+      "emails": [],
+      "websites": [],
+      "socials": []
+     },
+     "amenity": "pub",
+     "address": "501 Mendocino Avenue, Santa Rosa",
+     "lat": 38.4423498,
+     "lon": -122.7157218,
+     "score": 1,
+     "reasons": [
+      "amenity=pub"
+     ],
+     "osm": true
+    }
+   ],
+   "events": [
+    {
+     "id": "evt_2e6b77bd11061fee",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-07T18:00:00+00:00",
+     "endsAt": "2026-10-07T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-07",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_996581d1c7b157f5",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-08T18:00:00+00:00",
+     "endsAt": "2026-10-08T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-08",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_5e7eac512eaca648",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-09T18:00:00+00:00",
+     "endsAt": "2026-10-09T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-09",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_680e2d9e81e250a0",
+     "title": "Main Street Tavern Sessions: Paradise Inferno",
+     "startsAt": "2026-10-10T01:00:00+00:00",
+     "endsAt": "2026-10-10T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-09",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-sessions-paradise-inferno",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-sessions-logo.png",
+     "performers": [
+      {
+       "name": "Paradise Inferno",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_0c2748f5e902b56d",
+     "title": "P.U.R.R. Presents: A Punk Clown Takeover — Mutual Aid Benefit",
+     "startsAt": "2026-10-10T01:00:00+00:00",
+     "endsAt": "2026-10-10T06:59:00+00:00",
+     "suppressed": false,
+     "venue": "The Neon Foundry",
+     "venueId": "ven_097c696c87a03f80",
+     "date": "2026-10-09",
+     "startLabel": "6:00 pm",
+     "endLabel": "11:59 pm",
+     "kind": "music",
+     "categories": [
+      "Concerts & Live Music",
+      "Theaters & Entertainment",
+      "Community",
+      "Shopping & Markets",
+      "Festivals"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/purr-presents-a-punk-clown-takeover--mutual-aid-benefit",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1789507067.png",
+     "performers": [
+      {
+       "name": "P.U.R.R. : A Punk Clown Takeover — Mutual Aid Benefit",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_8aaf2fa9be5dc1fc",
+     "title": "Downtown Sound: Muster the Gusto opens for The Restless Sons",
+     "startsAt": "2026-10-10T19:00:00+00:00",
+     "endsAt": "2026-10-11T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-10",
+     "startLabel": "12:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "other",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/downtown-sound",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/copy-of-copy-of-october-2-4-1.png",
+     "performers": [
+      {
+       "name": "Restless Sons",
+       "billing": "headline"
+      },
+      {
+       "name": "Muster the Gusto",
+       "billing": "support"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 720,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_479d6c76f40f669c",
+     "title": "Headline Comedy - Joey Bragg – Live in Downtown Metropolis",
+     "startsAt": "2026-10-11T02:00:00+00:00",
+     "endsAt": "2026-10-11T04:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Neon Foundry",
+     "venueId": "ven_097c696c87a03f80",
+     "date": "2026-10-10",
+     "startLabel": "7:00 pm",
+     "endLabel": "9:00 pm",
+     "kind": "comedy",
+     "categories": [
+      "Theaters & Entertainment",
+      "Comedy"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/headline-comedy-joey-bragg--live-in-downtown-santa-rosa",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790040001.png",
+     "performers": [
+      {
+       "name": "Joey Bragg",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1140,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_541973ec2a085e21",
+     "title": "The 5th Annual Sonoma County Americana Music Festival",
+     "startsAt": "2026-10-11T02:30:00+00:00",
+     "endsAt": "2026-10-11T08:30:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-10",
+     "startLabel": "7:30 pm",
+     "endLabel": "1:30 am",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/the-5th-annual-sonoma-county-americana-music-festival",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1789496804.jpg",
+     "performers": [
+      {
+       "name": "5th Annual Sonoma County Americana Music Festival",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1170,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_72ecb087696c30eb",
+     "title": "Turn of the Century – High Energy Party Rock in Downtown Metropolis",
+     "startsAt": "2026-10-11T04:00:00+00:00",
+     "endsAt": "2026-10-11T08:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Neon Foundry",
+     "venueId": "ven_097c696c87a03f80",
+     "date": "2026-10-10",
+     "startLabel": "9:00 pm",
+     "endLabel": "1:00 am",
+     "kind": "music",
+     "categories": [
+      "Concerts & Live Music"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/turn-of-the-century--high-energy-party-rock-in-downtown-santa-rosa",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790041926.png",
+     "performers": [
+      {
+       "name": "Turn of the Century – High Energy Party Rock in Downtown Santa Rosa",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1260,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_2a67e0568e25f103",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-12T18:00:00+00:00",
+     "endsAt": "2026-10-12T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-12",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_4f24edeeb9389ce4",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-13T18:00:00+00:00",
+     "endsAt": "2026-10-13T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-13",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_9b2f574230624334",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-14T18:00:00+00:00",
+     "endsAt": "2026-10-14T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-14",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_0828510215a32cef",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-15T18:00:00+00:00",
+     "endsAt": "2026-10-15T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-15",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_c2c535bbf450d1e6",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-16T18:00:00+00:00",
+     "endsAt": "2026-10-16T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-16",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_d1441515df9b3e4f",
+     "title": "Main Street Tavern Sessions: School of Rock House Band",
+     "startsAt": "2026-10-17T01:00:00+00:00",
+     "endsAt": "2026-10-17T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-16",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-sessions-school-of-rock-house-band-2",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-sessions-logo-v1.png",
+     "performers": [
+      {
+       "name": "School of Rock House Band",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_942edd2c521301a8",
+     "title": "Forbidden Kiss LIVE - Chaos",
+     "startsAt": "2026-10-17T02:30:00+00:00",
+     "endsAt": "2026-10-17T05:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-16",
+     "startLabel": "7:30 pm",
+     "endLabel": "10:00 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Theaters & Entertainment",
+      "Comedy",
+      "Community"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/forbidden-kiss-live-chaos",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/the-california-theatre-1.jpg",
+     "performers": [
+      {
+       "name": "Forbidden Kiss - Chaos",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1170,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_57bd4d40cf796fe1",
+     "title": "Tequila Teaser",
+     "startsAt": "2026-10-17T23:00:00+00:00",
+     "endsAt": "2026-10-18T02:00:00+00:00",
+     "suppressed": false,
+     "venue": "Solstice Cantina",
+     "venueId": "ven_82e432725af99674",
+     "date": "2026-10-17",
+     "startLabel": "4:00 pm",
+     "endLabel": "7:00 pm",
+     "kind": "other",
+     "categories": [
+      "Food & Beverage"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/tequila-teaser",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1789100032.png",
+     "performers": [
+      {
+       "name": "Tequila Teaser",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 960,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_28944f468324c49e",
+     "title": "Downtown Sound: The Psychedelic Fuzz",
+     "startsAt": "2026-10-18T01:00:00+00:00",
+     "endsAt": "2026-10-18T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-17",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/downtown-sound-the-psychedelic-fuzz",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/downtown-sound-logo-v6.png",
+     "performers": [
+      {
+       "name": "Psychedelic Fuzz",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_47e8e5f545d9cc94",
+     "title": "Mistah F.A.B. & Philthy Rich – Motion Detected Tour | Metropolis",
+     "startsAt": "2026-10-18T04:00:00+00:00",
+     "endsAt": "2026-10-18T08:30:00+00:00",
+     "suppressed": false,
+     "venue": "The Neon Foundry",
+     "venueId": "ven_097c696c87a03f80",
+     "date": "2026-10-17",
+     "startLabel": "9:00 pm",
+     "endLabel": "1:30 am",
+     "kind": "music",
+     "categories": [
+      "Concerts & Live Music"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/mistah-fab-and-philthy-rich--motion-detected-tour-santa-rosa",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790037302.png",
+     "performers": [
+      {
+       "name": "Mistah F.A.B",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1260,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_c417e9eb24773b48",
+     "title": "2026 Norbay Theater Awards",
+     "startsAt": "2026-10-19T02:00:00+00:00",
+     "endsAt": "2026-10-19T04:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-18",
+     "startLabel": "7:00 pm",
+     "endLabel": "9:00 pm",
+     "kind": "show",
+     "categories": [
+      "Food & Beverage",
+      "Theaters & Entertainment",
+      "Community",
+      "Free Events"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/2026-norbay-theater-awards",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790114848.jpg",
+     "performers": [
+      {
+       "name": "2026 Norbay Theater Awards",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1140,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_b649add8d1605eb3",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-19T18:00:00+00:00",
+     "endsAt": "2026-10-19T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-19",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_946bf6370e4caf0c",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-20T18:00:00+00:00",
+     "endsAt": "2026-10-20T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-20",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_295c3e53351c456f",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-21T18:00:00+00:00",
+     "endsAt": "2026-10-21T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-21",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_73a0772e3975afba",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-22T18:00:00+00:00",
+     "endsAt": "2026-10-22T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-22",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_28b8e772c61bd6a0",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-23T18:00:00+00:00",
+     "endsAt": "2026-10-23T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-23",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_43c6dfe40196a738",
+     "title": "Main Street Tavern Sessions: MCHS Mariachi",
+     "startsAt": "2026-10-24T01:00:00+00:00",
+     "endsAt": "2026-10-24T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-23",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-sessions-mchs-mariachi",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/downtown-santa-rosa-home-page-photo.jpg",
+     "performers": [
+      {
+       "name": "MCHS Mariachi",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_ff1bbfea976d8d11",
+     "title": "Norbays Awards at Main Street Tavern Sessions Oct 23 7pm",
+     "startsAt": "2026-10-24T02:00:00+00:00",
+     "endsAt": "",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-23",
+     "startLabel": "7:00 pm",
+     "endLabel": "",
+     "kind": "music",
+     "categories": [
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/norbays-awards-at-ross-street-sessions-oct-23-7pm",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790630563.jpg",
+     "performers": [
+      {
+       "name": "Norbays Awards at Ross Street Sessions Oct 23 7",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1140,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_e8b61af5301ccd69",
+     "title": "@PerformanceLab Presents: AREA 54 The Alien Disco: Mos Eisely Cantina ed.",
+     "startsAt": "2026-10-24T03:00:00+00:00",
+     "endsAt": "2026-10-24T08:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Neon Foundry",
+     "venueId": "ven_097c696c87a03f80",
+     "date": "2026-10-23",
+     "startLabel": "8:00 pm",
+     "endLabel": "1:00 am",
+     "kind": "music",
+     "categories": [
+      "Concerts & Live Music",
+      "Theaters & Entertainment",
+      "Arts & Exhibits",
+      "Festivals"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/performancelab-presents-area-54-the-alien-disco-mos-eisely-cantina-ed",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790114890.png",
+     "performers": [
+      {
+       "name": "@PerformanceLab : AREA 54 The Alien Disco: Mos Eisely Cantina ed",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1200,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_1be5361fa92bdb59",
+     "title": "Downtown Sound: LaiddBackZach & the .Wav",
+     "startsAt": "2026-10-25T01:00:00+00:00",
+     "endsAt": "2026-10-25T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-24",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/downtown-sound-laiddbackzach-and-the-wav",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/downtown-sound-logo-v1.png",
+     "performers": [
+      {
+       "name": "LaiddBackZach",
+       "billing": "headline"
+      },
+      {
+       "name": "Wav",
+       "billing": "support"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_16c91131588a948d",
+     "title": "Americana Afternoon - with Spike Sikes",
+     "startsAt": "2026-10-25T20:00:00+00:00",
+     "endsAt": "2026-10-25T22:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-25",
+     "startLabel": "1:00 pm",
+     "endLabel": "3:00 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/americana-afternoon-with-spike-sikes",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790451375.jpg",
+     "performers": [
+      {
+       "name": "Americana Afternoon",
+       "billing": "headline"
+      },
+      {
+       "name": "Spike Sikes",
+       "billing": "support"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 780,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_f0f899bb6ae66629",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-26T18:00:00+00:00",
+     "endsAt": "2026-10-26T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-26",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_9500619b9853c530",
+     "title": "Pro Jam - with special guest Mark Hummel",
+     "startsAt": "2026-10-27T01:00:00+00:00",
+     "endsAt": "2026-10-27T04:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-26",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:00 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/pro-jam-with-special-guest-mark-hummel",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790122180.jpg",
+     "performers": [
+      {
+       "name": "Mark Hummel",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_1926512eee9f703c",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-27T18:00:00+00:00",
+     "endsAt": "2026-10-27T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-27",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_5a89c06e68ba932f",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-28T18:00:00+00:00",
+     "endsAt": "2026-10-28T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-28",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_5deefc4eb9a232bb",
+     "title": "Trivia Night At Ausiello's",
+     "startsAt": "2026-10-29T02:00:00+00:00",
+     "endsAt": "2026-10-29T04:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Copper Fox Grill",
+     "venueId": "ven_f69a7f14016c17e7",
+     "date": "2026-10-28",
+     "startLabel": "7:00 pm",
+     "endLabel": "9:00 pm",
+     "kind": "trivia",
+     "categories": [
+      "Trivia & Games"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/trivia-night-at-ausiellos",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/restaurant-exterior-3-1.jpg",
+     "performers": [
+      {
+       "name": "Trivia Night At Ausiello's",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1140,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_20ac1fd4f7766c3b",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-29T18:00:00+00:00",
+     "endsAt": "2026-10-29T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-29",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_91b9b75c70f47e94",
+     "title": "Main Street Tavern Weekday Food Trucks",
+     "startsAt": "2026-10-30T18:00:00+00:00",
+     "endsAt": "2026-10-30T21:00:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-30",
+     "startLabel": "11:00 am",
+     "endLabel": "2:00 pm",
+     "kind": "trucks",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-weekday-food-trucks",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-logo-1-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street Weekday Food Trucks",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 660,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_10c6b2c1a5a65e67",
+     "title": "Main Street Tavern Sessions: 945",
+     "startsAt": "2026-10-31T01:00:00+00:00",
+     "endsAt": "2026-10-31T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-30",
+     "startLabel": "6:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "music",
+     "categories": [
+      "Food & Beverage",
+      "Concerts & Live Music",
+      "Community",
+      "Free Events",
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-sessions-945",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/ross-street-sessions-logo-v1.png",
+     "performers": [
+      {
+       "name": "945",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1080,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_d724c924e58bcad8",
+     "title": "\"The Villains Ball\" - Halloween Party",
+     "startsAt": "2026-10-31T04:00:00+00:00",
+     "endsAt": "2026-10-31T09:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Grand Roxy",
+     "venueId": "ven_e743921f1a49d21b",
+     "date": "2026-10-30",
+     "startLabel": "9:00 pm",
+     "endLabel": "2:00 am",
+     "kind": "show",
+     "categories": [
+      "Food & Beverage",
+      "Theaters & Entertainment",
+      "Community"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/the-villains-ball-halloween-party",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1790628334.jpg",
+     "performers": [
+      {
+       "name": "\"The Villains Ball\" - Halloween Party",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1260,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_f9f444759879dd39",
+     "title": "The Halloween Bar Crawl - Metropolis",
+     "startsAt": "2026-10-31T23:00:00+00:00",
+     "endsAt": "2026-11-01T06:55:00+00:00",
+     "suppressed": false,
+     "venue": "",
+     "venueId": "",
+     "date": "2026-10-31",
+     "startLabel": "4:00 pm",
+     "endLabel": "11:55 pm",
+     "kind": "other",
+     "categories": [
+      "Festivals"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/the-halloween-bar-crawl-santa-rosa",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/user1784003684.png",
+     "performers": [
+      {
+       "name": "Halloween Bar Crawl - Santa Rosa",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": true,
+     "sourceCount": 1,
+     "minutes": 960,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_d389cbd0e6f54cb1",
+     "title": "Main Street Tavern: Halloween Line Up",
+     "startsAt": "2026-11-01T00:00:00+00:00",
+     "endsAt": "2026-11-01T04:30:00+00:00",
+     "suppressed": false,
+     "venue": "Main Street Tavern",
+     "venueId": "ven_47b8847d9089d868",
+     "date": "2026-10-31",
+     "startLabel": "5:00 pm",
+     "endLabel": "9:30 pm",
+     "kind": "other",
+     "categories": [
+      "Ross Street"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/ross-street-halloween-line-up",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/downtown-sound-logo-v1.png",
+     "performers": [
+      {
+       "name": "Ross Street: Halloween Line Up",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1020,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    },
+    {
+     "id": "evt_ba6364715e5e0ab2",
+     "title": "Trivia Night At Ausiello's",
+     "startsAt": "2026-11-26T03:00:00+00:00",
+     "endsAt": "2026-11-26T05:00:00+00:00",
+     "suppressed": false,
+     "venue": "The Copper Fox Grill",
+     "venueId": "ven_f69a7f14016c17e7",
+     "date": "2026-11-25",
+     "startLabel": "7:00 pm",
+     "endLabel": "9:00 pm",
+     "kind": "trivia",
+     "categories": [
+      "Trivia & Games"
+     ],
+     "status": "EventScheduled",
+     "sourceUrl": "https://www.downtownsantarosa.org/do/trivia-night-at-ausiellos",
+     "sourceName": "Downtown Metropolis",
+     "checks": [],
+     "image": "https://img.ctykit.com/cdn/ca-santa-rosa/images/tr:w-900,h-900,fo-auto/restaurant-exterior-3-1.jpg",
+     "performers": [
+      {
+       "name": "Trivia Night At Ausiello's",
+       "billing": "headline"
+      }
+     ],
+     "confidence": 0.35,
+     "needsReview": false,
+     "sourceCount": 1,
+     "minutes": 1140,
+     "up": 0,
+     "down": 0,
+     "score": 0
+    }
+   ],
+   "ui": {
+    "month": "2026-10",
+    "monthLabel": "October 2026",
+    "selectedDate": "2026-10-08",
+    "dateLabel": "Thursday, October 8",
+    "venueId": "",
+    "scope": "nights",
+    "showsVariant": "primary",
+    "allVariant": "borderless",
+    "showCount": "20 shows",
+    "roomCount": 12,
+    "bill": [],
+    "status": "Facebook: 3 listed no show. Instagram: 2 asked for a login, 8 listed no show. X: 1 listed no show. Nothing was added from a page that did not list a show.",
+    "view": {
+     "tilt": 22,
+     "depth": 16,
+     "bars": true,
+     "focus": 1.2,
+     "suspended": true
+    },
+    "closedNote": "The Rusty Shamrock, the Obsidian Room, the Iron Anchor, and The Sol Cantina are off the rail. A public notice says each one closed.",
+    "depthNote": "The month hangs open, and the sheet tips forward. Each bar, and how close the show sits, is that night against the strongest night on this sheet. On an open day, left to right is the hour, top to bottom is the room, and the wire is how long the set runs.",
+    "attribution": "Rooms from OpenStreetMap contributors. Shows from the Downtown Metropolis calendar. A Facebook, Instagram, or X page is cited only when that page itself lists the show."
+   }
+  }
+ }
+}

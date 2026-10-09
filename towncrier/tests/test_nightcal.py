@@ -8,15 +8,18 @@ import tempfile
 from datetime import date
 from pathlib import Path
 
+_REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from nightcal.agent_events import EventWriteError, create_event, list_events, remove_event, update_event
-from nightcal.closures import is_closed, note_for
-from nightcal.fill import DAO_SOURCE, ingest_shows, record_osm_contact
-from nightcal.parse_dao import acts_from_title, parse_cards, parse_time_range
-from nightcal.social import probe_social, read_public_page, social_url
-from nightcal.surface import apply_action, contact_for, default_ui, load_rows, messages_for, project, visible
-from nightcal.votes import record_vote, vote_map
+from shadenet.nightcal.agent_events import EventWriteError, create_event, list_events, remove_event, update_event
+from shadenet.nightcal.closures import is_closed, note_for
+from shadenet.nightcal.fill import DAO_SOURCE, ingest_shows, record_osm_contact
+from shadenet.nightcal.parse_dao import acts_from_title, parse_cards, parse_time_range
+from shadenet.nightcal.social import probe_social, read_public_page, social_url
+from shadenet.nightcal.surface import apply_action, contact_for, default_ui, load_rows, messages_for, project, visible
+from shadenet.nightcal.votes import record_vote, vote_map
 from towncrier.entities import KIND_EMAIL, KIND_PHONE, KIND_SOCIAL, add_item, ensure_entity
 from towncrier.resolve import Resolver
 from towncrier.store import Store
@@ -258,7 +261,7 @@ def test_messages_are_jsonl():
     store.upsert_source(DAO_SOURCE, "html", "https://example.test")
     city = ensure_entity(store, name="Metropolis", kind="city")
     ingest_shows(store, city, CARD, today=date(2026, 10, 2))
-    from nightcal.surface import dumps
+    from shadenet.nightcal.surface import dumps
     text = dumps(messages_for(store, default_ui(date(2026, 10, 2))))
     rows = [json.loads(line) for line in text.splitlines() if line]
     check("jsonl round trip", len(rows), 3)
@@ -294,7 +297,7 @@ LOGIN_WITH_EVENT = """
 
 
 def test_arlene_francis_center_is_in_the_gazetteer_query():
-    from nightcal.fill import DOWNTOWN_BBOX, _downtown_query
+    from shadenet.nightcal.fill import DOWNTOWN_BBOX, _downtown_query
     query = _downtown_query(DOWNTOWN_BBOX)
     check(
         "the named building is requested inside downtown",
