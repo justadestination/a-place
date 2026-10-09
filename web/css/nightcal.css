@@ -1396,6 +1396,23 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   color: var(--nc-color-accent-text);
   border: var(--nc-size-border) solid var(--nc-color-accent);
 }
+.nc-badge--happening-now {
+  background: var(--nc-color-kind-comedy-bg);
+  color: var(--nc-color-kind-comedy-fg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-comedy-mark);
+}
+.nc-badge--recurring {
+  background: var(--nc-color-kind-other-bg);
+  color: var(--nc-color-kind-other-fg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-other-mark);
+}
+.nc-badge--archived {
+  background: var(--nc-color-surface-sunken);
+  color: var(--nc-color-text-muted);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+}
+
+
 .nc-event-card__attention {
   margin: 0;
   padding: var(--nc-space-2) var(--nc-space-3);

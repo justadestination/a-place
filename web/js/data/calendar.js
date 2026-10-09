@@ -5,6 +5,8 @@
 // the 3D scene both consume. No backend changes are needed or made.
 
 import { today } from "./dates.js";
+import { computeLifecycle } from "./lifecycle.js";
+
 
 export const KINDS = {
   music: { label: "Live music", tone: "music", glyph: "circle" },
@@ -110,7 +112,14 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
         unverifiedBodies: Number.isFinite(e.unverified_bodies) ? e.unverified_bodies : 0,
         needsReview: !!e.needsReview,
         startsAt: e.startsAt || "", endsAt: e.endsAt || "",
+        lifecycle: e.lifecycle || computeLifecycle(e.startsAt, e.endsAt).state,
+        happeningNow: Boolean(e.happeningNow ?? computeLifecycle(e.startsAt, e.endsAt).happeningNow),
+        isPast: Boolean(e.isPast ?? computeLifecycle(e.startsAt, e.endsAt).isPast),
+        isArchived: Boolean(e.isArchived ?? computeLifecycle(e.startsAt, e.endsAt).isArchived),
+        isRecurring: Boolean(e.isRecurring || e.is_recurring || e.recurrence),
+        recurrence: e.recurrence || null,
       };
+
     })
     .sort((a, b) => a.date.localeCompare(b.date) || a.minutes - b.minutes || a.title.localeCompare(b.title));
 

@@ -68,9 +68,13 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
     h("div.nc-event-card__body", {},
       h("div.nc-event-card__meta", {},
         kindTag(event.kind),
+        (event.happeningNow || event.lifecycle === "happening_now") ? h("span.nc-badge.nc-badge--happening-now", {}, "● Happening now") : null,
+        (event.isRecurring || event.recurrence) ? h("span.nc-badge.nc-badge--recurring", {}, "↻ Weekly residency") : null,
+        (event.isArchived || event.lifecycle === "past") ? h("span.nc-badge.nc-badge--archived", {}, "Archived") : null,
         event.isPersonal ? h("span.nc-badge.nc-badge--personal", {}, "Personal") : null,
         event.isEarmarked ? h("span.nc-badge.nc-badge--earmarked", {}, "★ Earmarked") : null,
         gauge
+
       ),
       event.isAttention && event.attentionReason ? h("p.nc-event-card__attention", {}, `Brought to attention: ${event.attentionReason}`) : null,
       h(`h${level}.nc-event-card__title`, { id }, event.title),
