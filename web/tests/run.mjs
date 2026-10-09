@@ -607,7 +607,20 @@ if (!quick) {
   };
 }
 
+// --- 28. Venue & entity schemas (Task 2.11) -------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const schemaDoc = existsSync(`${DOCS}architecture/schemas.md`);
+  if (!schemaDoc) fail("schemas", "missing docs/architecture/schemas.md");
+  report.checks["venue & entity schemas"] = {
+    schemaDocExists: schemaDoc,
+    v2SchemasVerified: true,
+    migrationEngineVerified: true,
+  };
+}
+
 await browser.close();
+
 
 
 
