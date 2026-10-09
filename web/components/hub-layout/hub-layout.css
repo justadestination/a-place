@@ -1,0 +1,23 @@
+.nc-hub-layout {
+  display: grid;
+  gap: var(--nc-space-8);
+  width: 100%;
+}
+
+.nc-hub-hero {
+  width: 100%;
+}
+
+.nc-hub-auxiliary {
+  display: grid;
+  gap: var(--nc-space-4);
+  grid-template-columns: 1fr;
+  padding-top: var(--nc-space-4);
+  border-top: var(--nc-size-border) solid var(--nc-color-border);
+}
+
+@media (min-width: 48rem) {
+  .nc-hub-auxiliary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

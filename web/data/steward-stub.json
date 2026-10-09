@@ -1,0 +1,27 @@
+{
+  "stewardId": "steward-local-001",
+  "name": "Operator Personal Steward",
+  "personalEvents": [
+    {
+      "id": "pe-soundcheck",
+      "title": "Private Soundcheck & Calibration",
+      "date": "2026-10-15",
+      "start": "4:00 PM",
+      "end": "5:30 PM",
+      "minutes": 960,
+      "kind": "music",
+      "venueName": "Main Hall",
+      "venueId": "v-personal-soundcheck"
+    }
+  ],
+  "mutedVenues": ["v1"],
+  "earmarkedEvents": ["evt_c417e9eb24773b48"],
+  "broughtToAttention": [
+    {
+      "id": "bta-001",
+      "eventId": "evt_c417e9eb24773b48",
+      "reason": "Direct mention in Umwelt Horizons zine dispatch",
+      "flaggedBy": "Dexa"
+    }
+  ]
+}
