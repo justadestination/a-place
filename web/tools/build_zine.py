@@ -186,7 +186,8 @@ def main() -> int:
             "id": node_id, "slug": path.stem, "type": kind if kind in NOTE_TYPES else "article",
             "title": title, "date": str(meta.get("date") or ""), "author": str(meta.get("author") or ""),
             "status": str(meta.get("status") or ""), "tags": meta.get("tags") or [],
-            "summary": summary_of(body), "source": str(path.relative_to(ROOT)),
+            "summary": summary_of(body),
+            "source": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
         }
         notes.append((node_id, meta, body))
     by_name = {}

@@ -1063,6 +1063,12 @@
     "hub module composition": {
       "modules": 5,
       "allEmbedRoutesBuilt": true
+    },
+    "node map view (500+ nodes)": {
+      "nodes": 500,
+      "edges": 500,
+      "layoutMs": 933,
+      "usableAt500Nodes": true
     }
   },
   "failures": []

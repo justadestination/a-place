@@ -412,6 +412,23 @@ if (!quick) {
   };
 }
 
+// --- 16. node-map view (Task 3.1) -------------------------------------------
+{
+  const { graphScene } = await import("../js/data/graph.js");
+  const synthNodes = Array.from({ length: 500 }, (_, i) => ({ id: `n-${i}`, title: `Node ${i}`, type: "article" }));
+  const synthEdges = Array.from({ length: 500 }, (_, i) => ({ source: `n-${i}`, target: `n-${(i + 1) % 500}`, kind: "link" }));
+  const t0 = performance.now();
+  const scene = graphScene({ nodes: synthNodes, edges: synthEdges }, { dims: 2 });
+  const perfMs = performance.now() - t0;
+  if (!scene.nodes.length || perfMs > 3000) fail("node map", `layout failed or too slow: ${perfMs}ms`);
+  report.checks["node map view (500+ nodes)"] = {
+    nodes: scene.nodes.length,
+    edges: scene.edges.length,
+    layoutMs: Math.round(perfMs),
+    usableAt500Nodes: perfMs < 3000,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));
