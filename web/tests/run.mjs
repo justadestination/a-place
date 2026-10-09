@@ -617,6 +617,8 @@ if (!quick) {
     v2SchemasVerified: true,
     migrationEngineVerified: true,
   };
+}
+
 // --- 29. Account deletion + data export (Task 4.5) -----------------------
 {
   const { existsSync } = await import("node:fs");

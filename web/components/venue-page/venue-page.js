@@ -72,7 +72,7 @@ export function venuePageView(options = {}) {
   let statusBanner;
   if (isClosed) {
     statusBanner = h(
-      "aside.nc-venue-banner.nc-venue-banner--closed",
+      "div.nc-venue-banner.nc-venue-banner--closed",
       { id: "nc-venue-status-banner", role: "status", "aria-label": "Venue status: Permanently closed" },
       h("strong.nc-venue-banner__badge", {}, "Permanently Closed"),
       h(
@@ -83,7 +83,7 @@ export function venuePageView(options = {}) {
     );
   } else {
     statusBanner = h(
-      "aside.nc-venue-banner.nc-venue-banner--active",
+      "div.nc-venue-banner.nc-venue-banner--active",
       { id: "nc-venue-status-banner", role: "status", "aria-label": "Venue status: Open and active" },
       h("strong.nc-venue-banner__badge", {}, "Open & Active"),
       h("p.nc-venue-banner__text", {}, "Currently hosting concerts, performances, and public events.")
