@@ -1457,8 +1457,8 @@
     },
     "node map keys": {
       "from": "note:the-room-after-midnight",
-      "to": "event:evt_c417e9eb24773b48",
-      "opened": "event:evt_c417e9eb24773b48"
+      "to": "event:evt_541973ec2a085e21",
+      "opened": "event:evt_541973ec2a085e21"
     },
     "theme api": {
       "before": "16px",
@@ -1547,7 +1547,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1263,
+      "layoutMs": 1522,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1557,7 +1557,7 @@
     "zine RSS feed (full-content)": {
       "feedExists": true,
       "rssValid": true,
-      "itemsCount": 3
+      "itemsCount": 8
     },
     "article intake & instantiation": {
       "embedBuilt": true,

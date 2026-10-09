@@ -29,7 +29,11 @@ from pathlib import Path
 
 WEB = Path(__file__).resolve().parent.parent
 ROOT = WEB.parent
-NOTE_TYPES = {"article", "review", "letter", "editorial"}
+NOTE_TYPES = {
+    "article", "review", "letter", "editorial",
+    "stance", "dossier", "dossier-piece", "prediction", "cartoon-brief",
+    "topic-overview", "topic-report",
+}
 NIGHT_KINDS = {"music", "comedy", "show", "trivia"}
 WIKI = re.compile(r"\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]")
 
@@ -129,13 +133,16 @@ def load_model(path: Path) -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--vault", default=str(ROOT / "shadenet" / "horizon" / "vault"))
+    ap.add_argument("--zine-dir", default=str(ROOT / "zine-automation"))
     ap.add_argument("--model", default=str(WEB / "data" / "sample-model.json"))
     ap.add_argument("--out", default=str(WEB / "data" / "zine.json"))
     args = ap.parse_args()
 
     model = load_model(Path(args.model))
     venues = {v["id"]: v for v in model.get("venues", [])}
+    venues_by_name = {slugify(v["name"]): v["id"] for v in model.get("venues", []) if v.get("name")}
     events = {e["id"]: e for e in model.get("events", []) if not e.get("suppressed")}
+    events_by_title = {slugify(e["title"]): e["id"] for e in events.values() if e.get("title")}
 
     nodes: dict[str, dict] = {}
     edges: list[dict] = []
@@ -179,8 +186,9 @@ def main() -> int:
 
     # Pass 1: notes, so wiki-links can resolve against titles and filenames.
     notes = []
+    # 1. Vault notes
     for path in sorted(Path(args.vault).glob("*.md")):
-        meta, body = split_frontmatter(path.read_text())
+        meta, body = split_frontmatter(path.read_text(encoding="utf-8"))
         title = str(meta.get("title") or path.stem.replace("-", " ").title())
         kind = str(meta.get("type") or "article").lower()
         node_id = f"note:{path.stem}"
@@ -192,6 +200,62 @@ def main() -> int:
             "source": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
         }
         notes.append((node_id, meta, body))
+
+    # 2. Zine automation published pieces (Hookup 2)
+    zine_dir = Path(args.zine_dir)
+    pub_dir = zine_dir / "published"
+    if pub_dir.exists():
+        for path in sorted(pub_dir.glob("*.md")):
+            meta, body = split_frontmatter(path.read_text(encoding="utf-8"))
+            title = str(meta.get("title") or path.stem.replace("-", " ").title())
+            kind = str(meta.get("type") or "article").lower()
+            node_id = f"note:{path.stem}"
+            nodes[node_id] = {
+                "id": node_id, "slug": path.stem, "type": kind if kind in NOTE_TYPES else "article",
+                "title": title, "date": str(meta.get("date") or ""), "author": str(meta.get("author") or ""),
+                "status": str(meta.get("status") or "published"), "tags": meta.get("tags") or [],
+                "stance": meta.get("stance"), "persona": meta.get("persona"),
+                "summary": summary_of(body),
+                "source": str(path.relative_to(ROOT)) if path.is_relative_to(ROOT) else str(path),
+            }
+            notes.append((node_id, meta, body))
+
+    # 3. Zine automation topics (Hookup 3)
+    topics_dir = zine_dir / "topics"
+    if topics_dir.exists():
+        for topic_path in sorted(topics_dir.glob("*")):
+            if not topic_path.is_dir() or topic_path.name.startswith("_"):
+                continue
+            tslug = topic_path.name
+            overview_file = topic_path / "overview.md"
+            report_file = topic_path / "full-report.md"
+            if overview_file.exists():
+                meta_ov, body_ov = split_frontmatter(overview_file.read_text(encoding="utf-8"))
+                if meta_ov.get("status") == "published":
+                    ov_id = f"note:topic-{tslug}"
+                    nodes[ov_id] = {
+                        "id": ov_id, "slug": tslug, "type": "topic-overview",
+                        "title": str(meta_ov.get("title") or f"{tslug.replace('-', ' ').title()} Overview"),
+                        "date": str(meta_ov.get("date") or ""), "author": "Umwelt Horizons Research Desk",
+                        "status": "published", "tags": ["topic", "dossier"],
+                        "summary": summary_of(body_ov),
+                        "source": str(overview_file.relative_to(ROOT)) if overview_file.is_relative_to(ROOT) else str(overview_file),
+                    }
+                    notes.append((ov_id, meta_ov, body_ov))
+            if report_file.exists():
+                meta_rep, body_rep = split_frontmatter(report_file.read_text(encoding="utf-8"))
+                if meta_rep.get("status") == "published":
+                    rep_id = f"note:topic-{tslug}-report"
+                    nodes[rep_id] = {
+                        "id": rep_id, "slug": f"{tslug}-report", "type": "topic-report",
+                        "title": str(meta_rep.get("title") or f"{tslug.replace('-', ' ').title()} Full Report"),
+                        "date": str(meta_rep.get("date") or ""), "author": "Umwelt Horizons Research Desk",
+                        "status": "published", "tags": ["topic", "report"],
+                        "summary": summary_of(body_rep),
+                        "source": str(report_file.relative_to(ROOT)) if report_file.is_relative_to(ROOT) else str(report_file),
+                    }
+                    notes.append((rep_id, meta_rep, body_rep))
+
     by_name = {}
     for node_id, meta, _ in notes:
         n = nodes[node_id]
@@ -204,8 +268,12 @@ def main() -> int:
             ref = by_name.get(slugify(target))
             if not ref and target in events:
                 ref = event_node(target)
+            if not ref and slugify(target) in events_by_title:
+                ref = event_node(events_by_title[slugify(target)])
             if not ref and target in venues:
                 ref = venue_node(target)
+            if not ref and slugify(target) in venues_by_name:
+                ref = venue_node(venues_by_name[slugify(target)])
             if not ref:
                 ref = missing(target, "nothing with that name exists yet")
             edge(_from, ref, "link")
@@ -217,6 +285,17 @@ def main() -> int:
             edge(node_id, event_node(eid) if eid in events else missing(str(eid), "that event is not in the calendar"), "events")
         for vid in meta.get("venues") or []:
             edge(node_id, venue_node(vid) if vid in venues else missing(str(vid), "that venue is not in the calendar"), "venues")
+
+        # Wire topic relation edges
+        if meta.get("topic"):
+            tslug = slugify(str(meta.get("topic")))
+            t_ref = by_name.get(tslug) or by_name.get(f"topic-{tslug}")
+            if t_ref:
+                edge(node_id, t_ref, "topic")
+        if node_id.startswith("note:topic-") and not node_id.endswith("-report"):
+            rep_id = f"{node_id}-report"
+            if rep_id in nodes:
+                edge(node_id, rep_id, "report")
 
     # Calendar context: every night-out event and the room it is in.
     for eid, e in events.items():

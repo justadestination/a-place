@@ -17,7 +17,7 @@
       "title": "Daily Calendar & Archive Auto-Build",
       "owner": "publisher",
       "schedule": "daily @ 00:01",
-      "last_run": "2026-10-09T10:57:31.451181-07:00",
+      "last_run": "2026-10-09T13:04:31.518281-07:00",
       "last_status": "success",
       "failure_count": 0,
       "consecutive_failures": 0,

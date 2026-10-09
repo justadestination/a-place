@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-09T11:51:58+00:00",
+ "generatedAt": "2026-10-09T20:03:11+00:00",
  "vault": "shadenet/horizon/vault",
  "nodes": [
   {
@@ -48,6 +48,83 @@
    "summary": "Late Show keeps rolling every night of the week at The Royal.",
    "source": "shadenet/horizon/vault/late-show-review.md",
    "html": "<p>Late Show keeps rolling every night of the week at The Royal.</p>\n<p>Doors open at 10pm.</p>\n<p>No significant changes this week.</p>"
+  },
+  {
+   "id": "note:2026-10-09-acoustic-sensors-are-surveillance",
+   "slug": "2026-10-09-acoustic-sensors-are-surveillance",
+   "type": "stance",
+   "title": "Acoustic Sensors Are Surveillance With Better PR",
+   "date": "2026-10-09",
+   "author": "Juno Voss (jvoss.archive)",
+   "status": "published",
+   "tags": [],
+   "stance": "Automated municipal decibel logging creates automated citations and hostile public squares.",
+   "persona": "personas/juno-voss.md",
+   "summary": "If you inspect the RFP specifications for the acoustic monitoring units proposed under downtown-noise-ordinance-2026, section 4.2 contains a curious hardware line: \"Directional multi-capsule MEMS micr",
+   "source": "zine-automation/published/2026-10-09-acoustic-sensors-are-surveillance.md",
+   "html": "<p>If you inspect the RFP specifications for the acoustic monitoring units proposed under <a href=\"?node=note:topic-downtown-noise-ordinance-2026\" data-node=\"note:topic-downtown-noise-ordinance-2026\">downtown-noise-ordinance-2026</a>, section 4.2 contains a curious hardware line: &quot;Directional multi-capsule MEMS microphone array with rolling audio telemetry buffer (72 hours).&quot;</p>\n<p>Notice the language. Not a sound pressure gauge. Not an analog peak limiter wired to an illuminated warning lamp inside the sound booth. An array of directional microphones mounted on public utility poles outside <a href=\"?node=venue:ven_097c696c87a03f80\" data-node=\"venue:ven_097c696c87a03f80\">The Neon Foundry</a> and Third Street, retaining rolling audio telemetry in cloud storage.</p>\n<p>Mags makes an essential point from her pharmacy night-shift bench: downtown streets need real humans occupying sidewalks, not corporate ghost corridors. But Mags treats this proposal like a zoning disagreement between reasonable neighbors. It is not. It is municipal sensor creep wrapped in the polite vocabulary of civic decorum.</p>\n<p>Here is what happens when you substitute human etiquette with automated telemetry:</p>\n<p>First, the machine has no context. A decibel sensor does not distinguish between a patron cheering an encore, a delivery van dropping an iron lift-gate, or a broken muffler backfiring four blocks away. It logs an amplitude spike, hashes a timestamp, and generates an automated administrative summons against the nearest licensed doorway.</p>\n<p>Second—and far more dangerous—is the mission creep of ambient capture. The moment you place network-connected microphones on public streets, you have established acoustic surveillance infrastructure. Today it measures sixty-eight decibels. Tomorrow someone writes an administrative rule asking the vendor to flag &quot;elevated vocal stress patterns&quot; or &quot;conspiratorial loitering clusters.&quot;</p>\n<p>Real community etiquette cannot be outsourced to a vendor dashboard in Palo Alto. If a show at The Neon Foundry is vibrating the floorboards of the loft upstairs, the answer is for the venue operator to pull the master fader back three decibels, close the double-door acoustic vestibule, and speak with the tenant face-to-face.</p>\n<p>And for patrons on the sidewalk: the rule of thumb is straightforward. When you step out of the venue, keep your voice at kitchen table volume. Don&#x27;t broadcast your phone calls on speaker. Don&#x27;t scream at passing cars. Protect the venue from giving the city council an excuse to install microphones above your head.</p>\n<p>Civic space requires privacy to remain human. The moment every laugh is treated as an acoustic incident, the city ceases to be a commons and becomes an open-air detention yard with craft beer.</p>"
+  },
+  {
+   "id": "note:2026-10-09-bring-your-own-baffle",
+   "slug": "2026-10-09-bring-your-own-baffle",
+   "type": "stance",
+   "title": "Bring Your Own Baffle: A Defense of Loud Rooms",
+   "date": "2026-10-09",
+   "author": "Mara Okwonko (steelman_mara)",
+   "status": "published",
+   "tags": [],
+   "stance": "Venues that self-baffle preserve the downtown circuit better than zoning curfews ever could.",
+   "persona": "personas/mara-okwonko.md",
+   "summary": "The city council's planning committee has a point about downtown-noise-ordinance-2026. It is a small point, kept in a very small Tupperware container, but let's take it out and inspect it before we to",
+   "source": "zine-automation/published/2026-10-09-bring-your-own-baffle.md",
+   "html": "<p>The city council&#x27;s planning committee has a point about <a href=\"?node=note:topic-downtown-noise-ordinance-2026\" data-node=\"note:topic-downtown-noise-ordinance-2026\">downtown-noise-ordinance-2026</a>. It is a small point, kept in a very small Tupperware container, but let&#x27;s take it out and inspect it before we toss it into the compost bin.</p>\n<p>The concession: nobody moves into a second-story downtown brick flat expecting silence, but nobody moves into one expecting their front-facing picture window to rattle in its sash every Friday at 1:15 a.m. because a bass guitarist didn&#x27;t understand the difference between stage volume and house mix. Low-frequency energy at forty hertz doesn&#x27;t just annoy people; it rearranges their nervous systems. That is a real grievance.</p>\n<p>Now let me dismantle the council&#x27;s proposed cure.</p>\n<p><strong>Contention One: Blanket curfews are lazy governance.</strong> Telling an entire commercial arts corridor that exterior doors must seal shut at eleven o&#x27;clock because two rooms refuse to buy mineral-wool acoustic insulation is like banning bicycles downtown because three teenagers ran a stop sign. It punishes the good actors—spaces like <a href=\"?node=venue:ven_a643f31b440ba2f2\" data-node=\"venue:ven_a643f31b440ba2f2\">Central Playhouse</a>, which spent twelve thousand dollars last year building an insulated double-door acoustic airlock—to spare the city the labor of inspecting the bad ones.</p>\n<p><strong>Contention Two: Self-policing works when the community holds the leash.</strong> Juno worries about surveillance microphones on light poles (a reasonable panic, though Juno sees panopticons in their toaster). Mags wants everyone to be quiet and nice because third-shift workers are tired (also fair, though Mags forgets that some people go out specifically to hear loud drums).</p>\n<p>Here is the third path, which my novice debaters would figure out in four minutes of prep time: <em>bring your own baffle.</em></p>\n<p>If you run a stage in this district, you earn the right to turn up the volume by keeping the sound inside your four walls. You build heavy velvet vestibules. You put bass traps in the corners. You decouple your subwoofers from the joists so the dental office next door doesn&#x27;t vibrate on Saturday morning.</p>\n<p>And if you are a patron? Here is your etiquette syllabus for the evening: 1. Don&#x27;t loiter on the curb shrieking at people across the intersection after last call. 2. If the sound engineer asks you to step inside so they can close the acoustic storm door, you step inside without throwing a philosophical tantrum about freedom of speech. 3. Tip the people who sweep up your broken glass so they don&#x27;t have to sweep it while dodging municipal code officers.</p>\n<p>Louder is fine. Reckless is not. Build the baffles, keep the doors closed, and let the band play.</p>\n<p>Change my mind. You won&#x27;t.</p>"
+  },
+  {
+   "id": "note:2026-10-09-the-three-am-decibel-line",
+   "slug": "2026-10-09-the-three-am-decibel-line",
+   "type": "stance",
+   "title": "The 3 A.M. Decibel Line",
+   "date": "2026-10-09",
+   "author": "Margaret \\\"Mags\\\" Pilecki (sodium_vapor)",
+   "status": "published",
+   "tags": [],
+   "stance": "Patios after 1 a.m. are social lifelines for third-shift workers, not nuisance violations.",
+   "persona": "personas/mags-pilecki.md",
+   "summary": "There is a cracked porcelain electrical insulator sitting on the low brick ledge outside Echo Music Hall, right next to the cigarette receptacle, and someone has balanced a quarter-filled bottle of co",
+   "source": "zine-automation/published/2026-10-09-the-three-am-decibel-line.md",
+   "html": "<p>There is a cracked porcelain electrical insulator sitting on the low brick ledge outside <a href=\"?node=venue:ven_a261886187f23bb1\" data-node=\"venue:ven_a261886187f23bb1\">Echo Music Hall</a>, right next to the cigarette receptacle, and someone has balanced a quarter-filled bottle of cold Mexican Coke directly on top of it.</p>\n<p>It was 3:14 a.m. when I noticed it. I had two hours left on my shift break from the regional inpatient dispensary—forty-five minutes if you don&#x27;t count the walk past the courthouse and the two traffic lights that stay permanently red between midnight and dawn because the street sensors don&#x27;t believe a Subaru exists if it weighs under two tons.</p>\n<p>Inside, the load-out crew was coiling XLR cables with that slow, practiced underhand flick that sound engineers develop after twenty years of not wanting carpal tunnel. Outside on the alley patio, three line cooks from the grill down the block were sitting on milk crates, drinking seltzer out of pint glasses and speaking in that low, raspy murmur people use when their throats are dry from four hours over a flat-top grill.</p>\n<p>They weren&#x27;t screaming. They weren&#x27;t kicking trash cans. They were just existing in the only thirty square feet of commercial concrete in this zip code that still had lights on.</p>\n<p>Now the city council wants to hang acoustic monitoring meters on the light poles per the proposed <a href=\"?node=note:topic-downtown-noise-ordinance-2026\" data-node=\"note:topic-downtown-noise-ordinance-2026\">downtown-noise-ordinance-2026</a>. Sixty-eight decibels at the property line after eleven o&#x27;clock.</p>\n<p>For context: a garbage truck grinding down an alley is eighty-five decibels. The hospital air compressor when the backup chiller kicks on is seventy-two. A moderately agitated golden retriever barking at a plastic bag in the wind is seventy-five.</p>\n<p>Sixty-eight decibels means three adults laughing at a joke about a burnt quesadilla can trigger an automated municipal citation if the microphone happens to catch the wind blowing east.</p>\n<p>Here is the thing daytime people never understand about the night: silence isn&#x27;t peaceful to people who work in it. Silence is eerie. Silence is what happens right before a cardiac arrest monitor alarms or a water pipe bursts in the basement. What makes a downtown street safe at three in the morning isn&#x27;t an empty sidewalk under sterile sodium floodlights. It&#x27;s six people quietly drinking soda on a patio, knowing each other&#x27;s first names, keeping an eye on the door.</p>\n<p>That&#x27;s the etiquette of the sidewalk, if anyone still cares to teach it. You don&#x27;t scream at your friends across three lanes of asphalt. You don&#x27;t slam your car doors like you&#x27;re angry at the frame. You say good evening to the door attendant, you tip the barback who brought out the water pitcher, and you remember that there are pediatric nurses sleeping in the apartment building across the alley.</p>\n<p>Civic life isn&#x27;t an engineering algorithm. You don&#x27;t fix street noise by installing microphones to tax human conversation out of existence. You fix it by keeping the room open, keeping the staff paid, and having the decency to talk at normal conversational volume when the rest of the block is asleep.</p>\n<p>The Mexican Coke bottle was still on the brick ledge when my timer buzzed. The sugar was attracting three very determined ants. Nobody moved it.</p>"
+  },
+  {
+   "id": "note:topic-downtown-noise-ordinance-2026",
+   "slug": "downtown-noise-ordinance-2026",
+   "type": "topic-overview",
+   "title": "Downtown Noise Ordinance (2026) Overview",
+   "date": "2026-10-09",
+   "author": "Umwelt Horizons Research Desk",
+   "status": "published",
+   "tags": [
+    "topic",
+    "dossier"
+   ],
+   "summary": "In late September 2026, the municipal council introduced revised zoning regulations governing commercial amplified sound after 11:00 p.m. in the downtown entertainment district. The proposal mandates ",
+   "source": "zine-automation/topics/downtown-noise-ordinance-2026/overview.md",
+   "html": "<h3>What happened</h3>\n<p>In late September 2026, the municipal council introduced revised zoning regulations governing commercial amplified sound after 11:00 p.m. in the downtown entertainment district. The proposal mandates IoT decibel monitoring sensors outside licensed venues including <a href=\"?node=venue:ven_a261886187f23bb1\" data-node=\"venue:ven_a261886187f23bb1\">Echo Music Hall</a> and <a href=\"?node=venue:ven_097c696c87a03f80\" data-node=\"venue:ven_097c696c87a03f80\">The Neon Foundry</a>, establishing automated fines for persistent ambient sound exceeding 68 dBA at property lines.</p>\n<h3>Why it matters</h3>\n<p>The ordinance sits directly at the intersection of downtown vitality and residential densification. Upper-floor loft conversions have introduced residential tenants directly above long-standing music venues. Restricting exterior patio hours and late-night stage levels threatens venue solvency, while unmanaged sound spill creates genuine sleep disruption for residential neighbors.</p>\n<h3>What the main sides say</h3>\n<p><strong>Venue Operators and Performers:</strong> Point out that live music is the primary economic engine of the night district. They argue that automated sensor fines fail to distinguish crowd chatter, emergency vehicles, and transient traffic noise from venue performance sound.</p>\n<p><strong>Downtown Neighborhood Association:</strong> Contends that reasonable night sleep is a baseline health requirement. They support mixed-use urbanism but argue venues must invest in structural sound baffling and indoor soundproofing rather than venting amplified sound onto public streets.</p>\n<p><strong>Night Shift Workers and Patron Collectives:</strong> Emphasize that the city functions around the clock. Patios and after-hours spaces provide essential third places for pharmacy techs, transit drivers, nurses, and kitchen workers whose day begins at midnight.</p>\n<h3>What&#x27;s still unknown</h3>\n<p>Whether the council will permit venue-managed collective self-policing standards in lieu of automated telemetry citations, and whether municipal soundproofing grants will be allocated to historic brick venues.</p>\n<h3>Go deeper</h3>\n<p>The zine&#x27;s full research dossier: [full-report.md](./full-report.md)</p>"
+  },
+  {
+   "id": "note:topic-downtown-noise-ordinance-2026-report",
+   "slug": "downtown-noise-ordinance-2026-report",
+   "type": "topic-report",
+   "title": "Downtown Noise Ordinance (2026) — Full Research Report",
+   "date": "2026-10-09",
+   "author": "Umwelt Horizons Research Desk",
+   "status": "published",
+   "tags": [
+    "topic",
+    "report"
+   ],
+   "summary": "*Companion to the [overview](./overview.md). Researched 2026-10-09.*",
+   "source": "zine-automation/topics/downtown-noise-ordinance-2026/full-report.md",
+   "html": "<p><em>Companion to the [overview](./overview.md). Researched 2026-10-09.</em></p>\n<h3>Timeline</h3>\n<ul><li><strong>2026-08-14:</strong> Downtown residential complaints regarding bass leakage increase 42% following outdoor patio expansion at Fourth Street spaces.</li><li><strong>2026-09-02:</strong> City Planning Commission draft proposal circulating 68 dBA outdoor threshold after 11:00 p.m.</li><li><strong>2026-09-22:</strong> Downtown Venue Alliance files formal protest regarding sensor false-positive triggers from emergency sirens on B Street.</li><li><strong>2026-10-05:</strong> Council introduces compromise amendment offering soundproofing matching grants for venues in exchange for acoustic dampening compliance.</li></ul>\n<h3>The facts</h3>\n<p>1. The proposed monitoring perimeter encompasses the 12-block downtown commercial zone, including <a href=\"?node=venue:ven_a261886187f23bb1\" data-node=\"venue:ven_a261886187f23bb1\">Echo Music Hall</a>, <a href=\"?node=venue:ven_a643f31b440ba2f2\" data-node=\"venue:ven_a643f31b440ba2f2\">Central Playhouse</a>, and <a href=\"?node=venue:ven_097c696c87a03f80\" data-node=\"venue:ven_097c696c87a03f80\">The Neon Foundry</a>. 2. Current baseline ambient sound at 1:00 a.m. with zero live shows averages 61 to 64 dBA due to commercial HVAC and regional street traffic. 3. Acoustic attenuation retrofits for historic unreinforced masonry venues average $35,000 to $70,000 per room.</p>\n<h3>The claims</h3>\n<ul><li><strong>Proponents:</strong> Automated optical and acoustic sensor arrays eliminate subjective enforcement bias by municipal code inspectors.</li><li><strong>Opponents:</strong> Microphones mounted on public poles record audio signatures and ambient speech, creating an acoustic surveillance grid under the pretext of decibel enforcement.</li></ul>\n<h3>Perspectives</h3>\n<h4>Downtown Venue Alliance</h4>\n<ul><li><strong>Held by:</strong> Independent venue managers, booking agents, and stage technicians.</li><li><strong>Their evidence:</strong> Baseline traffic data demonstrating that delivery trucks routinely exceed 74 dBA.</li><li><strong>What they say the other side gets wrong:</strong> Condos were purchased adjacent to active entertainment districts with full disclosure of night zone status.</li></ul>\n<h4>Residential Tenant Coalition</h4>\n<ul><li><strong>Held by:</strong> Downtown loft residents and residential property managers.</li><li><strong>Their evidence:</strong> Low-frequency sub-bass vibration (30–80 Hz) penetrates standard double-glazed windows, creating documented sleep deprivation.</li><li><strong>What they say the other side gets wrong:</strong> Reasonable sound management does not kill live music; it requires basic acoustic baffling and closing patio garage doors after midnight.</li></ul>\n<h3>What&#x27;s unknown</h3>\n<p>1. Final calibration methodology for filtering non-venue transient sounds from automated citations. 2. Timing of council vote scheduled for the upcoming municipal cycle.</p>\n<h3>Sources</h3>\n<p>1. <a href=\"https://shady.example.org/docs/noise-2026\" rel=\"noopener\" target=\"_blank\">Municipal Zoning Revision Docket #2026-44B</a> — City Clerk, 2026-09-28. Official ordinance draft text. 2. <a href=\"https://shady.example.org/docs/acoustic-survey\" rel=\"noopener\" target=\"_blank\">Acoustic Survey of Fourth Street Commercial Corridor</a> — Sonics Engineering, 2026-08-19. Ambient dBA baseline data. 3. <a href=\"https://shady.example.org/docs/night-econ\" rel=\"noopener\" target=\"_blank\">Downtown Entertainment District Economic Impact</a> — Regional Arts Council, 2026-05-12. Venue revenue and employment statistics. 4. <a href=\"https://shady.example.org/docs/comments\" rel=\"noopener\" target=\"_blank\">Public Comment Log on Downtown Noise</a> — Planning Commission, 2026-10-02. Compiled stakeholder testimonies.</p>"
   },
   {
    "id": "event:evt_d724c924e58bcad8",
@@ -278,6 +355,22 @@
    "summary": "Linked from the zine but nothing with that name exists yet."
   },
   {
+   "id": "venue:ven_a643f31b440ba2f2",
+   "slug": "ven_a643f31b440ba2f2",
+   "type": "venue",
+   "title": "Central Playhouse",
+   "ref": "ven_a643f31b440ba2f2",
+   "summary": "Theatre"
+  },
+  {
+   "id": "venue:ven_a261886187f23bb1",
+   "slug": "ven_a261886187f23bb1",
+   "type": "venue",
+   "title": "Echo Music Hall",
+   "ref": "ven_a261886187f23bb1",
+   "summary": "120 5th Street, Santa Rosa"
+  },
+  {
    "id": "venue:ven_47b8847d9089d868",
    "slug": "ven_47b8847d9089d868",
    "type": "venue",
@@ -340,6 +433,86 @@
    "source": "note:the-room-after-midnight",
    "target": "missing:venue-123",
    "kind": "venues"
+  },
+  {
+   "source": "note:2026-10-09-acoustic-sensors-are-surveillance",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-acoustic-sensors-are-surveillance",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-acoustic-sensors-are-surveillance",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "topic"
+  },
+  {
+   "source": "note:2026-10-09-bring-your-own-baffle",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-bring-your-own-baffle",
+   "target": "venue:ven_a643f31b440ba2f2",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-bring-your-own-baffle",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "topic"
+  },
+  {
+   "source": "note:2026-10-09-the-three-am-decibel-line",
+   "target": "venue:ven_a261886187f23bb1",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-the-three-am-decibel-line",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "link"
+  },
+  {
+   "source": "note:2026-10-09-the-three-am-decibel-line",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "topic"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026",
+   "target": "venue:ven_a261886187f23bb1",
+   "kind": "link"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "link"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026",
+   "target": "note:topic-downtown-noise-ordinance-2026-report",
+   "kind": "report"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026-report",
+   "target": "venue:ven_a261886187f23bb1",
+   "kind": "link"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026-report",
+   "target": "venue:ven_a643f31b440ba2f2",
+   "kind": "link"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026-report",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "link"
+  },
+  {
+   "source": "note:topic-downtown-noise-ordinance-2026-report",
+   "target": "note:topic-downtown-noise-ordinance-2026",
+   "kind": "topic"
   },
   {
    "source": "event:evt_680e2d9e81e250a0",
