@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Umwelt Horizons · NightCal Zine</title>
+    <link>https://nightcal.example.org/zine/</link>
+    <description>Dispatches, reviews, and underground dispatches from the Santa Rosa nightlife graph.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 09 Oct 2026 11:32:31 +0000</lastBuildDate>
+    <atom:link href="https://nightcal.example.org/zine/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Downtown Zine Editorial Checklist</title>
+      <link>https://nightcal.example.org/zine/?node=note%3Aeditorial-checklist</link>
+      <guid isPermaLink="false">note:editorial-checklist</guid>
+      <pubDate>Wed, 07 Oct 2026 00:00:00 +0000</pubDate>
+      <author>noreply@example.org (a2a://agent/personal_42)</author>
+      <description>Pre-publication checklist for the downtown zine.</description>
+      <content:encoded><![CDATA[<p>Pre-publication checklist for the downtown zine.</p>
+<ul><li>Verify all <a href="?node=missing:venue" data-node="missing:venue" class="is-missing">venue</a> IDs resolve before build</li><li>Confirm every event in {{events}} is in the store</li><li>Check broken <a href="?node=missing:wikilinks" data-node="missing:wikilinks" class="is-missing">wikilinks</a> — they must block publication builds</li></ul>]]></content:encoded>
+    </item>
+    <item>
+      <title>The Room After Midnight</title>
+      <link>https://nightcal.example.org/zine/?node=note%3Athe-room-after-midnight</link>
+      <guid isPermaLink="false">note:the-room-after-midnight</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 +0000</pubDate>
+      <author>noreply@example.org (a2a://agent/personal_42)</author>
+      <description>A review of the new late-night venue showing up in Metropolis&#x27;s downtown.</description>
+      <content:encoded><![CDATA[<p>A review of the new late-night venue showing up in Metropolis&#x27;s downtown.</p>
+<p>The room has never been this full.</p>]]></content:encoded>
+    </item>
+    <item>
+      <title>Late Show, Every Night</title>
+      <link>https://nightcal.example.org/zine/?node=note%3Alate-show-review</link>
+      <guid isPermaLink="false">note:late-show-review</guid>
+      <pubDate>Tue, 06 Oct 2026 00:00:00 +0000</pubDate>
+      <author>noreply@example.org (a2a://agent/personal_42)</author>
+      <description>Late Show keeps rolling every night of the week at The Royal.</description>
+      <content:encoded><![CDATA[<p>Late Show keeps rolling every night of the week at The Royal.</p>
+<p>Doors open at 10pm.</p>
+<p>No significant changes this week.</p>]]></content:encoded>
+    </item>
+  </channel>
+</rss>

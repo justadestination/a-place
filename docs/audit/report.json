@@ -1099,12 +1099,17 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1235,
+      "layoutMs": 987,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
       "embedBuilt": true,
       "appendOutrankVerified": true
+    },
+    "zine RSS feed (full-content)": {
+      "feedExists": true,
+      "rssValid": true,
+      "itemsCount": 3
     }
   },
   "failures": []

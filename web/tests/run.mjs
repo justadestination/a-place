@@ -446,6 +446,22 @@ if (!quick) {
   };
 }
 
+// --- 18. zine RSS feed (Task 3.4) --------------------------------------------
+{
+  const { existsSync, readFileSync } = await import("node:fs");
+  const feedPath = `${WEB}zine/feed.xml`;
+  const exists = existsSync(feedPath);
+  if (!exists) fail("rss feed", "missing web/zine/feed.xml");
+  const xml = exists ? readFileSync(feedPath, "utf-8") : "";
+  const valid = xml.includes("<rss version=\"2.0\"") && xml.includes("<content:encoded>");
+  if (!valid) fail("rss feed", "invalid RSS 2.0 structure or missing content:encoded");
+  report.checks["zine RSS feed (full-content)"] = {
+    feedExists: exists,
+    rssValid: valid,
+    itemsCount: (xml.match(/<item>/g) || []).length,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

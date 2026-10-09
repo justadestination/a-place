@@ -19,9 +19,11 @@ the browser never parses markdown or trusts note text.
 from __future__ import annotations
 
 import argparse
+import email.utils
 import html
 import json
 import re
+import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -241,7 +243,65 @@ def main() -> int:
     for n in out["nodes"]:
         counts[n["type"]] = counts.get(n["type"], 0) + 1
     print(f"zine: {len(out['nodes'])} nodes {counts}, {len(edges)} edges -> {args.out}")
+
+    # Generate full-content RSS 2.0 feed (Task 3.4)
+    rss_xml = generate_rss_feed(out["nodes"])
+    rss_path = WEB / "zine" / "feed.xml"
+    rss_path.parent.mkdir(parents=True, exist_ok=True)
+    rss_path.write_text(rss_xml, encoding="utf-8")
+    (WEB / "feed.xml").write_text(rss_xml, encoding="utf-8")
+    print(f"rss: generated full-content feed ({rss_path})")
     return 0
+
+
+def generate_rss_feed(nodes: list[dict], site_url: str = "https://nightcal.example.org") -> str:
+    now_dt = datetime.now(timezone.utc)
+    pub_date_now = email.utils.format_datetime(now_dt)
+
+    items_xml = []
+    for n in sorted(nodes, key=lambda x: str(x.get("date") or "9999"), reverse=True):
+        if n.get("type") not in NOTE_TYPES or not n.get("html"):
+            continue
+        title = html.escape(str(n.get("title") or "Untitled Dispatch"))
+        node_id = str(n.get("id") or "")
+        item_link = f"{site_url}/zine/?node={urllib.parse.quote(node_id)}"
+
+        item_date = pub_date_now
+        if n.get("date"):
+            try:
+                d = datetime.fromisoformat(str(n["date"])).replace(tzinfo=timezone.utc)
+                item_date = email.utils.format_datetime(d)
+            except Exception:
+                pass
+
+        author = html.escape(str(n.get("author") or "Umwelt Horizons Contributor"))
+        summary = html.escape(str(n.get("summary") or ""))
+        content_encoded = str(n.get("html") or "")
+
+        items_xml.append(f"""    <item>
+      <title>{title}</title>
+      <link>{item_link}</link>
+      <guid isPermaLink="false">{html.escape(node_id)}</guid>
+      <pubDate>{item_date}</pubDate>
+      <author>noreply@example.org ({author})</author>
+      <description>{summary}</description>
+      <content:encoded><![CDATA[{content_encoded}]]></content:encoded>
+    </item>""")
+
+    feed_items = "\n".join(items_xml)
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Umwelt Horizons · NightCal Zine</title>
+    <link>{site_url}/zine/</link>
+    <description>Dispatches, reviews, and underground dispatches from the Santa Rosa nightlife graph.</description>
+    <language>en-us</language>
+    <lastBuildDate>{pub_date_now}</lastBuildDate>
+    <atom:link href="{site_url}/zine/feed.xml" rel="self" type="application/rss+xml"/>
+{feed_items}
+  </channel>
+</rss>
+"""
 
 
 if __name__ == "__main__":
