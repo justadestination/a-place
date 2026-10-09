@@ -195,6 +195,15 @@
     "readme": false
   },
   {
+    "name": "session-list",
+    "title": "Session management",
+    "summary": "List active sessions and logged-in devices with instant per-session revocation and global sign-out.",
+    "params": {
+      "session": "Active session token to query and manage"
+    },
+    "readme": true
+  },
+  {
     "name": "share-button",
     "title": "Share button",
     "summary": "Native share sheet when available; otherwise copy link, X, Bluesky, Facebook and email intents.",

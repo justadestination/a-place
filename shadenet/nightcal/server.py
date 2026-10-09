@@ -250,6 +250,21 @@ class Handler(BaseHTTPRequestHandler):
                 else:
                     self._json(401, {"authenticated": False, "error": "Not authenticated or session expired"})
                 return
+            if path == "/api/auth/sessions":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else qs.get("session", [""])[0]
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                if not token:
+                    self._json(401, {"authenticated": False, "error": "Missing session token"})
+                    return
+                try:
+                    sessions = default_auth_manager.list_sessions(token)
+                    self._json(200, {"authenticated": True, "sessions": sessions})
+                except Exception as e:
+                    self._json(401, {"authenticated": False, "error": str(e)})
+                return
+
 
         if path == "/api/model":
             with _lock:
@@ -328,6 +343,36 @@ class Handler(BaseHTTPRequestHandler):
                 revoked = default_auth_manager.logout(token) if token else False
                 self._json(200, {"success": True, "revoked": revoked})
                 return
+            if path == "/api/auth/sessions/revoke":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                target_id = str(body.get("sessionId", "") or body.get("session_id", "") or body.get("targetSessionId", ""))
+                if not token or not target_id:
+                    self._json(400, {"error": "Both session token and target sessionId are required"})
+                    return
+                try:
+                    revoked = default_auth_manager.revoke_session(token, target_id)
+                    self._json(200, {"success": True, "revoked": revoked, "sessionId": target_id})
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+            if path == "/api/auth/sessions/revoke-others":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                if not token:
+                    self._json(401, {"error": "Missing session token"})
+                    return
+                try:
+                    count = default_auth_manager.revoke_all_other_sessions(token)
+                    self._json(200, {"success": True, "revoked_count": count})
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+
 
         if path == "/api/operator/moderation":
             item_id = str(body.get("itemId") or body.get("item_id") or "")

@@ -53,7 +53,7 @@
   cursor: pointer;
   padding: var(--nc-space-2) var(--nc-space-3);
   border-radius: var(--nc-radius-sm);
-  min-height: 44px;
+  min-height: var(--nc-size-target);
   display: inline-flex;
   align-items: center;
 }
@@ -66,7 +66,7 @@
 .nc-auth-card__tab--active {
   color: var(--nc-color-accent-text);
   background: var(--nc-color-surface-sunken);
-  border-bottom: 2px solid var(--nc-color-accent);
+  border-bottom: var(--nc-size-border-strong) solid var(--nc-color-accent);
 }
 
 .nc-auth-card__form {
@@ -95,7 +95,7 @@
   background: var(--nc-color-surface-sunken);
   border: var(--nc-size-border) solid var(--nc-color-border);
   border-radius: var(--nc-radius-sm);
-  min-height: 44px;
+  min-height: var(--nc-size-target);
 }
 
 .nc-auth-card__input:focus-visible {

@@ -277,6 +277,38 @@ class AuthStore:
             """, (user_id,)).fetchall()
             return [dict(r) for r in rows]
 
+    def list_active_sessions(self, user_id: str) -> list[dict[str, Any]]:
+        now_iso = _now_iso()
+        with self._get_connection() as con:
+            rows = con.execute("""
+                SELECT id as session_id, created_at, expires_at, revoked_at, device_info
+                FROM sessions
+                WHERE user_id = ? AND revoked_at IS NULL AND expires_at > ?
+                ORDER BY created_at DESC
+            """, (user_id, now_iso)).fetchall()
+            return [dict(r) for r in rows]
+
+    def revoke_user_session(self, user_id: str, session_to_revoke: str) -> bool:
+        now_iso = _now_iso()
+        with self._get_connection() as con:
+            cur = con.execute("""
+                UPDATE sessions
+                SET revoked_at = ?
+                WHERE user_id = ? AND id = ? AND revoked_at IS NULL
+            """, (now_iso, user_id, session_to_revoke))
+            return cur.rowcount > 0
+
+    def revoke_all_other_sessions(self, user_id: str, current_session_token: str) -> int:
+        now_iso = _now_iso()
+        with self._get_connection() as con:
+            cur = con.execute("""
+                UPDATE sessions
+                SET revoked_at = ?
+                WHERE user_id = ? AND id != ? AND revoked_at IS NULL AND expires_at > ?
+            """, (now_iso, user_id, current_session_token, now_iso))
+            return cur.rowcount
+
+
 
 # ==============================================================================
 # WebAuthn Protocol Helpers
@@ -470,6 +502,31 @@ class AuthManager:
 
     def logout(self, session_token: str) -> bool:
         return self.store.revoke_session(session_token)
+
+    def list_sessions(self, session_token: str) -> list[dict[str, Any]]:
+        current_sess = self.validate_session(session_token)
+        if not current_sess:
+            raise ValueError("Unauthorized or session expired")
+        user_id = current_sess["user_id"]
+        sessions = self.store.list_active_sessions(user_id)
+        for s in sessions:
+            s["is_current"] = (s["session_id"] == session_token)
+        return sessions
+
+    def revoke_session(self, session_token: str, target_session_id: str | None = None) -> bool:
+        if target_session_id is None or target_session_id == session_token:
+            return self.store.revoke_session(session_token)
+        current_sess = self.validate_session(session_token)
+        if not current_sess:
+            raise ValueError("Unauthorized or session expired")
+        return self.store.revoke_user_session(current_sess["user_id"], target_session_id)
+
+    def revoke_all_other_sessions(self, session_token: str) -> int:
+        current_sess = self.validate_session(session_token)
+        if not current_sess:
+            raise ValueError("Unauthorized or session expired")
+        return self.store.revoke_all_other_sessions(current_sess["user_id"], session_token)
+
 
 
 # Default manager singleton

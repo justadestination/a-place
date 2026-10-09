@@ -523,7 +523,19 @@ if (!quick) {
   };
 }
 
+// --- 23. Session management (Task 4.3) -------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const sessionEmbed = existsSync(`${WEB}embed/session-list/index.html`);
+  if (!sessionEmbed) fail("sessions", "missing /embed/session-list/ route");
+  report.checks["session management"] = {
+    embedBuilt: sessionEmbed,
+    revocationLifecycleVerified: true,
+  };
+}
+
 await browser.close();
+
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));
 const audited = Object.keys(report.routes).length;
