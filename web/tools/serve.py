@@ -45,11 +45,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(data)
         except (urllib.error.URLError, OSError):
             msg = b'{"error":"nightcal API unavailable"}'
-            self.send_response(502)
-            self.send_header("Content-Type", "text/plain")
-            self.send_header("Content-Length", str(len(msg)))
-            self.end_headers()
-            self.wfile.write(msg)
+            try:
+                self.send_response(502)
+                self.send_header("Content-Type", "text/plain")
+                self.send_header("Content-Length", str(len(msg)))
+                self.end_headers()
+                self.wfile.write(msg)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
 
     def do_GET(self):
         if self.path.startswith("/api/"):

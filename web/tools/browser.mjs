@@ -4,11 +4,18 @@
 import { chromium } from "playwright-core";
 import { existsSync } from "node:fs";
 
-const DEFAULT = "/opt/pw-browsers/chromium";
+const CANDIDATES = [
+  "/opt/pw-browsers/chromium",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+  "/usr/bin/google-chrome",
+];
+const DEFAULT = CANDIDATES.find(p => existsSync(p));
 
-export async function launch() {
-  const executablePath = process.env.CHROMIUM_PATH || (existsSync(DEFAULT) ? DEFAULT : undefined);
-  return chromium.launch({ executablePath, args: ["--enable-unsafe-swiftshader", "--use-gl=swiftshader"] });
+export async function launch(options = {}) {
+  const executablePath = process.env.CHROMIUM_PATH || DEFAULT || undefined;
+  const args = options.args || ["--enable-unsafe-swiftshader", "--use-gl=swiftshader"];
+  return chromium.launch({ executablePath, ...options, args });
 }
 
 export const VIEWPORTS = {

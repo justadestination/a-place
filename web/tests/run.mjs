@@ -183,7 +183,7 @@ for (const path of [...routes, ...embeds]) for (const vp of ["mobile", "desktop"
 
 // --- 6. 3D page with no WebGL still works ------------------------------------
 {
-  const nogl = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium", args: ["--disable-webgl", "--disable-webgl2", "--disable-3d-apis"] });
+  const nogl = await launch({ args: ["--disable-webgl", "--disable-webgl2", "--disable-3d-apis"] });
   const page = await nogl.newPage();
   const errs = [];
   page.on("pageerror", e => errs.push(e.message));
