@@ -85,3 +85,7 @@ class StructuredLogger:
 
 # Global default logger
 logger = StructuredLogger(service="nightcal")
+
+def get_logger(service: str = "nightcal") -> StructuredLogger:
+    """Return a StructuredLogger for the specified service name."""
+    return StructuredLogger(service=service)

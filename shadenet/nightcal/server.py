@@ -43,6 +43,11 @@ from shadenet.nightcal.surface import (
     update_data_message,
     load_rows,
 )
+from shadenet.operator import (
+    get_operator_status,
+    moderate_queue_item,
+    rotate_active_key,
+)
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -166,6 +171,20 @@ class Handler(BaseHTTPRequestHandler):
                     store.close()
             self._send(200, payload, "application/jsonl; charset=utf-8")
             return
+        if path in ("/operator", "/operator/", "/operator.html"):
+            op_page = STATIC / "static" / "operator.html"
+            if op_page.is_file():
+                self._send(200, op_page.read_bytes(), "text/html; charset=utf-8")
+                return
+        if path == "/api/operator/status":
+            with _lock:
+                store = open_store(_db_path())
+                try:
+                    payload = get_operator_status(store)
+                finally:
+                    store.close()
+            self._json(200, payload)
+            return
         if path == "/api/model":
             with _lock:
                 message = update_data_message(_model())
@@ -180,6 +199,23 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?", 1)[0]
         body = self._read_json()
         if body is None:
+            return
+
+        if path == "/api/operator/moderation":
+            item_id = str(body.get("itemId") or body.get("item_id") or "")
+            action = str(body.get("action") or "")
+            note = str(body.get("note") or "")
+            try:
+                res = moderate_queue_item(item_id, action, note)
+                self._json(200, res)
+            except (ValueError, KeyError) as e:
+                self._json(400, {"error": str(e), "code": "ERR_BAD_REQUEST"})
+            return
+
+        if path == "/api/operator/keys/rotate":
+            op_id = str(body.get("operator") or "operator-console")
+            res = rotate_active_key(op_id)
+            self._json(200, res)
             return
 
         if path == "/api/action":
