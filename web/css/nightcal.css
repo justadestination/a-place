@@ -1028,6 +1028,66 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 
 .nc-map-embed__card:empty { display: none; }
 
+/* --- components/road-timeline --- */
+.nc-road-timeline {
+  display: grid;
+  gap: var(--nc-space-5);
+  position: relative;
+  margin: 0;
+  padding: 0;
+  padding-left: var(--nc-space-6);
+  border-left: var(--nc-size-border) dashed var(--nc-color-border-strong);
+  list-style: none;
+}
+
+.nc-road__stop {
+  display: grid;
+  gap: var(--nc-space-2);
+  position: relative;
+}
+
+.nc-road__milestone {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+}
+
+.nc-road__dot {
+  position: absolute;
+  left: calc(-1 * var(--nc-space-6) - var(--nc-size-border) * 2);
+  top: var(--nc-space-4);
+  width: var(--nc-space-3);
+  height: var(--nc-space-3);
+  border-radius: var(--nc-radius-pill);
+  background: var(--nc-color-accent-text);
+  border: var(--nc-size-border) solid var(--nc-color-surface);
+}
+
+.nc-road__time {
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-heavy);
+  font-variant-numeric: tabular-nums;
+  color: var(--nc-color-text-muted);
+}
+
+.nc-road__card {
+  width: 100%;
+  transition: border-color var(--nc-duration-fast) var(--nc-easing-standard), box-shadow var(--nc-duration-fast) var(--nc-easing-standard);
+}
+
+.nc-road__card:hover {
+  border-color: var(--nc-color-border-strong);
+}
+
+@container (max-width: 28rem) {
+  .nc-road-timeline {
+    padding-left: var(--nc-space-4);
+  }
+  .nc-road__dot {
+    left: calc(-1 * var(--nc-space-4) - var(--nc-size-border) * 2);
+  }
+}
+
 /* --- components/share-button --- */
 .nc-share { position: relative; display: inline-block; }
 .nc-share__menu {

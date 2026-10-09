@@ -1,5 +1,6 @@
 import { h, emit } from "../../js/core/dom.js";
 import { eventRow } from "../event-row/event-row.js";
+import { roadTimeline } from "../road-timeline/road-timeline.js";
 import { button } from "../button/button.js";
 import { relative, label, isValidDate } from "../../js/data/dates.js";
 import { dayScene } from "../../js/data/scene.js";
@@ -16,9 +17,10 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
  *   noun     "show"/"listing"
  * Fires nc-select {kind:"event", id} from rows and {kind:"day", date} from the empty-state jump.
  */
-export function dayAgenda(day, { today, next = "", nextCount = 0, noun = "show", level = 2 } = {}) {
+export function dayAgenda(day, { today, next = "", nextCount = 0, noun = "show", level = 2, road = false } = {}) {
   const id = `nc-day-${++uid}`;
   const rel = relative(day.date, today);
+  const isToday = day.isToday || rel === "Tonight" || day.date === today;
   const headingText = rel === "Tonight" || rel === "Tomorrow" ? rel : label.long(day.date);
   const header = h("header.nc-day-agenda__header", {},
     h("p.nc-eyebrow", {}, rel === "Tonight" || rel === "Tomorrow" ? label.long(day.date) : label.monthYear(day.date.slice(0, 7))),
@@ -27,7 +29,11 @@ export function dayAgenda(day, { today, next = "", nextCount = 0, noun = "show",
   );
   const section = h("section.nc-day-agenda", { "aria-labelledby": id, "data-date": day.date }, header);
   if (day.events.length) {
-    section.append(h("ol.nc-day-agenda__list", { role: "list" }, day.events.map(e => h("li", {}, eventRow(e)))));
+    if (isToday || road) {
+      section.append(roadTimeline(day.events, { today, level: level + 1 }));
+    } else {
+      section.append(h("ol.nc-day-agenda__list", { role: "list" }, day.events.map(e => h("li", {}, eventRow(e)))));
+    }
   } else {
     const empty = h("div.nc-day-agenda__empty", {}, h("p", {}, rel === "Tonight" ? "Nothing is listed for tonight yet." : "Nothing is listed for this night."));
     if (next) {

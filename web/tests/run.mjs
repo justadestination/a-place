@@ -273,6 +273,28 @@ if (!quick) {
   report.checks["closed venues isolation"] = { filtered: 2, openRemaining: m.venues.length };
 }
 
+// --- 11. road timeline chronological order & attendance sizing (Task 2.4) ---
+{
+  const { sortRoadEvents } = await import("../components/road-timeline/road-timeline.js");
+  const { billboardScale } = await import("../components/event-card/event-card.js");
+  const seeded = [
+    { id: "e-late-hot", title: "Late Hot", date: "2026-10-09", start: "10:00 PM", minutes: 22 * 60, bodies: 200, kind: "music" },
+    { id: "e-near-chill", title: "Near Chill", date: "2026-10-09", start: "6:00 PM", minutes: 18 * 60, bodies: 5, kind: "music" },
+    { id: "e-mid", title: "Mid Evening", date: "2026-10-09", start: "8:00 PM", minutes: 20 * 60, bodies: 50, kind: "comedy" },
+  ];
+  const sorted = sortRoadEvents(seeded);
+  const ids = sorted.map(s => s.id);
+  if (ids[0] !== "e-near-chill" || ids[1] !== "e-mid" || ids[2] !== "e-late-hot") {
+    fail("road timeline", `incorrect chronological DOM order: ${ids.join(" -> ")}`);
+  }
+  const scaleFirst = billboardScale(sorted[0].bodies);
+  const scaleLast = billboardScale(sorted[2].bodies);
+  if (scaleLast <= scaleFirst) {
+    fail("road timeline", `later-but-hotter event scale (${scaleLast}) not larger than nearest event (${scaleFirst})`);
+  }
+  report.checks["road timeline"] = { chronologicalOrder: ids, scaleFirst, scaleLast, diff: +(scaleLast - scaleFirst).toFixed(3) };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

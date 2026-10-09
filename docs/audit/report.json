@@ -544,6 +544,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/road-timeline/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/road-timeline/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/road-timeline/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/road-timeline/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/share-button/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -747,8 +779,8 @@
       "withoutRing": []
     },
     "month arrows": {
-      "from": "2026-10-08",
-      "to": "2026-10-16",
+      "from": "2026-10-09",
+      "to": "2026-10-17",
       "days": 8
     },
     "node map keys": {
@@ -805,6 +837,16 @@
     "closed venues isolation": {
       "filtered": 2,
       "openRemaining": 1
+    },
+    "road timeline": {
+      "chronologicalOrder": [
+        "e-near-chill",
+        "e-mid",
+        "e-late-hot"
+      ],
+      "scaleFirst": 1.1469242764767005,
+      "scaleLast": 1.4348710024608442,
+      "diff": 0.288
     }
   },
   "failures": []

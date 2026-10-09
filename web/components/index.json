@@ -93,6 +93,17 @@
     "readme": true
   },
   {
+    "name": "road-timeline",
+    "title": "Road timeline",
+    "summary": "Chronological road into the distance for today's events: position = start time, box size = attendance gauge.",
+    "params": {
+      "date": "YYYY-MM-DD (defaults to today)",
+      "scope": "nights | all",
+      "venue": "venue id"
+    },
+    "readme": false
+  },
+  {
     "name": "share-button",
     "title": "Share button",
     "summary": "Native share sheet when available; otherwise copy link, X, Bluesky, Facebook and email intents.",
