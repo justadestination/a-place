@@ -17,8 +17,10 @@ from zoneinfo import ZoneInfo
 
 from shadenet.nightcal.closures import cite_closures, is_closed, note_for
 from shadenet.nightcal.fill import AGENT_SOURCE, DAO_SOURCE, DB_PATH
+from shadenet.nightcal.lifecycle import compute_event_lifecycle
 from shadenet.nightcal.social import social_rank, social_status
 from shadenet.nightcal.votes import tally_map, vote_map
+
 from shadenet.towncrier.store import Store
 
 CATALOG_ID = "https://towncrier.local/catalogs/nightcal/v1/catalog.json"
@@ -483,7 +485,14 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             "down": downs,
             "score": ups - downs,
             "bodies": ups,
+            "lifecycle": compute_event_lifecycle(starts_at=starts_at, ends_at=ends_at)["state"],
+            "happeningNow": compute_event_lifecycle(starts_at=starts_at, ends_at=ends_at)["happening_now"],
+            "isPast": compute_event_lifecycle(starts_at=starts_at, ends_at=ends_at)["is_past"],
+            "isArchived": compute_event_lifecycle(starts_at=starts_at, ends_at=ends_at)["is_archived"],
+            "isRecurring": bool(raw.get("is_recurring") or raw.get("isRecurring") or raw.get("recurrence")),
+            "recurrence": raw.get("recurrence"),
         })
+
     on_sheet = [event for event in events if not event.get("suppressed")]
     music_rooms = {event["venueId"] for event in on_sheet if event["kind"] == "music" and event["venueId"]}
     booked = {event["venueId"] for event in on_sheet if event["venueId"]}

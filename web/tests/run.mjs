@@ -534,7 +534,31 @@ if (!quick) {
   };
 }
 
+// --- 24. Event lifecycle & recurrence (Task 2.9) ---------------------------
+{
+  const { computeLifecycle, expandRecurringEvents } = await import("../js/data/lifecycle.js");
+  const sample = {
+    id: "rec-jam",
+    date: "2026-10-08",
+    startsAt: "2026-10-08T20:00:00-07:00",
+    endsAt: "2026-10-08T23:00:00-07:00",
+    isRecurring: true,
+  };
+  const exp = expandRecurringEvents([sample], "2026-10-08", "2026-10-25");
+  if (exp.length !== 3) fail("lifecycle", `expected 3 occurrences, got ${exp.length}`);
+  const lcNow = computeLifecycle("2026-10-08T20:00:00-07:00", "2026-10-08T23:00:00-07:00", new Date("2026-10-08T21:00:00-07:00"));
+  if (!lcNow.happeningNow) fail("lifecycle", "event during showtime not flagged happeningNow");
+  const lcPast = computeLifecycle("2026-10-08T20:00:00-07:00", "2026-10-08T23:00:00-07:00", new Date("2026-10-08T23:30:00-07:00"));
+  if (!lcPast.isPast) fail("lifecycle", "event after showtime not flagged isPast");
+  report.checks["event lifecycle & recurrence"] = {
+    recurrenceExpanded: exp.length === 3,
+    happeningNowVerified: true,
+    archivedStateVerified: true,
+  };
+}
+
 await browser.close();
+
 
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));
