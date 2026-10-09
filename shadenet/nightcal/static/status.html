@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShadeNet System Status</title>
+<style>
+  :root {
+    --bg: #121214;
+    --surface: #1a1a1e;
+    --border: #2c2c34;
+    --text: #f0eee9;
+    --text-muted: #9e9ba5;
+    --accent: #ff7a00;
+    --success: #2ec4b6;
+    --danger: #e71d36;
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.5;
+    padding: 2rem 1.5rem;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  header {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+  .badge {
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .banner {
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .banner-operational {
+    background: rgba(46, 196, 182, 0.12);
+    border: 1px solid var(--success);
+    color: var(--success);
+  }
+  .banner-degraded {
+    background: rgba(231, 29, 54, 0.15);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+  }
+  .components {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .component-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .comp-name { font-weight: 500; font-size: 0.95rem; }
+  .comp-status { font-size: 0.85rem; font-weight: 600; }
+  .status-operational { color: var(--success); }
+  .status-outage { color: var(--danger); }
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ShadeNet Status</h1>
+  <span style="font-size: 0.8rem; color: var(--text-muted);" id="updated-at">Checking...</span>
+</header>
+
+<div class="banner banner-operational" id="status-banner">
+  <span id="banner-text">All Systems Operational</span>
+</div>
+
+<main class="components">
+  <div class="component-row">
+    <span class="comp-name">NightCal Public Web & Agenda</span>
+    <span class="comp-status status-operational" id="stat-web">Operational</span>
+  </div>
+  <div class="component-row">
+    <span class="comp-name">Attendance Tallies & Body Count</span>
+    <span class="comp-status status-operational" id="stat-tallies">Operational</span>
+  </div>
+  <div class="component-row">
+    <span class="comp-name">SQLite Store & Event Database</span>
+    <span class="comp-status status-operational" id="stat-database">Operational</span>
+  </div>
+  <div class="component-row">
+    <span class="comp-name">Content Mesh Peer Network</span>
+    <span class="comp-status status-operational" id="stat-mesh_sync">Operational</span>
+  </div>
+  <div class="component-row">
+    <span class="comp-name">Scraper Ingest & Supervision</span>
+    <span class="comp-status status-operational" id="stat-scrapers">Operational</span>
+  </div>
+</main>
+
+<footer>
+  <span>Incident response SLA: &lt; 5m</span>
+  <span id="uptime-label">Uptime: --</span>
+</footer>
+
+<script>
+  async function checkHealth() {
+    try {
+      const res = await fetch("/healthz");
+      const data = await res.json();
+      render(data);
+    } catch (err) {
+      render({ status: "degraded", components: { database: { status: "outage" } }, uptime_seconds: 0 });
+    }
+  }
+
+  function render(data) {
+    const isOk = data.status === "operational";
+    const banner = document.getElementById("status-banner");
+    const bannerText = document.getElementById("banner-text");
+
+    if (isOk) {
+      banner.className = "banner banner-operational";
+      bannerText.textContent = "All Systems Operational";
+    } else {
+      banner.className = "banner banner-degraded";
+      bannerText.textContent = "Partial System Outage Detected";
+    }
+
+    document.getElementById("updated-at").textContent = "Updated " + new Date().toLocaleTimeString();
+    if (data.uptime_seconds) {
+      document.getElementById("uptime-label").textContent = "Uptime: " + data.uptime_seconds + "s";
+    }
+
+    const comps = data.components || {};
+    for (const [key, info] of Object.entries(comps)) {
+      const el = document.getElementById("stat-" + key);
+      if (!el) continue;
+      const op = info.status === "operational";
+      el.className = "comp-status " + (op ? "status-operational" : "status-outage");
+      el.textContent = op ? "Operational" : "Degraded / Outage";
+    }
+  }
+
+  checkHealth();
+  setInterval(checkHealth, 5000);
+</script>
+</body>
+</html>

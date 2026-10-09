@@ -49,6 +49,7 @@ from shadenet.operator import (
     rotate_active_key,
 )
 from shadenet.ratelimit import limiter
+from shadenet.health import check_subsystems
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -163,6 +164,15 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("GET"):
             return
         path = self.path.split("?", 1)[0]
+        if path in ("/healthz", "/api/health"):
+            rep = check_subsystems(_db_path())
+            self._json(rep["http_code"], rep)
+            return
+        if path in ("/status", "/status/", "/status.html"):
+            st_page = STATIC / "static" / "status.html"
+            if st_page.is_file():
+                self._send(200, st_page.read_bytes(), "text/html; charset=utf-8")
+                return
         if path.startswith("/api/"):
             cat = "operator" if path.startswith("/api/operator/") else "api"
             if not self._check_rate_limit(cat):
