@@ -8,4 +8,11 @@ export const SITE = {
   "twitter": "",
   "locale": "en_US"
 };
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.debug('[pwa] serviceWorker registration:', err);
+    });
+  });
+}
 export default SITE;
