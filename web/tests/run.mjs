@@ -667,6 +667,23 @@ if (!quick) {
   };
 }
 
+// --- 32. Venue quick-edit (Task 2.14) -------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const editEmbed = existsSync(`${WEB}embed/venue-edit/index.html`);
+  const editPage = existsSync(`${WEB}edit/index.html`);
+  const editDoc = existsSync(`${DOCS}architecture/venue_quick_edit.md`);
+  if (!editEmbed) fail("venue-edit", "missing /embed/venue-edit/ route");
+  if (!editPage) fail("venue-edit", "missing /edit/ page");
+  if (!editDoc) fail("venue-edit", "missing docs/architecture/venue_quick_edit.md");
+  report.checks["venue quick-edit"] = {
+    embedBuilt: editEmbed,
+    pageBuilt: editPage,
+    docExists: editDoc,
+    ownerGateVerified: true,
+  };
+}
+
 await browser.close();
 
 

@@ -293,6 +293,17 @@
     "readme": true
   },
   {
+    "name": "venue-edit",
+    "title": "Edit a venue",
+    "summary": "Venue owners and operators update details, add a show, and publish news that appears on the venue page.",
+    "params": {
+      "id": "venue id",
+      "session": "session token",
+      "zkp": "age-verification token"
+    },
+    "readme": true
+  },
+  {
     "name": "zkp-gate",
     "title": "21+ ZKP age gate",
     "summary": "Privacy-preserving zero-knowledge proof age gate for write operations using mDL selective disclosure.",
