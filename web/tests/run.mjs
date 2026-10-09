@@ -359,6 +359,59 @@ if (!quick) {
   };
 }
 
+// --- 14. steward personalization hooks (Task 2.7) ----------------------------
+{
+  const { applyStewardPersonalization } = await import("../js/data/steward.js");
+  const { normalize } = await import("../js/data/calendar.js");
+  const baseFixture = normalize({
+    venues: [{ id: "v1", name: "Venue 1" }, { id: "v2", name: "Venue 2" }],
+    events: [
+      { id: "e1", title: "Public Show 1", date: "2026-10-15", venueId: "v1", minutes: 19 * 60, kind: "music" },
+      { id: "e2", title: "Public Show 2", date: "2026-10-15", venueId: "v2", minutes: 20 * 60, kind: "comedy" }
+    ]
+  });
+
+  // Default without steward
+  const def = applyStewardPersonalization(baseFixture, null, { enabled: false });
+  if (def.hasSteward || def.events.length !== 2) fail("steward hooks", "default view altered without steward");
+
+  // With steward payload
+  const samplePayload = {
+    stewardId: "s1",
+    personalEvents: [{ id: "pe1", title: "Private Event", date: "2026-10-15", minutes: 18 * 60, kind: "music" }],
+    mutedVenues: ["v1"],
+    earmarkedEvents: ["e2"],
+    broughtToAttention: [{ eventId: "e2", reason: "Hot pick" }]
+  };
+  const active = applyStewardPersonalization(baseFixture, samplePayload, { enabled: true });
+  if (!active.hasSteward) fail("steward hooks", "hasSteward not set");
+  if (!active.events.some(e => e.id === "pe1" && e.isPersonal)) fail("steward hooks", "personal calendar not merged");
+  if (active.events.some(e => e.venueId === "v1")) fail("steward hooks", "muted venue not hidden");
+  if (!active.events.some(e => e.id === "e2" && e.isEarmarked)) fail("steward hooks", "earmarked event not marked");
+  if (!active.events.some(e => e.id === "e2" && e.isAttention)) fail("steward hooks", "attention item not surfaced");
+
+  report.checks["steward personalization hooks"] = {
+    defaultEvents: def.events.length,
+    activeEvents: active.events.length,
+    personalMerged: true,
+    mutedHidden: true,
+    earmarkedHighlighted: true,
+    attentionSurfaced: true
+  };
+}
+
+// --- 15. hub module composition (Task 2.8) -----------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const slots = ["hub-zine", "hub-summary", "hub-inbox", "hub-market", "hub-layout"];
+  const missing = slots.filter(s => !existsSync(`${WEB}embed/${s}/index.html`));
+  if (missing.length) fail("hub modules", `missing embed routes for: ${missing.join(", ")}`);
+  report.checks["hub module composition"] = {
+    modules: slots.length,
+    allEmbedRoutesBuilt: missing.length === 0,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

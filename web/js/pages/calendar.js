@@ -12,10 +12,17 @@ import { filterBar } from "../../components/filter-bar/filter-bar.js";
 import { calendarWeek } from "../../components/calendar-week/calendar-week.js";
 import { dayAgenda } from "../../components/day-agenda/day-agenda.js";
 import { SITE } from "../core/site.js";
+import { applyStewardPersonalization, loadStewardStub } from "../data/steward.js";
 
 const app = document.getElementById("app");
-const model = await loadCalendar();
+const rawModel = await loadCalendar();
 const q = params();
+const stewardEnabled = q.get("steward") === "1" || window.__STEWARD_ENABLED__ === true;
+let stewardPayload = null;
+if (stewardEnabled) {
+  stewardPayload = window.__STEWARD_PAYLOAD__ || await loadStewardStub();
+}
+const model = applyStewardPersonalization(rawModel, stewardPayload, { enabled: stewardEnabled });
 const pathDay = location.pathname.match(/\/day\/(\d{4}-\d{2}-\d{2})/);
 const initialDate = isValidDate(q.get("date"))
   ? q.get("date")
@@ -56,14 +63,22 @@ function drawControls() {
 function drawWeek() {
   week.replaceChildren(calendarWeek(weekScene(model, state), { noun: noun() }));
 }
+import { hubLayout } from "../../components/hub-layout/hub-layout.js";
+
 function drawAgenda() {
   const day = dayScene(model, state);
   const filtered = filterEvents(model, state);
   const next = day.events.length ? "" : nextDateWithEvents(filtered, addDays(state.date, 1));
-  // The next night with listings is shown right below, so the empty state needs no jump button.
-  agenda.replaceChildren(dayAgenda(day, { today: model.today, noun: noun(), level: 1 }));
-  // An empty night is not a dead end: show the next night with listings right here.
-  if (next) agenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
+  const heroAgenda = dayAgenda(day, { today: model.today, noun: noun(), level: 1 });
+  if (next) heroAgenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
+  
+  agenda.replaceChildren(hubLayout({
+    heroNode: heroAgenda,
+    zine: null,
+    summary: null,
+    inbox: null,
+    market: null,
+  }));
   document.title = `${relative(state.date, model.today)} — ${SITE.name}, ${SITE.place}`;
 }
 let monthModule = null;

@@ -1,0 +1,31 @@
+.nc-hub-market {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-lg);
+}
+.nc-hub-market__list {
+  display: grid;
+  gap: var(--nc-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-hub-market__item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--nc-space-1) * 0.5);
+  padding: var(--nc-space-2);
+  background: var(--nc-color-surface-sunken);
+  border-radius: var(--nc-radius-md);
+  font-size: var(--nc-font-size-xs);
+}
+.nc-hub-market__title {
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+.nc-hub-market__desc {
+  color: var(--nc-color-text-muted);
+}
