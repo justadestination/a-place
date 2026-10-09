@@ -17,7 +17,7 @@ from zoneinfo import ZoneInfo
 from shadenet.nightcal.closures import cite_closures, is_closed, note_for
 from shadenet.nightcal.fill import AGENT_SOURCE, DAO_SOURCE, DB_PATH
 from shadenet.nightcal.social import social_rank, social_status
-from shadenet.nightcal.votes import vote_map
+from shadenet.nightcal.votes import tally_map, vote_map
 from shadenet.towncrier.store import Store
 
 CATALOG_ID = "https://towncrier.local/catalogs/nightcal/v1/catalog.json"
@@ -319,6 +319,7 @@ def rail_hidden(store: Store) -> set[str]:
 def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict], list[dict], list[str]]:
     cite_closures(store)
     votes = vote_map(store)
+    tallies = tally_map(store)
     venues = []
     for row in store.query("SELECT * FROM venues ORDER BY name"):
         handles = {}
@@ -399,10 +400,13 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
         if taken_down and not include_hidden:
             continue
         ups = downs = 0
-        for listing in listings:
-            vote_up, vote_down = votes.get(listing["listing_url"] or "", (0, 0))
-            if abs(vote_up - vote_down) > abs(ups - downs) or (ups == 0 and downs == 0 and (vote_up or vote_down)):
-                ups, downs = vote_up, vote_down
+        if event_id in tallies:
+            ups, downs = tallies[event_id]
+        else:
+            for listing in listings:
+                vote_up, vote_down = votes.get(listing["listing_url"] or "", (0, 0))
+                if abs(vote_up - vote_down) > abs(ups - downs) or (ups == 0 and downs == 0 and (vote_up or vote_down)):
+                    ups, downs = vote_up, vote_down
         raw = _raw_obj(row["raw_json"])
         start = _local(row["starts_at"])
         end = _local(row["ends_at"])
@@ -466,6 +470,7 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             "up": ups,
             "down": downs,
             "score": ups - downs,
+            "bodies": ups,
         })
     on_sheet = [event for event in events if not event.get("suppressed")]
     music_rooms = {event["venueId"] for event in on_sheet if event["kind"] == "music" and event["venueId"]}

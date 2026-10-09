@@ -189,13 +189,19 @@ class Handler(BaseHTTPRequestHandler):
                 self._refresh()
                 return
             if name == "vote":
+                event_id = str(context.get("eventId") or context.get("event_id") or "")
+                direction = str(context.get("direction") or "")
+                steward_id = str(context.get("steward_id") or context.get("stewardId") or "").strip()
+                verified = bool(context.get("verified", True))
                 with _lock:
                     store = open_store(_db_path())
                     try:
                         record_vote(
                             store,
-                            str(context.get("eventId") or ""),
-                            str(context.get("direction") or ""),
+                            event_id,
+                            direction,
+                            steward_id=steward_id or None,
+                            verified=verified,
                         )
                     finally:
                         store.close()
