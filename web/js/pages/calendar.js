@@ -63,14 +63,22 @@ function drawControls() {
 function drawWeek() {
   week.replaceChildren(calendarWeek(weekScene(model, state), { noun: noun() }));
 }
+import { hubLayout } from "../../components/hub-layout/hub-layout.js";
+
 function drawAgenda() {
   const day = dayScene(model, state);
   const filtered = filterEvents(model, state);
   const next = day.events.length ? "" : nextDateWithEvents(filtered, addDays(state.date, 1));
-  // The next night with listings is shown right below, so the empty state needs no jump button.
-  agenda.replaceChildren(dayAgenda(day, { today: model.today, noun: noun(), level: 1 }));
-  // An empty night is not a dead end: show the next night with listings right here.
-  if (next) agenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
+  const heroAgenda = dayAgenda(day, { today: model.today, noun: noun(), level: 1 });
+  if (next) heroAgenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
+  
+  agenda.replaceChildren(hubLayout({
+    heroNode: heroAgenda,
+    zine: null,
+    summary: null,
+    inbox: null,
+    market: null,
+  }));
   document.title = `${relative(state.date, model.today)} — ${SITE.name}, ${SITE.place}`;
 }
 let monthModule = null;

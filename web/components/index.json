@@ -76,6 +76,50 @@
     "readme": true
   },
   {
+    "name": "hub-inbox",
+    "title": "Hub inbox slot",
+    "summary": "Inbox snapshot slot for the hub index. Independently frameable.",
+    "params": {
+      "count": "number of items to mock (default 0)"
+    },
+    "readme": false
+  },
+  {
+    "name": "hub-layout",
+    "title": "Hub layout",
+    "summary": "Composite hub layout assembling hero today timeline and 4 auxiliary slots (zine, summary, inbox, market).",
+    "params": {},
+    "readme": false
+  },
+  {
+    "name": "hub-market",
+    "title": "Hub market slot",
+    "summary": "Serendipilyst anonymous classifieds slot for the hub index. Independently frameable.",
+    "params": {
+      "count": "number of items to mock (default 0)"
+    },
+    "readme": false
+  },
+  {
+    "name": "hub-summary",
+    "title": "Hub summary slot",
+    "summary": "Syndicated daily summary slot for the hub index. Independently frameable.",
+    "params": {
+      "text": "override summary text"
+    },
+    "readme": false
+  },
+  {
+    "name": "hub-zine",
+    "title": "Hub zine slot",
+    "summary": "Zine article slot for the hub index: featured Umwelt Horizons piece. Independently frameable.",
+    "params": {
+      "title": "override title",
+      "excerpt": "override excerpt"
+    },
+    "readme": false
+  },
+  {
     "name": "kind-tag",
     "title": "Kind tag",
     "summary": "What sort of night it is, as text plus a shape. Six kinds: live music, comedy, show, trivia, food trucks, other.",

@@ -400,6 +400,18 @@ if (!quick) {
   };
 }
 
+// --- 15. hub module composition (Task 2.8) -----------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const slots = ["hub-zine", "hub-summary", "hub-inbox", "hub-market", "hub-layout"];
+  const missing = slots.filter(s => !existsSync(`${WEB}embed/${s}/index.html`));
+  if (missing.length) fail("hub modules", `missing embed routes for: ${missing.join(", ")}`);
+  report.checks["hub module composition"] = {
+    modules: slots.length,
+    allEmbedRoutesBuilt: missing.length === 0,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));
