@@ -372,6 +372,42 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception as e:
                     self._json(401, {"error": str(e)})
                 return
+            if path == "/api/auth/recovery/verify":
+                username = str(body.get("username", ""))
+                recovery_code = str(body.get("recoveryCode", "") or body.get("recovery_code", ""))
+                device_info = str(body.get("deviceInfo", "New Authenticator Device"))
+                if not username or not recovery_code:
+                    self._json(400, {"error": "Both username and recoveryCode are required"})
+                    return
+                try:
+                    res = default_auth_manager.recover_account(username, recovery_code, device_info=device_info)
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+            if path == "/api/auth/recovery/generate":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                sess = default_auth_manager.validate_session(token) if token else None
+                if not sess:
+                    self._json(401, {"error": "Unauthorized: valid session required to generate recovery codes"})
+                    return
+                codes = default_auth_manager.store.generate_recovery_codes(sess["user_id"])
+                self._json(200, {"success": True, "recovery_codes": codes, "count": len(codes)})
+                return
+            if path == "/api/auth/recovery/escalate":
+                username = str(body.get("username", ""))
+                contact = str(body.get("contact", "") or body.get("contact_info", "") or body.get("email", ""))
+                notes = str(body.get("notes", "") or body.get("reason", ""))
+                try:
+                    res = default_auth_manager.submit_escalation(username, contact, notes)
+                    self._json(200, {"success": True, "escalation": res})
+                except Exception as e:
+                    self._json(400, {"error": str(e)})
+                return
+
 
 
         if path == "/api/operator/moderation":

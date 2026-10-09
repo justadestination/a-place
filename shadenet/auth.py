@@ -113,7 +113,29 @@ class AuthStore:
                 created_at TEXT NOT NULL,
                 expires_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS recovery_codes (
+                id TEXT PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                code_hash TEXT NOT NULL,
+                salt TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                consumed_at TEXT,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            );
+
+            CREATE TABLE IF NOT EXISTS recovery_escalations (
+                id TEXT PRIMARY KEY,
+                user_id TEXT,
+                username TEXT NOT NULL,
+                contact_info TEXT NOT NULL,
+                notes TEXT NOT NULL,
+                status TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                resolved_at TEXT
+            );
             """)
+
 
     # --- Challenges ---
     def create_challenge(self, purpose: str, user_id: str | None = None, ttl_seconds: int = 300) -> str:
@@ -307,6 +329,82 @@ class AuthStore:
                 WHERE user_id = ? AND id != ? AND revoked_at IS NULL AND expires_at > ?
             """, (now_iso, user_id, current_session_token, now_iso))
             return cur.rowcount
+
+    # --- Recovery Codes & Escalations (Task 4.2) ---
+    def generate_recovery_codes(self, user_id: str, count: int = 8) -> list[str]:
+        """Generate single-use recovery codes, hash them with PBKDF2, and persist."""
+        codes = []
+        created_at = _now_iso()
+        with self._get_connection() as con:
+            con.execute("DELETE FROM recovery_codes WHERE user_id = ? AND consumed_at IS NULL", (user_id,))
+            for _ in range(count):
+                raw = secrets.token_hex(6)  # 12 hex chars
+                formatted = f"{raw[0:4]}-{raw[4:8]}-{raw[8:12]}"
+                codes.append(formatted)
+                salt_b64, hash_b64 = _hash_secret(raw)
+                code_id = f"rc_{secrets.token_hex(8)}"
+                con.execute(
+                    "INSERT INTO recovery_codes (id, user_id, code_hash, salt, created_at) VALUES (?, ?, ?, ?, ?)",
+                    (code_id, user_id, hash_b64, salt_b64, created_at)
+                )
+        logger.info("recovery_codes_generated", user_id=user_id, count=count)
+        return codes
+
+    def verify_and_consume_recovery_code(self, username: str, recovery_code: str) -> dict[str, Any] | None:
+        """Verify provided code against user's stored salted hashes and consume single-use."""
+        clean_user = username.strip().lower()
+        user = self.get_user_by_username(clean_user)
+        if not user:
+            return None
+
+        raw_code = recovery_code.replace("-", "").strip().lower()
+        if not raw_code:
+            return None
+
+        now_iso = _now_iso()
+        with self._get_connection() as con:
+            rows = con.execute(
+                "SELECT * FROM recovery_codes WHERE user_id = ? AND consumed_at IS NULL",
+                (user["id"],)
+            ).fetchall()
+
+            for row in rows:
+                if _verify_secret(raw_code, row["salt"], row["code_hash"]):
+                    con.execute(
+                        "UPDATE recovery_codes SET consumed_at = ? WHERE id = ?",
+                        (now_iso, row["id"])
+                    )
+                    logger.info("recovery_code_consumed", user_id=user["id"], code_id=row["id"])
+                    return {"user": user, "code_id": row["id"]}
+
+        logger.warning("recovery_code_verification_failed", username=clean_user)
+        return None
+
+    def create_recovery_escalation(self, username: str, contact_info: str, notes: str) -> dict[str, Any]:
+        user = self.get_user_by_username(username.strip().lower())
+        user_id = user["id"] if user else None
+        esc_id = f"esc_{secrets.token_hex(8)}"
+        created_at = _now_iso()
+        with self._get_connection() as con:
+            con.execute(
+                "INSERT INTO recovery_escalations (id, user_id, username, contact_info, notes, status, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (esc_id, user_id, username.strip().lower(), contact_info.strip(), notes.strip(), "pending", created_at)
+            )
+        logger.info("recovery_escalation_created", escalation_id=esc_id, username=username)
+        return {
+            "id": esc_id,
+            "username": username,
+            "status": "pending",
+            "created_at": created_at,
+        }
+
+    def get_recovery_status(self, user_id: str) -> dict[str, Any]:
+        with self._get_connection() as con:
+            total = con.execute("SELECT COUNT(*) as c FROM recovery_codes WHERE user_id = ?", (user_id,)).fetchone()["c"]
+            remaining = con.execute("SELECT COUNT(*) as c FROM recovery_codes WHERE user_id = ? AND consumed_at IS NULL", (user_id,)).fetchone()["c"]
+            return {"total": total, "remaining": remaining}
+
 
 
 
@@ -526,6 +624,31 @@ class AuthManager:
         if not current_sess:
             raise ValueError("Unauthorized or session expired")
         return self.store.revoke_all_other_sessions(current_sess["user_id"], session_token)
+
+    def recover_account(self, username: str, recovery_code: str, device_info: str = "New Authenticator Device") -> dict[str, Any]:
+        result = self.store.verify_and_consume_recovery_code(username, recovery_code)
+        if not result:
+            raise ValueError("Invalid username or recovery code")
+
+        user = result["user"]
+        session_token = self.store.create_session(user["id"], device_info=device_info)
+        return {
+            "success": True,
+            "user": {
+                "id": user["id"],
+                "username": user["username"],
+                "display_name": user["display_name"],
+                "steward_id": user["steward_id"],
+            },
+            "session_token": session_token,
+            "consumed_code_id": result["code_id"],
+        }
+
+    def submit_escalation(self, username: str, contact_info: str, notes: str) -> dict[str, Any]:
+        if not username or not contact_info:
+            raise ValueError("Both username and contact information are required")
+        return self.store.create_recovery_escalation(username, contact_info, notes)
+
 
 
 

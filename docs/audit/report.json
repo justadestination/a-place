@@ -160,6 +160,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/auth/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/auth/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/auth/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/auth/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/system/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -345,6 +377,38 @@
       "errors": []
     },
     "/embed/article-intake/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/auth-dialog/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/auth-dialog/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/auth-dialog/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/auth-dialog/ desktop dark": {
       "axe": [],
       "tiny": [],
       "small": [],
@@ -896,6 +960,46 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/recovery/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [
+        "input.nc-recovery__input 332x42"
+      ],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/recovery/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [
+        "input.nc-recovery__input 332x42"
+      ],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/recovery/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [
+        "input.nc-recovery__input 561x42"
+      ],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/recovery/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [
+        "input.nc-recovery__input 561x42"
+      ],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/road-timeline/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -921,6 +1025,38 @@
       "errors": []
     },
     "/embed/road-timeline/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/session-list/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/session-list/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/session-list/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/session-list/ desktop dark": {
       "axe": [],
       "tiny": [],
       "small": [],
@@ -1123,7 +1259,7 @@
   },
   "checks": {
     "keyboard /": {
-      "stops": 30,
+      "stops": 29,
       "withoutRing": []
     },
     "keyboard /zine/": {
@@ -1227,7 +1363,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1450,
+      "layoutMs": 1840,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1253,7 +1389,31 @@
       "embedBuilt": true,
       "manifestBuilt": true,
       "highContrastWithFallback": true
+    },
+    "username / passkey entry": {
+      "pageBuilt": true,
+      "embedBuilt": true,
+      "passkeyAndFallbackVerified": true
+    },
+    "session management": {
+      "embedBuilt": true,
+      "revocationLifecycleVerified": true
+    },
+    "event lifecycle & recurrence": {
+      "recurrenceExpanded": true,
+      "happeningNowVerified": true,
+      "archivedStateVerified": true
+    },
+    "lost-phone recovery": {
+      "embedBuilt": true,
+      "selfServiceRecoveryVerified": true,
+      "supportEscalationVerified": true
     }
   },
-  "failures": []
+  "failures": [
+    "/embed/recovery/ mobile light: targets under 44px: input.nc-recovery__input 332x42",
+    "/embed/recovery/ mobile dark: targets under 44px: input.nc-recovery__input 332x42",
+    "/embed/recovery/ desktop light: targets under 44px: input.nc-recovery__input 561x42",
+    "/embed/recovery/ desktop dark: targets under 44px: input.nc-recovery__input 561x42"
+  ]
 }

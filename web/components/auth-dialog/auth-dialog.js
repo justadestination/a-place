@@ -126,12 +126,15 @@ export function authDialogView({
 
     const tabs = h("div.nc-auth-card__tabs", { role: "tablist", "aria-label": "Authentication mode" }, tabPasskey, tabFallback);
 
-    // 4. Form Container
-    const form = h("form.nc-auth-card__form", {
+    // 4. Panel & Form Container
+    const panel = h("div.nc-auth-card__panel", {
       role: "tabpanel",
-      "aria-label": activeTab === "passkey" ? "Passkey authentication form" : "Username fallback form",
+      "aria-label": activeTab === "passkey" ? "Passkey authentication" : "Username fallback",
     });
+    const form = h("form.nc-auth-card__form", {});
     form.addEventListener("submit", e => e.preventDefault());
+    panel.append(form);
+
 
     // Banner message if present
     let banner = null;
@@ -365,7 +368,8 @@ export function authDialogView({
       form.append(userField, passField, actions);
     }
 
-    root.append(header, tabs, ...(banner ? [banner] : []), form);
+    root.append(header, tabs, ...(banner ? [banner] : []), panel);
+
   }
 
   render();

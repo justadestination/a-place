@@ -99,9 +99,10 @@
 }
 
 .nc-auth-card__input:focus-visible {
-  outline: 2px solid var(--nc-color-focus);
-  outline-offset: 2px;
+  outline: var(--nc-size-border-strong) solid var(--nc-color-focus);
+  outline-offset: var(--nc-size-focus-offset);
 }
+
 
 .nc-auth-card__actions {
   display: flex;

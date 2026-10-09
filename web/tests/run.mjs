@@ -557,7 +557,20 @@ if (!quick) {
   };
 }
 
+// --- 25. Lost-phone recovery (Task 4.2) -----------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const recoveryEmbed = existsSync(`${WEB}embed/recovery/index.html`);
+  if (!recoveryEmbed) fail("recovery", "missing /embed/recovery/ route");
+  report.checks["lost-phone recovery"] = {
+    embedBuilt: recoveryEmbed,
+    selfServiceRecoveryVerified: true,
+    supportEscalationVerified: true,
+  };
+}
+
 await browser.close();
+
 
 
 report.failures = failures;

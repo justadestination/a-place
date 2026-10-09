@@ -184,6 +184,15 @@
     "readme": true
   },
   {
+    "name": "recovery",
+    "title": "Lost-phone recovery",
+    "summary": "Self-service recovery code redemption and support escalation for lost authenticator devices.",
+    "params": {
+      "username": "Optional initial username to pre-fill"
+    },
+    "readme": true
+  },
+  {
     "name": "road-timeline",
     "title": "Road timeline",
     "summary": "Chronological road into the distance for today's events: position = start time, box size = attendance gauge.",

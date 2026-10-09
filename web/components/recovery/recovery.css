@@ -1,0 +1,186 @@
+/* Lost-Phone Recovery Component (Task 4.2) */
+.nc-recovery {
+  display: grid;
+  gap: var(--nc-space-4);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+}
+
+.nc-recovery__header {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-recovery__eyebrow {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: var(--nc-font-tracking-caps);
+  margin: var(--nc-space-0);
+}
+
+.nc-recovery__title {
+  font-size: var(--nc-font-size-lg);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: var(--nc-space-0);
+}
+
+.nc-recovery__subtitle {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: var(--nc-space-0);
+}
+
+.nc-recovery__tabs {
+  display: flex;
+  gap: var(--nc-space-2);
+  border-bottom: var(--nc-size-border) solid var(--nc-color-border);
+  padding-bottom: var(--nc-space-2);
+}
+
+.nc-recovery__tab {
+  font-family: inherit;
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  background: transparent;
+  border: none;
+  border-bottom: var(--nc-size-border-strong) solid transparent;
+  color: var(--nc-color-text-muted);
+  cursor: pointer;
+  min-height: var(--nc-size-target);
+  border-radius: var(--nc-radius-sm) var(--nc-radius-sm) var(--nc-space-0) var(--nc-space-0);
+}
+
+.nc-recovery__tab:hover {
+  color: var(--nc-color-text);
+}
+
+.nc-recovery__tab:focus-visible {
+  outline: var(--nc-size-border-strong) solid var(--nc-color-focus);
+  outline-offset: var(--nc-size-focus-offset);
+}
+
+.nc-recovery__tab--active {
+  color: var(--nc-color-text);
+  border-bottom-color: var(--nc-color-focus);
+  font-weight: var(--nc-font-weight-bold);
+}
+
+.nc-recovery__panel {
+  display: grid;
+  gap: var(--nc-space-3);
+}
+
+.nc-recovery__form {
+  display: grid;
+  gap: var(--nc-space-3);
+}
+
+.nc-recovery__field {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-recovery__label {
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+  color: var(--nc-color-text);
+}
+
+.nc-recovery__input,
+.nc-recovery__textarea {
+  font-family: inherit;
+  font-size: var(--nc-font-size-md);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+  background: var(--nc-color-bg);
+  border: var(--nc-size-border) solid var(--nc-color-border-strong);
+  border-radius: var(--nc-radius-sm);
+  color: var(--nc-color-text);
+}
+
+
+.nc-recovery__input--code {
+  font-family: var(--nc-font-family-mono);
+  letter-spacing: var(--nc-font-tracking-caps);
+  text-transform: uppercase;
+}
+
+.nc-recovery__input:focus-visible,
+.nc-recovery__textarea:focus-visible {
+  outline: var(--nc-size-border-strong) solid var(--nc-color-focus);
+  outline-offset: var(--nc-size-focus-offset);
+}
+
+.nc-recovery__hint {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-recovery__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+  margin-top: var(--nc-space-2);
+}
+
+.nc-recovery__banner {
+  padding: var(--nc-space-3);
+  border-radius: var(--nc-radius-sm);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+}
+
+.nc-recovery__banner--error {
+  background: var(--nc-color-kind-comedy-bg);
+  color: var(--nc-color-kind-comedy-fg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-comedy-mark);
+}
+
+.nc-recovery__banner--success {
+  background: var(--nc-color-kind-music-bg);
+  color: var(--nc-color-kind-music-fg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-music-mark);
+}
+
+.nc-recovery__banner--info {
+  background: var(--nc-color-kind-show-bg);
+  color: var(--nc-color-kind-show-fg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-show-mark);
+}
+
+.nc-recovery__success-card {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-kind-music-bg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-music-mark);
+  border-radius: var(--nc-radius-md);
+}
+
+.nc-recovery__card-title {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-md);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-kind-music-fg);
+}
+
+.nc-recovery__card-text {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-kind-music-fg);
+}
+
+.nc-recovery__card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+}
