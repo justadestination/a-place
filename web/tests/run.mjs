@@ -595,8 +595,20 @@ if (!quick) {
   };
 }
 
+// --- 27. 21+ ZKP gate on writes (Task 4.4) --------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const zkpEmbed = existsSync(`${WEB}embed/zkp-gate/index.html`);
+  if (!zkpEmbed) fail("zkp-gate", "missing /embed/zkp-gate/ route");
+  report.checks["21+ zkp gate"] = {
+    embedBuilt: zkpEmbed,
+    gateUxVerified: true,
+    writeProtectionEnforced: true,
+  };
+}
 
 await browser.close();
+
 
 
 

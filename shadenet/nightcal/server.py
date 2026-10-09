@@ -51,6 +51,8 @@ from shadenet.operator import (
 from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
+from shadenet.zkp import create_age_challenge, verify_age_proof, validate_age_token, require_zkp_gate
+
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -264,6 +266,11 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception as e:
                     self._json(401, {"authenticated": False, "error": str(e)})
                 return
+            if path == "/api/auth/zkp/challenge":
+                res = create_age_challenge()
+                self._json(200, res)
+                return
+
 
 
         if path == "/api/model":
@@ -407,10 +414,29 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception as e:
                     self._json(400, {"error": str(e)})
                 return
+            if path == "/api/auth/zkp/verify":
+                res = verify_age_proof(body)
+                status_code = 200 if res.get("verified") else 400
+                self._json(status_code, res)
+                return
 
+        # 21+ ZKP Gate on write operations
+        if (
+            path.startswith("/api/write/")
+            or path in ("/api/article/submit", "/api/events/create", "/api/venues/edit")
+            or (path == "/api/action" and str(body.get("name") or "") in ("submit_article", "venue_edit", "create_event", "edit_venue", "post_blurb"))
+        ):
+            if not require_zkp_gate(self.headers, body):
+                self._json(403, {
+                    "error": "21+ ZKP age verification required for write actions",
+                    "gate_required": True,
+                    "challenge": create_age_challenge(),
+                })
+                return
 
 
         if path == "/api/operator/moderation":
+
             item_id = str(body.get("itemId") or body.get("item_id") or "")
             action = str(body.get("action") or "")
             note = str(body.get("note") or "")

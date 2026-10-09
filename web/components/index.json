@@ -262,5 +262,14 @@
       "node": "node id (defaults to the first note)"
     },
     "readme": true
+  },
+  {
+    "name": "zkp-gate",
+    "title": "21+ ZKP age gate",
+    "summary": "Privacy-preserving zero-knowledge proof age gate for write operations using mDL selective disclosure.",
+    "params": {
+      "verified": "Set to 1 to simulate pre-verified status"
+    },
+    "readme": true
   }
 ]
