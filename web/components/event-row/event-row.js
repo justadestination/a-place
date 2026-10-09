@@ -7,7 +7,8 @@ import { kindTag } from "../kind-tag/kind-tag.js";
  */
 export function eventRow(event, { showDate = false, dateLabel = "" } = {}) {
   const row = h("button.nc-event-row", { type: "button", "data-event-id": event.id },
-    h("span.nc-event-row__time", {}, showDate && dateLabel ? h("span.nc-event-row__date", {}, dateLabel) : null, event.start || "All day"),
+    h("span.nc-event-row__time", {}, showDate && dateLabel ? h("span.nc-event-row__date", {}, dateLabel) : null, event.localizedStart || event.start || "All day"),
+
     h("span.nc-event-row__main", {},
       h("span.nc-event-row__title", {}, event.title),
       h("span.nc-event-row__venue", {}, event.venueName || "Venue not listed"),

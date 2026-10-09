@@ -6,6 +6,7 @@
 
 import { today } from "./dates.js";
 import { computeLifecycle } from "./lifecycle.js";
+import { formatLocalizedTime, formatTimeRange, getTimezoneAbbr, DEFAULT_TIMEZONE } from "./tz.js";
 
 
 export const KINDS = {
@@ -82,6 +83,7 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
     .map(v => ({
       id: v.id, name: v.name, address: v.address || "", lat: v.lat, lon: v.lon,
       amenity: v.amenity || "", music: !!v.music, contact: v.contact || {},
+      timezone: v.timezone || DEFAULT_TIMEZONE,
       closed: false, is_closed: false,
     }));
   const venuesById = new Map(venues.map(v => [v.id, v]));
@@ -90,6 +92,12 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
     .map(e => {
       const kind = KINDS[e.kind] ? e.kind : "other";
       const meta = KINDS[kind];
+      const venue = venuesById.get(e.venueId);
+      const tz = e.timezone || venue?.timezone || DEFAULT_TIMEZONE;
+      const tzAbbr = e.tzAbbr || (e.startsAt ? getTimezoneAbbr(e.startsAt, tz) : "");
+      const localizedStart = e.startsAt ? formatLocalizedTime(e.startsAt, tz, { includeTz: true }) : (e.startLabel || "");
+      const localizedTime = e.startsAt ? formatTimeRange(e.startsAt, e.endsAt, tz) : [e.startLabel, e.endLabel].filter(Boolean).join(" – ");
+
       return {
         id: e.id,
         title: (e.title || "").trim() || "Untitled",
@@ -100,7 +108,12 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
         kind, kindLabel: meta.label, tone: meta.tone, glyph: meta.glyph,
         night: NIGHT_KINDS.has(kind),
         venueId: e.venueId || "",
-        venueName: venuesById.get(e.venueId)?.name || e.venue || "",
+        venueName: venue?.name || e.venue || "",
+        timezone: tz,
+        tzAbbr,
+        localizedStart,
+        localizedTime,
+        timeDisplay: localizedTime,
         url: safeUrl(e.sourceUrl),
         sourceName: e.sourceName || "",
         checks: (e.checks || []).map(c => ({ name: c.name, url: safeUrl(c.url) })).filter(c => c.url),
@@ -119,6 +132,7 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
         isRecurring: Boolean(e.isRecurring || e.is_recurring || e.recurrence),
         recurrence: e.recurrence || null,
       };
+
 
     })
     .sort((a, b) => a.date.localeCompare(b.date) || a.minutes - b.minutes || a.title.localeCompare(b.title));

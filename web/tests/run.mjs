@@ -557,7 +557,35 @@ if (!quick) {
   };
 }
 
+// --- 26. Timezone correctness & multi-region support (Task 2.10) ----------
+{
+  const { normalize } = await import("../js/data/calendar.js");
+  const { formatLocalizedTime, getTimezoneAbbr } = await import("../js/data/tz.js");
+  const testData = {
+    venues: [
+      { id: "v_west", timezone: "America/Los_Angeles" },
+      { id: "v_east", timezone: "America/New_York" },
+    ],
+    events: [
+      { id: "e1", venueId: "v_west", date: "2026-10-08", startsAt: "2026-10-09T03:00:00Z" },
+      { id: "e2", venueId: "v_east", date: "2026-10-08", startsAt: "2026-10-09T00:00:00Z" },
+    ],
+
+  };
+  const m = normalize(testData);
+  const e1 = m.eventsById.get("e1");
+  const e2 = m.eventsById.get("e2");
+  if (e1.tzAbbr !== "PDT" || !e1.localizedStart.includes("PDT")) fail("timezone", `expected PDT for west venue, got ${e1?.localizedStart}`);
+  if (e2.tzAbbr !== "EDT" || !e2.localizedStart.includes("EDT")) fail("timezone", `expected EDT for east venue, got ${e2?.localizedStart}`);
+  report.checks["timezone correctness"] = {
+    westCoastAbbr: e1.tzAbbr,
+    eastCoastAbbr: e2.tzAbbr,
+    multiTimezoneVerified: true,
+  };
+}
+
 await browser.close();
+
 
 
 report.failures = failures;

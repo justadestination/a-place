@@ -6,7 +6,8 @@ import { label, relative } from "../../js/data/dates.js";
 import { shareUrl } from "../../js/core/share.js";
 
 let uid = 0;
-const timeRange = e => [e.start, e.end].filter(Boolean).join(" – ");
+const timeRange = e => e.timeDisplay || e.localizedTime || [e.start, e.end].filter(Boolean).join(" – ");
+
 
 /**
  * Decision 005: Billboard sizing curve:
