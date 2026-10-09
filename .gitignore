@@ -24,4 +24,5 @@ venv/
 # Secrets
 .env
 node_modules/
+web/node_modules/
 web/tests/output/
