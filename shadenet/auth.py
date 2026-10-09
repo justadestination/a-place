@@ -134,6 +134,21 @@ class AuthStore:
                 created_at TEXT NOT NULL,
                 resolved_at TEXT
             );
+
+            CREATE TABLE IF NOT EXISTS user_preferences (
+                user_id TEXT PRIMARY KEY,
+                preferences_json TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            );
+
+            CREATE TABLE IF NOT EXISTS user_earmarks (
+                id TEXT PRIMARY KEY,
+                user_id TEXT NOT NULL,
+                event_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            );
             """)
 
 
@@ -405,6 +420,155 @@ class AuthStore:
             remaining = con.execute("SELECT COUNT(*) as c FROM recovery_codes WHERE user_id = ? AND consumed_at IS NULL", (user_id,)).fetchone()["c"]
             return {"total": total, "remaining": remaining}
 
+    # --- Preferences & Earmarks (Task 4.5 / 4.6) ---
+    def set_user_preferences(self, user_id: str, preferences: dict[str, Any]) -> dict[str, Any]:
+        pref_json = json.dumps(preferences)
+        updated_at = _now_iso()
+        with self._get_connection() as con:
+            con.execute(
+                "INSERT INTO user_preferences (user_id, preferences_json, updated_at) "
+                "VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET preferences_json = ?, updated_at = ?",
+                (user_id, pref_json, updated_at, pref_json, updated_at)
+            )
+        return {"user_id": user_id, "preferences": preferences, "updated_at": updated_at}
+
+    def get_user_preferences(self, user_id: str) -> dict[str, Any]:
+        with self._get_connection() as con:
+            row = con.execute("SELECT preferences_json FROM user_preferences WHERE user_id = ?", (user_id,)).fetchone()
+            if row:
+                try:
+                    return json.loads(row["preferences_json"])
+                except Exception:
+                    return {}
+            return {}
+
+    def add_user_earmark(self, user_id: str, event_id: str) -> dict[str, Any]:
+        earmark_id = f"emk_{secrets.token_hex(8)}"
+        created_at = _now_iso()
+        with self._get_connection() as con:
+            con.execute(
+                "INSERT INTO user_earmarks (id, user_id, event_id, created_at) VALUES (?, ?, ?, ?)",
+                (earmark_id, user_id, event_id, created_at)
+            )
+        return {"id": earmark_id, "user_id": user_id, "event_id": event_id, "created_at": created_at}
+
+    def get_user_earmarks(self, user_id: str) -> list[dict[str, Any]]:
+        with self._get_connection() as con:
+            rows = con.execute("SELECT id, event_id, created_at FROM user_earmarks WHERE user_id = ? ORDER BY created_at DESC", (user_id,)).fetchall()
+            return [dict(r) for r in rows]
+
+    # --- Data Export & Account Deletion (Task 4.5) ---
+    def export_user_data(self, user_id: str) -> dict[str, Any]:
+        """Export comprehensive GDPR/CCPA compliant data bundle for a user."""
+        with self._get_connection() as con:
+            user_row = con.execute(
+                "SELECT id, username, display_name, steward_id, created_at FROM users WHERE id = ?",
+                (user_id,)
+            ).fetchone()
+            if not user_row:
+                raise ValueError(f"User {user_id} not found")
+            user = dict(user_row)
+
+            # Passkeys / credentials metadata
+            passkeys = [
+                dict(r) for r in con.execute(
+                    "SELECT id, credential_id, sign_count, nickname, created_at FROM passkeys WHERE user_id = ?",
+                    (user_id,)
+                ).fetchall()
+            ]
+
+            # Sessions
+            sessions = [
+                dict(r) for r in con.execute(
+                    "SELECT id, created_at, expires_at, revoked_at, device_info FROM sessions WHERE user_id = ?",
+                    (user_id,)
+                ).fetchall()
+            ]
+
+            # Preferences
+            preferences = self.get_user_preferences(user_id)
+
+            # Earmarks
+            earmarks = self.get_user_earmarks(user_id)
+
+            # Recovery escalations
+            escalations = [
+                dict(r) for r in con.execute(
+                    "SELECT id, username, contact_info, notes, status, created_at, resolved_at "
+                    "FROM recovery_escalations WHERE user_id = ? OR username = ?",
+                    (user_id, user["username"])
+                ).fetchall()
+            ]
+
+            # Votes / Tallies (via steward_id, username, or user_id)
+            tallies = []
+            steward_id = user.get("steward_id") or user.get("username")
+            try:
+                tallies = [
+                    dict(r) for r in con.execute(
+                        "SELECT event_id, direction, verified, updated_at FROM nightcal_tallies "
+                        "WHERE steward_id = ? OR steward_id = ?",
+                        (steward_id, user_id)
+                    ).fetchall()
+                ]
+            except sqlite3.OperationalError:
+                pass
+
+            logger.info("account_data_exported", user_id=user_id, username=user["username"])
+            return {
+                "format_version": "1.0",
+                "compliance": "GDPR/CCPA Article 15 (Right of Access)",
+                "exported_at": _now_iso(),
+                "user": user,
+                "passkeys": passkeys,
+                "sessions": sessions,
+                "preferences": preferences,
+                "earmarks": earmarks,
+                "votes": tallies,
+                "escalations": escalations,
+            }
+
+    def delete_user_data(self, user_id: str) -> dict[str, Any]:
+        """Perform full deletion of a user's account and residual data (Task 4.5)."""
+        with self._get_connection() as con:
+            user_row = con.execute("SELECT id, username, steward_id FROM users WHERE id = ?", (user_id,))
+            user = user_row.fetchone()
+            if not user:
+                raise ValueError(f"User {user_id} not found")
+            username = user["username"]
+            steward_id = user["steward_id"] or username
+
+            # 1. Delete sessions
+            con.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
+            # 2. Delete passkeys
+            con.execute("DELETE FROM passkeys WHERE user_id = ?", (user_id,))
+            # 3. Delete recovery codes
+            con.execute("DELETE FROM recovery_codes WHERE user_id = ?", (user_id,))
+            # 4. Delete auth challenges
+            con.execute("DELETE FROM auth_challenges WHERE user_id = ?", (user_id,))
+            # 5. Delete preferences
+            con.execute("DELETE FROM user_preferences WHERE user_id = ?", (user_id,))
+            # 6. Delete earmarks
+            con.execute("DELETE FROM user_earmarks WHERE user_id = ?", (user_id,))
+            # 7. Delete recovery escalations
+            con.execute("DELETE FROM recovery_escalations WHERE user_id = ? OR username = ?", (user_id, username))
+            # 8. Anonymize/delete votes & tallies cast by this user so 0 residual rows reference them
+            try:
+                con.execute("DELETE FROM nightcal_tallies WHERE steward_id = ? OR steward_id = ?", (steward_id, user_id))
+            except sqlite3.OperationalError:
+                pass
+            # 9. Delete user record
+            con.execute("DELETE FROM users WHERE id = ?", (user_id,))
+            con.commit()
+
+            logger.info("account_deleted", user_id=user_id, username=username)
+            return {
+                "success": True,
+                "deleted_user_id": user_id,
+                "username": username,
+                "deleted_at": _now_iso(),
+            }
+
 
 
 
@@ -649,7 +813,46 @@ class AuthManager:
             raise ValueError("Both username and contact information are required")
         return self.store.create_recovery_escalation(username, contact_info, notes)
 
+    def export_account(self, session_token: str) -> dict[str, Any]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        return self.store.export_user_data(sess["user_id"])
 
+    def delete_account(self, session_token: str, confirm_username: str | None = None) -> dict[str, Any]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        user = self.store.get_user_by_id(sess["user_id"])
+        if not user:
+            raise ValueError("User account not found")
+        if confirm_username and confirm_username.strip().lower() != user["username"].strip().lower():
+            raise ValueError(f"Confirmation username '{confirm_username}' does not match account '{user['username']}'")
+        return self.store.delete_user_data(user["id"])
+
+    def set_preferences(self, session_token: str, preferences: dict[str, Any]) -> dict[str, Any]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        return self.store.set_user_preferences(sess["user_id"], preferences)
+
+    def get_preferences(self, session_token: str) -> dict[str, Any]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        return self.store.get_user_preferences(sess["user_id"])
+
+    def add_earmark(self, session_token: str, event_id: str) -> dict[str, Any]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        return self.store.add_user_earmark(sess["user_id"], event_id)
+
+    def list_earmarks(self, session_token: str) -> list[dict[str, Any]]:
+        sess = self.validate_session(session_token)
+        if not sess:
+            raise ValueError("Unauthorized: invalid or expired session")
+        return self.store.get_user_earmarks(sess["user_id"])
 
 
 # Default manager singleton

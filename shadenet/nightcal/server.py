@@ -270,6 +270,41 @@ class Handler(BaseHTTPRequestHandler):
                 res = create_age_challenge()
                 self._json(200, res)
                 return
+            if path == "/api/auth/export":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else qs.get("session", [""])[0]
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                if not token:
+                    self._json(401, {"error": "Unauthorized: session token required for data export"})
+                    return
+                try:
+                    export_data = default_auth_manager.export_account(token)
+                    u = export_data["user"]["username"]
+                    payload = json.dumps(export_data, indent=2).encode("utf-8")
+                    self.send_response(200)
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.send_header("Content-Disposition", f'attachment; filename="nightcal-export-{u}.json"')
+                    self.send_header("Content-Length", str(len(payload)))
+                    self.end_headers()
+                    self.wfile.write(payload)
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+            if path == "/api/auth/preferences":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else qs.get("session", [""])[0]
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                if not token:
+                    self._json(401, {"error": "Unauthorized: session token required"})
+                    return
+                try:
+                    prefs = default_auth_manager.get_preferences(token)
+                    self._json(200, {"preferences": prefs})
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
 
 
 
@@ -419,6 +454,38 @@ class Handler(BaseHTTPRequestHandler):
                 status_code = 200 if res.get("verified") else 400
                 self._json(status_code, res)
                 return
+            if path in ("/api/auth/account/delete", "/api/auth/delete"):
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                confirm_username = str(body.get("confirmUsername", "") or body.get("confirm_username", "") or body.get("username", ""))
+                if not token:
+                    self._json(401, {"error": "Unauthorized: valid session required to delete account"})
+                    return
+                try:
+                    res = default_auth_manager.delete_account(token, confirm_username=confirm_username or None)
+                    self._json(200, res)
+                except ValueError as e:
+                    self._json(400, {"error": str(e)})
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+            if path == "/api/auth/preferences":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    token = self.headers.get("X-Session-Token", "")
+                prefs = body.get("preferences") if isinstance(body.get("preferences"), dict) else body
+                if not token:
+                    self._json(401, {"error": "Unauthorized: valid session required"})
+                    return
+                try:
+                    res = default_auth_manager.set_preferences(token, prefs)
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
 
         # 21+ ZKP Gate on write operations
         if (
@@ -495,8 +562,31 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, b"not found", "text/plain; charset=utf-8")
 
     def do_DELETE(self) -> None:  # noqa: N802
-        if not self._events("DELETE"):
-            self._send(404, b"not found", "text/plain; charset=utf-8")
+        if self._events("DELETE"):
+            return
+        path = self.path.split("?", 1)[0]
+        if path == "/api/auth/account":
+            body = self._read_json() or {}
+            auth_hdr = self.headers.get("Authorization", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else str(body.get("sessionToken", "") or body.get("session_token", ""))
+            if not token:
+                token = self.headers.get("X-Session-Token", "")
+            if not token:
+                qs = urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                token = qs.get("session", [""])[0]
+            confirm_username = str(body.get("confirmUsername", "") or body.get("confirm_username", "") or body.get("username", ""))
+            if not token:
+                self._json(401, {"error": "Unauthorized: valid session required to delete account"})
+                return
+            try:
+                res = default_auth_manager.delete_account(token, confirm_username=confirm_username or None)
+                self._json(200, res)
+            except ValueError as e:
+                self._json(400, {"error": str(e)})
+            except Exception as e:
+                self._json(401, {"error": str(e)})
+            return
+        self._send(404, b"not found", "text/plain; charset=utf-8")
 
     def _refresh(self) -> None:
         global _status

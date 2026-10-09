@@ -1,0 +1,259 @@
+/* Account Settings & Lifecycle Component (Task 4.5) */
+.nc-account-settings {
+  display: grid;
+  gap: var(--nc-space-5);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.nc-account-settings__header {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-account-settings__eyebrow {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: var(--nc-font-tracking-caps);
+  margin: var(--nc-space-0);
+}
+
+.nc-account-settings__title {
+  font-size: var(--nc-font-size-xl);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: var(--nc-space-0);
+}
+
+.nc-account-settings__subtitle {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: var(--nc-space-0);
+  line-height: 1.5;
+}
+
+.nc-account-card {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface-raised, var(--nc-color-surface));
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  box-sizing: border-box;
+}
+
+.nc-account-card--danger {
+  border-color: var(--nc-color-kind-comedy-mark);
+  background: var(--nc-color-kind-comedy-bg);
+}
+
+.nc-account-card__title {
+  font-size: var(--nc-font-size-md);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: var(--nc-space-0);
+}
+
+.nc-account-card--danger .nc-account-card__title {
+  color: var(--nc-color-kind-comedy-fg);
+}
+
+.nc-account-card__desc {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: var(--nc-space-0);
+  line-height: 1.5;
+}
+
+.nc-account-card--danger .nc-account-card__desc {
+  color: var(--nc-color-kind-comedy-fg);
+}
+
+.nc-account-profile-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--nc-space-2) var(--nc-space-4);
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-account-profile-grid dt {
+  font-weight: var(--nc-font-weight-medium);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-account-profile-grid dd {
+  margin: var(--nc-space-0);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+
+.nc-account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-3);
+  align-items: center;
+}
+
+.nc-account-actions button,
+.nc-account-actions .nc-button {
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+}
+
+.nc-account-feedback {
+  font-size: var(--nc-font-size-sm);
+  min-height: var(--nc-space-4);
+  display: flex;
+  align-items: center;
+}
+
+.nc-account-feedback--success {
+  color: var(--nc-color-kind-music-fg);
+}
+
+.nc-account-feedback--error {
+  color: var(--nc-color-kind-comedy-fg);
+}
+
+/* Accessible Modal */
+.nc-account-modal {
+  position: fixed;
+  inset: var(--nc-space-0);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nc-space-4);
+  box-sizing: border-box;
+}
+
+.nc-account-modal[hidden] {
+  display: none;
+}
+
+.nc-account-modal__backdrop {
+  position: absolute;
+  inset: var(--nc-space-0);
+  background: var(--nc-color-scrim);
+}
+
+.nc-account-modal__content {
+  position: relative;
+  z-index: 1;
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-kind-comedy-mark);
+  border-radius: var(--nc-radius-md);
+  padding: var(--nc-space-5);
+  max-width: var(--nc-size-measure);
+  width: 100%;
+  display: grid;
+  gap: var(--nc-space-4);
+  box-shadow: var(--nc-shadow-overlay);
+  box-sizing: border-box;
+}
+
+.nc-account-modal__title {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-lg);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-kind-comedy-fg);
+}
+
+.nc-account-modal__desc {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  line-height: 1.5;
+}
+
+.nc-account-field {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-account-field--checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+}
+
+.nc-account-label {
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+  color: var(--nc-color-text);
+}
+
+.nc-account-input {
+  min-height: var(--nc-size-target);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  font-size: var(--nc-font-size-base);
+  background: var(--nc-color-bg);
+  color: var(--nc-color-text);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  box-sizing: border-box;
+}
+
+.nc-account-input:focus {
+  outline: var(--nc-focus-ring-width) solid var(--nc-color-focus);
+  outline-offset: var(--nc-focus-ring-offset);
+}
+
+.nc-account-checkbox {
+  width: var(--nc-space-4);
+  height: var(--nc-space-4);
+  min-height: var(--nc-space-4);
+  margin: var(--nc-space-0);
+  accent-color: var(--nc-color-accent);
+}
+
+.nc-account-checkbox-label {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text);
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.nc-account-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--nc-space-3);
+  margin-top: var(--nc-space-2);
+}
+
+.nc-account-modal__actions button {
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+}
+
+/* Deleted State Banner */
+.nc-account-deleted-state {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-5);
+  background: var(--nc-color-kind-music-bg);
+  border: var(--nc-size-border) solid var(--nc-color-kind-music-mark);
+  border-radius: var(--nc-radius-md);
+  text-align: center;
+}
+
+.nc-account-deleted-state__title {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-lg);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-kind-music-fg);
+}
+
+.nc-account-deleted-state__desc {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-kind-music-fg);
+}

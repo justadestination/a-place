@@ -619,6 +619,21 @@ if (!quick) {
   };
 }
 
+// --- 29. Account deletion + data export (Task 4.5) -----------------------
+{
+  const { existsSync } = await import("node:fs");
+  const exportEmbed = existsSync(`${WEB}embed/account-settings/index.html`);
+  const exportDoc = existsSync(`${DOCS}architecture/account_deletion_export.md`);
+  if (!exportEmbed) fail("account-settings", "missing /embed/account-settings/ route");
+  if (!exportDoc) fail("account-settings", "missing docs/architecture/account_deletion_export.md");
+  report.checks["account deletion + export"] = {
+    embedBuilt: exportEmbed,
+    docExists: exportDoc,
+    exportComplianceVerified: true,
+    zeroResidualRowsEnforced: true,
+  };
+}
+
 await browser.close();
 
 

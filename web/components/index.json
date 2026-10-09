@@ -1,5 +1,14 @@
 [
   {
+    "name": "account-settings",
+    "title": "Account settings & data lifecycle",
+    "summary": "Full GDPR/CCPA personal data export (JSON) and permanent account deletion with zero residual rows.",
+    "params": {
+      "username": "account username"
+    },
+    "readme": true
+  },
+  {
     "name": "article-intake",
     "title": "Article intake and review",
     "summary": "Zine article intake pipeline: draft submission, spam moderation, and graph node instantiation.",
