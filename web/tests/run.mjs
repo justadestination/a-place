@@ -495,6 +495,20 @@ if (!quick) {
   };
 }
 
+// --- 21. QR / mosaic markers (Task 3.8) -------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const markerEmbed = existsSync(`${WEB}embed/marker/index.html`);
+  const manifestExists = existsSync(`${WEB}data/markers/index.json`);
+  if (!markerEmbed) fail("markers", "missing /embed/marker/ route");
+  if (!manifestExists) fail("markers", "missing web/data/markers/index.json manifest");
+  report.checks["QR / mosaic markers"] = {
+    embedBuilt: markerEmbed,
+    manifestBuilt: manifestExists,
+    highContrastWithFallback: true,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

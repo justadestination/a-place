@@ -1,0 +1,66 @@
+.nc-marker-card {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+}
+
+.nc-marker-card__header {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-marker-card__badge {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nc-marker-card__title {
+  font-size: var(--nc-font-size-md);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-marker-card__preview {
+  display: flex;
+  justify-content: center;
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface-sunken);
+  border-radius: var(--nc-radius-sm);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+}
+
+.nc-marker-card__img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-marker-card__fallback {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+  margin: 0;
+}
+
+.nc-marker-card__code {
+  font-family: inherit;
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-link);
+  background: var(--nc-color-surface-sunken);
+  padding: var(--nc-space-1) var(--nc-space-2);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-marker-card__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--nc-space-1);
+}

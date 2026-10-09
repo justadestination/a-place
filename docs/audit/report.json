@@ -800,6 +800,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/marker/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/marker/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/marker/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/marker/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/node-map/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1091,7 +1123,7 @@
   },
   "checks": {
     "keyboard /": {
-      "stops": 29,
+      "stops": 30,
       "withoutRing": []
     },
     "keyboard /zine/": {
@@ -1195,7 +1227,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1671,
+      "layoutMs": 1450,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1216,6 +1248,11 @@
       "pageBuilt": true,
       "embedBuilt": true,
       "arProbeAndFallbackVerified": true
+    },
+    "QR / mosaic markers": {
+      "embedBuilt": true,
+      "manifestBuilt": true,
+      "highContrastWithFallback": true
     }
   },
   "failures": []

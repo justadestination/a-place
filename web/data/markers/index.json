@@ -1,0 +1,38 @@
+[
+  {
+    "target": "note:editorial-checklist",
+    "file": "/data/markers/editorial-checklist.svg",
+    "destination_url": "https://shady.example.org/portal/?target=note:editorial-checklist",
+    "fallback_caption": "shady.example.org/portal/?target=note:editorial-checklist"
+  },
+  {
+    "target": "note:late-show-review",
+    "file": "/data/markers/late-show-review.svg",
+    "destination_url": "https://shady.example.org/portal/?target=note:late-show-review",
+    "fallback_caption": "shady.example.org/portal/?target=note:late-show-review"
+  },
+  {
+    "target": "note:the-room-after-midnight",
+    "file": "/data/markers/the-room-after-midnight.svg",
+    "destination_url": "https://shady.example.org/portal/?target=note:the-room-after-midnight",
+    "fallback_caption": "shady.example.org/portal/?target=note:the-room-after-midnight"
+  },
+  {
+    "target": "venue:royal",
+    "file": "/data/markers/venue-royal.svg",
+    "destination_url": "https://shady.example.org/portal/?target=venue:royal",
+    "fallback_caption": "shady.example.org/portal/?target=venue:royal"
+  },
+  {
+    "target": "venue:arlene-francis",
+    "file": "/data/markers/venue-arlene-francis.svg",
+    "destination_url": "https://shady.example.org/portal/?target=venue:arlene-francis",
+    "fallback_caption": "shady.example.org/portal/?target=venue:arlene-francis"
+  },
+  {
+    "target": "event:evt_456",
+    "file": "/data/markers/event-evt-456.svg",
+    "destination_url": "https://shady.example.org/portal/?target=event:evt_456",
+    "fallback_caption": "shady.example.org/portal/?target=event:evt_456"
+  }
+]

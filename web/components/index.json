@@ -147,6 +147,15 @@
     "readme": true
   },
   {
+    "name": "marker",
+    "title": "Zine print marker",
+    "summary": "Visual marker system embedding QR data with high-contrast editorial styling and printed URL fallbacks.",
+    "params": {
+      "target": "target node or entity ID (default note:the-room-after-midnight)"
+    },
+    "readme": true
+  },
+  {
     "name": "node-map",
     "title": "Zine node map",
     "summary": "The zine as a force-directed graph: notes, events, venues and unresolved links. Pan, zoom, keyboard navigation, select to read.",
