@@ -50,6 +50,7 @@ from shadenet.operator import (
 )
 from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
+from shadenet.auth import default_auth_manager
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -224,6 +225,32 @@ class Handler(BaseHTTPRequestHandler):
                     store.close()
             self._json(200, payload)
             return
+        if path.startswith("/api/auth/"):
+            qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            if path == "/api/auth/register/options":
+                u = qs.get("username", [""])[0]
+                d = qs.get("displayName", [None])[0]
+                try:
+                    res = default_auth_manager.generate_registration_options(u, d)
+                    self._json(200, res)
+                except ValueError as e:
+                    self._json(400, {"error": str(e)})
+                return
+            if path == "/api/auth/login/options":
+                u = qs.get("username", [None])[0]
+                res = default_auth_manager.generate_login_options(u)
+                self._json(200, res)
+                return
+            if path == "/api/auth/session":
+                auth_hdr = self.headers.get("Authorization", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else qs.get("session", [""])[0]
+                sess = default_auth_manager.validate_session(token) if token else None
+                if sess:
+                    self._json(200, {"authenticated": True, "session": sess})
+                else:
+                    self._json(401, {"authenticated": False, "error": "Not authenticated or session expired"})
+                return
+
         if path == "/api/model":
             with _lock:
                 message = update_data_message(_model())
@@ -243,6 +270,64 @@ class Handler(BaseHTTPRequestHandler):
         body = self._read_json()
         if body is None:
             return
+
+        if path.startswith("/api/auth/"):
+            if path == "/api/auth/register/verify":
+                try:
+                    res = default_auth_manager.verify_registration(
+                        username=str(body.get("username", "")),
+                        credential_id=str(body.get("credentialId", "")),
+                        public_key=str(body.get("publicKey", "")),
+                        client_challenge=str(body.get("challenge", "")),
+                        display_name=body.get("displayName"),
+                        device_nickname=str(body.get("nickname", "Primary Authenticator")),
+                    )
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(400, {"error": str(e)})
+                return
+            if path == "/api/auth/login/verify":
+                try:
+                    res = default_auth_manager.verify_login(
+                        credential_id=str(body.get("credentialId", "")),
+                        client_challenge=str(body.get("challenge", "")),
+                        authenticator_data=str(body.get("authenticatorData", "")),
+                        signature=str(body.get("signature", "")),
+                        device_info=str(body.get("deviceInfo", "Web Client")),
+                    )
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(400, {"error": str(e)})
+                return
+            if path == "/api/auth/login/fallback":
+                try:
+                    res = default_auth_manager.login_with_password(
+                        username=str(body.get("username", "")),
+                        secret=str(body.get("password", "") or body.get("secret", "")),
+                    )
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(401, {"error": str(e)})
+                return
+            if path == "/api/auth/register/fallback":
+                try:
+                    res = default_auth_manager.register_with_password(
+                        username=str(body.get("username", "")),
+                        secret=str(body.get("password", "") or body.get("secret", "")),
+                        display_name=body.get("displayName"),
+                    )
+                    self._json(200, res)
+                except Exception as e:
+                    self._json(400, {"error": str(e)})
+                return
+            if path == "/api/auth/logout":
+                token = str(body.get("sessionToken", "") or body.get("session_token", ""))
+                if not token:
+                    auth_hdr = self.headers.get("Authorization", "")
+                    token = auth_hdr.replace("Bearer ", "").strip()
+                revoked = default_auth_manager.logout(token) if token else False
+                self._json(200, {"success": True, "revoked": revoked})
+                return
 
         if path == "/api/operator/moderation":
             item_id = str(body.get("itemId") or body.get("item_id") or "")

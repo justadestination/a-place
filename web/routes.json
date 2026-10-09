@@ -40,6 +40,13 @@
       "og": "zine"
     },
     {
+      "path": "/auth/",
+      "title": "Identity & Passkeys — NightCal",
+      "description": "Account registration and authentication via Passkeys (WebAuthn) with username fallback.",
+      "module": "js/pages/auth.js",
+      "og": "system"
+    },
+    {
       "path": "/system/",
       "title": "NightCal design system",
       "description": "Tokens, themes, components, embed routes and the theme API behind NightCal.",

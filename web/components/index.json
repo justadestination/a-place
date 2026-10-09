@@ -9,6 +9,15 @@
     "readme": true
   },
   {
+    "name": "auth-dialog",
+    "title": "Identity & Passkeys",
+    "summary": "Account creation and authentication via Passkeys (WebAuthn / FIDO2) with username fallback.",
+    "params": {
+      "tab": "passkey | fallback"
+    },
+    "readme": true
+  },
+  {
     "name": "button",
     "title": "Button",
     "summary": "The one control style. Primary is reserved for the single main action on a screen.",

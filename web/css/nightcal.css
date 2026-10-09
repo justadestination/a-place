@@ -925,6 +925,163 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   margin-top: var(--nc-space-1);
 }
 
+/* --- components/auth-dialog --- */
+/* Auth Dialog Component (Task 4.1) */
+.nc-auth-card {
+  display: grid;
+  gap: var(--nc-space-4);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+}
+
+.nc-auth-card__header {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-auth-card__eyebrow {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nc-auth-card__title {
+  font-size: var(--nc-font-size-lg);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-auth-card__subtitle {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: 0;
+}
+
+.nc-auth-card__tabs {
+  display: flex;
+  gap: var(--nc-space-2);
+  border-bottom: var(--nc-size-border) solid var(--nc-color-border);
+  padding-bottom: var(--nc-space-2);
+}
+
+.nc-auth-card__tab {
+  font-family: inherit;
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--nc-space-2) var(--nc-space-3);
+  border-radius: var(--nc-radius-sm);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nc-auth-card__tab:hover {
+  color: var(--nc-color-text);
+  background: var(--nc-color-surface-sunken);
+}
+
+.nc-auth-card__tab--active {
+  color: var(--nc-color-accent-text);
+  background: var(--nc-color-surface-sunken);
+  border-bottom: 2px solid var(--nc-color-accent);
+}
+
+.nc-auth-card__form {
+  display: grid;
+  gap: var(--nc-space-3);
+}
+
+.nc-auth-card__field {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-auth-card__label {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nc-auth-card__input {
+  font-family: inherit;
+  font-size: var(--nc-font-size-md);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  color: var(--nc-color-text);
+  background: var(--nc-color-surface-sunken);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  min-height: 44px;
+}
+
+.nc-auth-card__input:focus-visible {
+  outline: 2px solid var(--nc-color-focus);
+  outline-offset: 2px;
+}
+
+.nc-auth-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+  margin-top: var(--nc-space-2);
+}
+
+.nc-auth-card__banner {
+  padding: var(--nc-space-3);
+  border-radius: var(--nc-radius-sm);
+  font-size: var(--nc-font-size-xs);
+  line-height: var(--nc-line-height-base);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  background: var(--nc-color-surface-sunken);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-auth-card__banner--error {
+  border-color: var(--nc-color-accent);
+  color: var(--nc-color-accent-text);
+}
+
+.nc-auth-card__session {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface-sunken);
+  border-radius: var(--nc-radius-sm);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+}
+
+.nc-auth-card__badge {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+}
+
+.nc-auth-card__user {
+  font-size: var(--nc-font-size-md);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-auth-card__meta {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+  margin: 0;
+}
+
 /* --- components/calendar-month --- */
 .nc-month { display: grid; gap: var(--nc-space-3); container-type: inline-size; }
 .nc-month__nav { display: flex; align-items: center; justify-content: space-between; gap: var(--nc-space-2); }
