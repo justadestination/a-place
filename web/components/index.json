@@ -67,10 +67,11 @@
   {
     "name": "filter-bar",
     "title": "Filter bar",
-    "summary": "Nights out vs everything, and one room. Native radios and select, so keyboard and screen readers work without extra code. Emits nc-filter.",
+    "summary": "Nights out vs everything, room, and tag/kind filters. Native radios and select, so keyboard and screen readers work without extra code. Emits nc-filter.",
     "params": {
       "scope": "nights | all",
-      "venue": "venue id"
+      "venue": "venue id",
+      "kind": "tag or kind id"
     },
     "readme": true
   },

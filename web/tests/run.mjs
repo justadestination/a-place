@@ -295,6 +295,30 @@ if (!quick) {
   report.checks["road timeline"] = { chronologicalOrder: ids, scaleFirst, scaleLast, diff: +(scaleLast - scaleFirst).toFixed(3) };
 }
 
+// --- 12. filter controls (tags, venues) & state isolation (Task 2.5) ---------
+{
+  const { filterEvents, kindsWithEvents, roomsWithEvents } = await import("../js/data/calendar.js");
+  const testModel = {
+    venues: [{ id: "v1", name: "Room 1" }, { id: "v2", name: "Room 2" }],
+    events: [
+      { id: "e1", title: "Show 1", date: "2026-10-09", venueId: "v1", kind: "music", night: true },
+      { id: "e2", title: "Show 2", date: "2026-10-09", venueId: "v2", kind: "comedy", night: true },
+      { id: "e3", title: "Show 3", date: "2026-10-09", venueId: "v1", kind: "trivia", night: false },
+    ],
+  };
+  const filteredVenue = filterEvents(testModel, { venueId: "v1", scope: "all" });
+  if (filteredVenue.length !== 2 || !filteredVenue.every(e => e.venueId === "v1")) fail("filters", "venueId filter failed");
+  const filteredKind = filterEvents(testModel, { kind: "comedy", scope: "all" });
+  if (filteredKind.length !== 1 || filteredKind[0].kind !== "comedy") fail("filters", "kind filter failed");
+  const filteredBoth = filterEvents(testModel, { venueId: "v1", kind: "music", scope: "all" });
+  if (filteredBoth.length !== 1 || filteredBoth[0].id !== "e1") fail("filters", "venueId + kind intersection filter failed");
+  report.checks["filters (tags, venues)"] = {
+    venueFiltered: filteredVenue.length,
+    kindFiltered: filteredKind.length,
+    intersection: filteredBoth.length,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

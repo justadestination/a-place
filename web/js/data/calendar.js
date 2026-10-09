@@ -141,14 +141,27 @@ function safeUrl(u) {
 }
 
 /** Events passing the reader's filters. */
-export function filterEvents(model, { scope = "nights", venueId = "" } = {}) {
-  return model.events.filter(e => (scope === "all" || e.night) && (!venueId || e.venueId === venueId));
+export function filterEvents(model, { scope = "nights", venueId = "", kind = "" } = {}) {
+  return model.events.filter(e =>
+    (scope === "all" || e.night) &&
+    (!venueId || e.venueId === venueId) &&
+    (!kind || e.kind === kind)
+  );
 }
 
 /** Rooms worth offering in the filter: ones with at least one event in scope. */
 export function roomsWithEvents(model, { scope = "nights" } = {}) {
   const ids = new Set(filterEvents(model, { scope }).map(e => e.venueId));
   return model.venues.filter(v => ids.has(v.id)).sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/** Tags/kinds worth offering in the filter: ones with at least one event in scope. */
+export function kindsWithEvents(model, { scope = "nights", venueId = "" } = {}) {
+  const events = model.events.filter(e => (scope === "all" || e.night) && (!venueId || e.venueId === venueId));
+  const activeKinds = new Set(events.map(e => e.kind));
+  return Object.entries(KINDS)
+    .filter(([k]) => activeKinds.has(k))
+    .map(([id, meta]) => ({ id, label: meta.label }));
 }
 
 export function byDate(events) {

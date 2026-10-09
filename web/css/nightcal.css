@@ -944,8 +944,8 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 
 /* --- components/filter-bar --- */
 .nc-filters { display: flex; flex-wrap: wrap; align-items: end; gap: var(--nc-space-4); min-width: 0; max-width: 100%; }
-.nc-filters__room { display: grid; width: 16rem; max-width: 100%; }
-.nc-filters__room .nc-select { width: 100%; }
+.nc-filters__room, .nc-filters__kind { display: grid; width: 14rem; max-width: 100%; }
+.nc-filters__room .nc-select, .nc-filters__kind .nc-select { width: 100%; }
 
 /* --- components/node-map --- */
 .nc-map { display: grid; gap: var(--nc-space-2); }

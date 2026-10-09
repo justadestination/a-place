@@ -3,7 +3,7 @@
 // State lives in the URL (?date, ?scope, ?venue, ?event) so every view is shareable.
 import { h, params, setParam } from "../core/dom.js";
 import "../core/theme.js";
-import { loadCalendar, filterEvents, roomsWithEvents, nextDateWithEvents } from "../data/calendar.js";
+import { loadCalendar, filterEvents, roomsWithEvents, kindsWithEvents, nextDateWithEvents, KINDS } from "../data/calendar.js";
 import { weekScene, dayScene, monthScene } from "../data/scene.js";
 import { addDays, isValidDate, label, relative } from "../data/dates.js";
 import { siteHeader } from "../../components/site-header/site-header.js";
@@ -20,6 +20,7 @@ const state = {
   date: isValidDate(q.get("date")) ? q.get("date") : model.today,
   scope: q.get("scope") === "all" ? "all" : "nights",
   venueId: model.venuesById.has(q.get("venue")) ? q.get("venue") : "",
+  kind: KINDS[q.get("kind")] ? q.get("kind") : (KINDS[q.get("tag")] ? q.get("tag") : ""),
   month: "",
 };
 state.month = state.date.slice(0, 7);
@@ -35,7 +36,13 @@ const footer = siteFooter({ notes: model.notes, source: model.source });
 app.replaceChildren(siteHeader(), main, footer);
 
 function drawControls() {
-  controls.replaceChildren(filterBar({ scope: state.scope, venueId: state.venueId, rooms: roomsWithEvents(model, { scope: "all" }) }));
+  controls.replaceChildren(filterBar({
+    scope: state.scope,
+    venueId: state.venueId,
+    kind: state.kind,
+    rooms: roomsWithEvents(model, { scope: "all" }),
+    kinds: kindsWithEvents(model, { scope: "all" }),
+  }));
 }
 function drawWeek() {
   week.replaceChildren(calendarWeek(weekScene(model, state), { noun: noun() }));
@@ -62,6 +69,7 @@ function syncUrl() {
   setParam("date", state.date === model.today ? "" : state.date);
   setParam("scope", state.scope === "nights" ? "" : state.scope);
   setParam("venue", state.venueId);
+  setParam("kind", state.kind);
 }
 
 function selectDate(date, { focus } = {}) {
@@ -75,8 +83,11 @@ function selectDate(date, { focus } = {}) {
 
 // --- events from components ---------------------------------------------
 controls.addEventListener("nc-filter", e => {
-  state.scope = e.detail.scope; state.venueId = e.detail.venueId;
-  syncUrl(); drawWeek(); drawAgenda(); drawMonth();
+  state.scope = e.detail.scope;
+  state.venueId = e.detail.venueId;
+  state.kind = e.detail.kind || "";
+  syncUrl();
+  drawAll();
 });
 week.addEventListener("nc-shift", e => {
   selectDate(addDays(state.date, 7 * e.detail.delta));

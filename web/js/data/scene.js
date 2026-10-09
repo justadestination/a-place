@@ -17,9 +17,9 @@ function dayNode(iso, events, todayIso, selected) {
 }
 
 /** Seven days starting the Sunday of the week containing `date`. */
-export function weekScene(model, { date, scope = "nights", venueId = "" } = {}) {
+export function weekScene(model, { date, scope = "nights", venueId = "", kind = "" } = {}) {
   const start = weekStart(date || model.today);
-  const index = byDate(filterEvents(model, { scope, venueId }));
+  const index = byDate(filterEvents(model, { scope, venueId, kind }));
   const days = Array.from({ length: 7 }, (_, i) => {
     const iso = addDays(start, i);
     return dayNode(iso, index.get(iso), model.today, date);
@@ -28,16 +28,16 @@ export function weekScene(model, { date, scope = "nights", venueId = "" } = {}) 
 }
 
 /** One day's agenda. */
-export function dayScene(model, { date, scope = "nights", venueId = "" } = {}) {
+export function dayScene(model, { date, scope = "nights", venueId = "", kind = "" } = {}) {
   const iso = date || model.today;
-  const events = filterEvents(model, { scope, venueId }).filter(e => e.date === iso);
+  const events = filterEvents(model, { scope, venueId, kind }).filter(e => e.date === iso);
   return dayNode(iso, events, model.today, iso);
 }
 
 /** A month as weeks of 7 cells (null = padding outside the month). */
-export function monthScene(model, { month, date, scope = "nights", venueId = "" } = {}) {
+export function monthScene(model, { month, date, scope = "nights", venueId = "", kind = "" } = {}) {
   const key = month || monthKey(date || model.today);
-  const index = byDate(filterEvents(model, { scope, venueId }));
+  const index = byDate(filterEvents(model, { scope, venueId, kind }));
   const first = `${key}-01`;
   const lead = weekdayIndex(first);
   const cells = Array(lead).fill(null);

@@ -847,6 +847,11 @@
       "scaleFirst": 1.1469242764767005,
       "scaleLast": 1.4348710024608442,
       "diff": 0.288
+    },
+    "filters (tags, venues)": {
+      "venueFiltered": 2,
+      "kindFiltered": 1,
+      "intersection": 1
     }
   },
   "failures": []
