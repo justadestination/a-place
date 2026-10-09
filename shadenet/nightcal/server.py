@@ -1,6 +1,6 @@
 """Serve the night calendar.
 
-The page is a renderer. It does not know about Metropolis until the
+The page is a renderer. It does not know about Santa Rosa until the
 A2UI stream arrives. Refreshing listings re-reads the public calendar
 and OpenStreetMap, writes the towncrier store, and pushes a new data model.
 

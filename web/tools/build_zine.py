@@ -68,8 +68,18 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
 
 def inline(text: str, link) -> str:
     """Escape, then apply a small, safe inline markdown subset."""
+    placeholders: list[str] = []
+
+    def _stash_wiki(m: re.Match) -> str:
+        target = m.group(1).strip()
+        label = (m.group(2) or m.group(1)).strip()
+        rendered = link(target, label)
+        idx = len(placeholders)
+        placeholders.append(rendered)
+        return f"@@WIKILINK_{idx}@@"
+
+    text = WIKI.sub(_stash_wiki, text)
     out = html.escape(text, quote=True)
-    out = WIKI.sub(lambda m: link(html.unescape(m.group(1)).strip(), html.unescape(m.group(2) or m.group(1)).strip()), out)
     out = re.sub(r"`([^`]+)`", r"<code>\1</code>", out)
     out = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", out)
     out = re.sub(r"(?<![*\w])\*([^*]+)\*(?![*\w])", r"<em>\1</em>", out)
@@ -78,6 +88,8 @@ def inline(text: str, link) -> str:
         lambda m: f'<a href="{m.group(2)}" rel="noopener" target="_blank">{m.group(1)}</a>',
         out,
     )
+    for idx, repl in enumerate(placeholders):
+        out = out.replace(f"@@WIKILINK_{idx}@@", repl)
     return out
 
 

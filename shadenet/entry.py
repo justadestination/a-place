@@ -16,7 +16,7 @@
 #   python3 -m shadenet.entry
 #
 # Environment of record (shell-escaped, never committed):
-#   SHADENET_LAT        centre latitude (e.g. 37.7749 for Metropolis)
+#   SHADENET_LAT        centre latitude (e.g. 38.4404 for Santa Rosa)
 #   SHADENET_LON        centre longitude
 #   SHADENET_RADIUS_KM  discovery radius in kilometres (e.g. 25)
 #   SHADENET_DB         optional absolute path to SQLite (default data/shadenet.db)
@@ -116,7 +116,7 @@ def discover_and_fill(db_path: Path, lat: float, lon: float, radius_km: float) -
     # Populate venues into SQLite via the existing fill logic.
     store = Store(db_path)
     try:
-        city = ensure_entity(store, name="Metropolis", kind="city", role="host",
+        city = ensure_entity(store, name="Santa Rosa", kind="city", role="host",
                              meta={"downtown_bbox": list(bbox), "discovered": True})
         written = 0
         for c in candidates:
@@ -138,7 +138,7 @@ def discover_and_fill(db_path: Path, lat: float, lon: float, radius_km: float) -
             store.ensure_venue(
                 c.name,
                 address="",
-                city="Metropolis",
+                city="Santa Rosa",
                 state="CA",
                 lat=c.lat,
                 lon=c.lon,

@@ -10,7 +10,7 @@ stance: "Patios after 1 a.m. are social lifelines for third-shift workers, not n
 status: published
 ---
 
-There is a cracked porcelain electrical insulator sitting on the low brick ledge outside [[Echo Music Hall]], right next to the cigarette receptacle, and someone has balanced a quarter-filled bottle of cold Mexican Coke directly on top of it.
+There is a cracked porcelain electrical insulator sitting on the low brick ledge outside [[Annie O's Music Hall]], right next to the cigarette receptacle, and someone has balanced a quarter-filled bottle of cold Mexican Coke directly on top of it.
 
 It was 3:14 a.m. when I noticed it. I had two hours left on my shift break from the regional inpatient dispensary—forty-five minutes if you don't count the walk past the courthouse and the two traffic lights that stay permanently red between midnight and dawn because the street sensors don't believe a Subaru exists if it weighs under two tons.
 

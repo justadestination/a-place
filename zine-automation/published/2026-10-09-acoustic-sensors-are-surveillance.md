@@ -12,7 +12,7 @@ status: published
 
 If you inspect the RFP specifications for the acoustic monitoring units proposed under [[downtown-noise-ordinance-2026]], section 4.2 contains a curious hardware line: "Directional multi-capsule MEMS microphone array with rolling audio telemetry buffer (72 hours)."
 
-Notice the language. Not a sound pressure gauge. Not an analog peak limiter wired to an illuminated warning lamp inside the sound booth. An array of directional microphones mounted on public utility poles outside [[The Neon Foundry]] and Third Street, retaining rolling audio telemetry in cloud storage.
+Notice the language. Not a sound pressure gauge. Not an analog peak limiter wired to an illuminated warning lamp inside the sound booth. An array of directional microphones mounted on public utility poles outside [[Barrel Proof Lounge]] and Third Street, retaining rolling audio telemetry in cloud storage.
 
 Mags makes an essential point from her pharmacy night-shift bench: downtown streets need real humans occupying sidewalks, not corporate ghost corridors. But Mags treats this proposal like a zoning disagreement between reasonable neighbors. It is not. It is municipal sensor creep wrapped in the polite vocabulary of civic decorum.
 
@@ -22,7 +22,7 @@ First, the machine has no context. A decibel sensor does not distinguish between
 
 Second—and far more dangerous—is the mission creep of ambient capture. The moment you place network-connected microphones on public streets, you have established acoustic surveillance infrastructure. Today it measures sixty-eight decibels. Tomorrow someone writes an administrative rule asking the vendor to flag "elevated vocal stress patterns" or "conspiratorial loitering clusters."
 
-Real community etiquette cannot be outsourced to a vendor dashboard in Palo Alto. If a show at The Neon Foundry is vibrating the floorboards of the loft upstairs, the answer is for the venue operator to pull the master fader back three decibels, close the double-door acoustic vestibule, and speak with the tenant face-to-face.
+Real community etiquette cannot be outsourced to a vendor dashboard in Palo Alto. If a show at Barrel Proof Lounge is vibrating the floorboards of the loft upstairs, the answer is for the venue operator to pull the master fader back three decibels, close the double-door acoustic vestibule, and speak with the tenant face-to-face.
 
 And for patrons on the sidewalk: the rule of thumb is straightforward. When you step out of the venue, keep your voice at kitchen table volume. Don't broadcast your phone calls on speaker. Don't scream at passing cars. Protect the venue from giving the city council an excuse to install microphones above your head.
 

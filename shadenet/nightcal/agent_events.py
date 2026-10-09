@@ -485,7 +485,7 @@ def _when(body: dict, key: str, *, required: bool, allow_null: bool = False):
             f"{key} has to be a date and time with a timezone, like 2026-10-09T20:00:00-07:00"
         ) from None
     if parsed.tzinfo is None:
-        raise EventWriteError(f"{key} needs a timezone offset. Metropolis is America/Los_Angeles")
+        raise EventWriteError(f"{key} needs a timezone offset. Santa Rosa is America/Los_Angeles")
     return parsed
 
 

@@ -1,4 +1,4 @@
-"""Fill the towncrier store with downtown Metropolis rooms and shows.
+"""Fill the towncrier store with downtown Santa Rosa rooms and shows.
 
 Public sources, each cited:
 
@@ -6,11 +6,11 @@ Public sources, each cited:
   This is the gazetteer Hermes settled on after measuring Google Places as
   unusable for a database (the Maps Platform terms forbid storing Places
   content as a system of record). The bounding box is downtown only:
-  Railroad Square through Courthouse Square to Main Street Tavern. The same
+  Railroad Square through Courthouse Square to Ross Street. The same
   music-signal classifier as discover.py decides which rooms look like
   they book bands.
 
-* The Downtown Metropolis events calendar, for the dated listings.
+* The Downtown Santa Rosa events calendar, for the dated listings.
   Each card becomes one listing. Resolution into events is towncrier's
   own Resolver, so a show that shows up twice still clusters.
 
@@ -62,7 +62,7 @@ DAO_SOURCE = "downtown_santa_rosa"
 AGENT_SOURCE = "agent"
 
 # south, west, north, east. Downtown, not the whole city: Railroad Square
-# (west) to Metropolis Avenue (east), around 1st Street up to College Ave.
+# (west) to Santa Rosa Avenue (east), around 1st Street up to College Ave.
 DOWNTOWN_BBOX = (38.428, -122.736, 38.454, -122.698)
 
 def _downtown_query(bbox: tuple[float, float, float, float]) -> str:
@@ -82,7 +82,7 @@ def _downtown_query(bbox: tuple[float, float, float, float]) -> str:
         'nwr["theatre"="live"]',
         # The map names this Railroad Square room and stops at building=commercial,
         # so the amenity filter never sees it. The name is the tag OSM already has.
-        'nwr["name"="The Commons Arts Center"]["building"]',
+        'nwr["name"="Arlene Francis Center"]["building"]',
     ]
     body = "\n".join(f"  {item}{box};" for item in filters)
     return f"[out:json][timeout:30];\n(\n{body}\n);\nout tags center;"
@@ -215,7 +215,7 @@ def ingest_rooms(store: Store, city_id: str) -> tuple[int, list[str]]:
         venue_id = store.ensure_venue(
             candidate.name,
             address=_address(tags) or None,
-            city="Metropolis",
+            city="Santa Rosa",
             state="CA",
             lat=candidate.lat,
             lon=candidate.lon,
@@ -272,12 +272,12 @@ def ingest_shows(store: Store, city_id: str, page: str, today: date | None = Non
     seen: set[str] = set()
     new = changed = unchanged = 0
     for card in cards:
-        # A card with no room stays a cited listing. "Downtown Metropolis"
+        # A card with no room stays a cited listing. "Downtown Santa Rosa"
         # is the place, not a venue, and inventing it put a city in the rail.
         venue_name = (card["venue"] or "").strip()
         venue_id = None
         if venue_name:
-            venue_id = store.ensure_venue(venue_name, city="Metropolis", state="CA")
+            venue_id = store.ensure_venue(venue_name, city="Santa Rosa", state="CA")
             # The venue record can exist with no item. The listing below is the
             # cited fact; stuffing each show URL in as a "website" would make
             # one room look like it had a dozen conflicting sites.
@@ -331,7 +331,7 @@ def _relink_acts(store: Store, city_id: str) -> None:
     """Replace title-scraped performer rows with the ones the title supports.
 
     Resolver calls split_performers on the raw title, which keeps series
-    prefixes ("Main Street Sessions: …") as if they were the act. When we
+    prefixes ("Ross Street Sessions: …") as if they were the act. When we
     can read a cleaner billing, that replaces the guess. When we cannot,
     the resolver's rows stay.
     """
@@ -371,7 +371,7 @@ def fill(db_path: Path = DB_PATH, page: str | None = None) -> dict:
         store.upsert_source(OSM_SOURCE, "api", "https://www.openstreetmap.org/", interval_min=1440)
         store.upsert_source(DAO_SOURCE, "html", CALENDAR_URL, interval_min=180, min_delay_sec=5)
         city_id = ensure_entity(
-            store, name="Metropolis", kind="city",
+            store, name="Santa Rosa", kind="city",
             meta={"note": "trunk", "downtown_bbox": list(DOWNTOWN_BBOX)},
         )
         rooms, failures = 0, []

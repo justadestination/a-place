@@ -14,27 +14,27 @@ from shadenet.towncrier.store import Store
 # Spoken names are what the rail says. The match name is the venue row.
 CITED = (
     {
-        "name": "The Rusty Shamrock",
-        "spoken": "The Rusty Shamrock",
-        "source_url": "https://news.example.org/reports/downtown-venues-closures/",
+        "name": "Stout Brothers Irish Pub",
+        "spoken": "Stout Brothers",
+        "source_url": "https://www.sonomanews.com/article/business/santa-rosa-downtown-businesses-grapple-with-challenges-to-stay-afloat/",
         "note": "Named, in a December 2019 report, among downtown rooms that had already closed.",
     },
     {
-        "name": "The Obsidian Room",
-        "spoken": "the Obsidian Room",
-        "source_url": "https://news.example.org/reports/downtown-venues-closures/",
+        "name": "The Jade Room",
+        "spoken": "the Jade Room",
+        "source_url": "https://www.sonomanews.com/article/business/santa-rosa-downtown-businesses-grapple-with-challenges-to-stay-afloat/",
         "note": "Closed at the end of October 2019.",
     },
     {
-        "name": "The Iron Anchor",
-        "spoken": "the Iron Anchor",
-        "source_url": "https://gazette.example.org/reports/iron-anchor-closure/",
+        "name": "The Dirty",
+        "spoken": "the Dirty",
+        "source_url": "https://www.pressdemocrat.com/article/news/santa-rosa-dive-bar-the-dirty-to-close-march-1/",
         "note": "Closed March 1, 2024.",
     },
     {
-        "name": "The Sol Cantina",
-        "spoken": "The Sol Cantina",
-        "source_url": "https://gazette.example.org/reports/sol-cantina-closure/",
+        "name": "The Tipsy Taco Cantina",
+        "spoken": "Tipsy Taco",
+        "source_url": "https://www.pressdemocrat.com/article/north-bay/tipsy-taco-closure-santa-rosa/",
         "note": "Closed in March 2025.",
     },
 )
@@ -67,7 +67,7 @@ def cite_closures(store: Store) -> None:
     """Attach the notice to the venue entity, when that room is in the store."""
     city = store.one(
         "SELECT id FROM entities WHERE kind = 'city' AND name = ?",
-        ("Metropolis",),
+        ("Santa Rosa",),
     )
     if city is None:
         return

@@ -10,7 +10,7 @@ status: published
 
 ## What happened
 
-In late September 2026, the municipal council introduced revised zoning regulations governing commercial amplified sound after 11:00 p.m. in the downtown entertainment district. The proposal mandates IoT decibel monitoring sensors outside licensed venues including [[Echo Music Hall]] and [[The Neon Foundry]], establishing automated fines for persistent ambient sound exceeding 68 dBA at property lines.
+In late September 2026, the municipal council introduced revised zoning regulations governing commercial amplified sound after 11:00 p.m. in the downtown entertainment district. The proposal mandates IoT decibel monitoring sensors outside licensed venues including [[Annie O's Music Hall]] and [[Barrel Proof Lounge]], establishing automated fines for persistent ambient sound exceeding 68 dBA at property lines.
 
 ## Why it matters
 

@@ -20,7 +20,7 @@ status: published
 
 ## The facts
 
-1. The proposed monitoring perimeter encompasses the 12-block downtown commercial zone, including [[Echo Music Hall]], [[Central Playhouse]], and [[The Neon Foundry]].
+1. The proposed monitoring perimeter encompasses the 12-block downtown commercial zone, including [[Annie O's Music Hall]], [[6th St Play House]], and [[Barrel Proof Lounge]].
 2. Current baseline ambient sound at 1:00 a.m. with zero live shows averages 61 to 64 dBA due to commercial HVAC and regional street traffic.
 3. Acoustic attenuation retrofits for historic unreinforced masonry venues average $35,000 to $70,000 per room.
 

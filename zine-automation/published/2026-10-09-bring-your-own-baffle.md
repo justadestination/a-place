@@ -17,7 +17,7 @@ The concession: nobody moves into a second-story downtown brick flat expecting s
 Now let me dismantle the council's proposed cure.
 
 **Contention One: Blanket curfews are lazy governance.**
-Telling an entire commercial arts corridor that exterior doors must seal shut at eleven o'clock because two rooms refuse to buy mineral-wool acoustic insulation is like banning bicycles downtown because three teenagers ran a stop sign. It punishes the good actors—spaces like [[Central Playhouse]], which spent twelve thousand dollars last year building an insulated double-door acoustic airlock—to spare the city the labor of inspecting the bad ones.
+Telling an entire commercial arts corridor that exterior doors must seal shut at eleven o'clock because two rooms refuse to buy mineral-wool acoustic insulation is like banning bicycles downtown because three teenagers ran a stop sign. It punishes the good actors—spaces like [[6th St Play House]], which spent twelve thousand dollars last year building an insulated double-door acoustic airlock—to spare the city the labor of inspecting the bad ones.
 
 **Contention Two: Self-policing works when the community holds the leash.**
 Juno worries about surveillance microphones on light poles (a reasonable panic, though Juno sees panopticons in their toaster). Mags wants everyone to be quiet and nice because third-shift workers are tired (also fair, though Mags forgets that some people go out specifically to hear loud drums).

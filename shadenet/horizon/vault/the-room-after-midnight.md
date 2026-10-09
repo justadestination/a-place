@@ -11,7 +11,7 @@ status: draft
 
 # The Room After Midnight
 
-A review of the new late-night venue showing up in Metropolis's downtown.
+A review of the new late-night venue showing up in Santa Rosa's downtown.
 
 The room has never been this full.
 

@@ -150,7 +150,7 @@ def _web_href(shown: str) -> str | None:
 
 
 _SOURCE_NAMES = {
-    DAO_SOURCE: "Downtown Metropolis",
+    DAO_SOURCE: "Downtown Santa Rosa",
     AGENT_SOURCE: "Filed",
     "facebook": "Facebook",
     "instagram": "Instagram",
@@ -638,7 +638,7 @@ def project(venues: list[dict], events: list[dict], ui: dict, *, status: str = "
     room_count = sum(1 for venue in venues if venue["osm"])
     view = clamp_view(ui.get("view"))
     return {
-        "place": "Downtown Metropolis",
+        "place": "Downtown Santa Rosa",
         "venues": sorted(venues, key=lambda venue: (not venue["music"], venue["name"].lower())),
         "events": events,
         "ui": {
@@ -659,7 +659,7 @@ def project(venues: list[dict], events: list[dict], ui: dict, *, status: str = "
             "depthNote": depth_note(view),
             "attribution": (
                 "Rooms from OpenStreetMap contributors. "
-                "Shows from the Downtown Metropolis calendar. "
+                "Shows from the Downtown Santa Rosa calendar. "
                 "A Facebook, Instagram, or X page is cited only when that page itself lists the show."
             ),
         },

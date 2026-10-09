@@ -1,4 +1,4 @@
-"""Parse the Downtown Metropolis public events calendar.
+"""Parse the Downtown Santa Rosa public events calendar.
 
 The page is server-rendered cards, not schema.org. Each card is one
 listing: a title, a clock range, a venue when they printed one, and
@@ -38,14 +38,14 @@ _MONTHS = {
 
 # Series names the downtown calendar prints in front of the act.
 _SERIES = (
-    r"^Main Street Sessions:\s*",
+    r"^Ross Street Sessions:\s*",
     r"^Downtown Sound:\s*",
     r"^Headline Comedy\s*[-–—]\s*",
     r"^Pro Jam\s*[-–—]\s*(?:with special guest\s*)?",
 )
 
 _SKIP_ACTS = {
-    "tbd", "tba", "downtown metropolis", "main street tavern", "main street sessions",
+    "tbd", "tba", "downtown santa rosa", "ross street", "ross street sessions",
 }
 
 
@@ -97,8 +97,8 @@ def parse_cards(page: str, *, today: date | None = None) -> list[dict]:
             categories = [sub]
         time_raw = _text(_TIME.search(body).group(1)) if _TIME.search(body) else ""
         venue = _text(_VENUE.search(body).group(1)) if _VENUE.search(body) else ""
-        if not venue and any(c.lower() == "main street tavern" for c in categories):
-            venue = "Main Street Tavern"
+        if not venue and any(c.lower() == "ross street" for c in categories):
+            venue = "Ross Street"
         image_m = _IMG.search(body)
         image = html.unescape(image_m.group(1)) if image_m else ""
 
@@ -175,7 +175,7 @@ def acts_from_title(title: str, venue: str = "") -> list[tuple[str, str]]:
     text = title.strip()
     for pattern in _SERIES:
         text = re.sub(pattern, "", text, flags=re.I)
-    text = re.sub(r"\s+in Downtown Metropolis\s*$", "", text, flags=re.I)
+    text = re.sub(r"\s+in Downtown Santa Rosa\s*$", "", text, flags=re.I)
     if venue:
         text = re.sub(
             rf"\s+at\s+{re.escape(venue)}\s*$", "", text, flags=re.I
