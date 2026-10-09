@@ -43,6 +43,13 @@ from shadenet.nightcal.surface import (
     update_data_message,
     load_rows,
 )
+from shadenet.operator import (
+    get_operator_status,
+    moderate_queue_item,
+    rotate_active_key,
+)
+from shadenet.ratelimit import limiter
+from shadenet.health import check_subsystems
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
@@ -97,11 +104,35 @@ class Handler(BaseHTTPRequestHandler):
             return None
         return body
 
+    def _check_rate_limit(self, category: str = "api") -> bool:
+        client_ip = self.client_address[0] if getattr(self, "client_address", None) else "127.0.0.1"
+        auth = self.headers.get("Authorization") or self.headers.get("X-Operator-Token") or ""
+        allowed, retry_after = limiter.check(client_ip, category=category, auth_token=auth)
+        if not allowed:
+            self.send_response(429)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Retry-After", str(retry_after))
+            self.send_header("Cache-Control", "no-store")
+            payload = json.dumps({
+                "error": "Rate limit exceeded. Please back off.",
+                "code": "ERR_RATE_LIMITED",
+                "retry_after": retry_after,
+                "next_step": f"Wait {retry_after} seconds before retrying this request.",
+            }).encode()
+            self.send_header("Content-Length", str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return False
+        return True
+
     def _events(self, method: str) -> bool:
         parsed = urllib.parse.urlsplit(self.path)
         path = parsed.path
         if path != "/api/events" and not path.startswith("/api/events/"):
             return False
+        cat = "submissions" if method in {"POST", "PATCH", "DELETE"} else "api"
+        if not self._check_rate_limit(cat):
+            return True
         body: dict = {}
         if method in {"POST", "PATCH", "DELETE"}:
             read = self._read_json()
@@ -133,6 +164,19 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("GET"):
             return
         path = self.path.split("?", 1)[0]
+        if path in ("/healthz", "/api/health"):
+            rep = check_subsystems(_db_path())
+            self._json(rep["http_code"], rep)
+            return
+        if path in ("/status", "/status/", "/status.html"):
+            st_page = STATIC / "static" / "status.html"
+            if st_page.is_file():
+                self._send(200, st_page.read_bytes(), "text/html; charset=utf-8")
+                return
+        if path.startswith("/api/"):
+            cat = "operator" if path.startswith("/api/operator/") else "api"
+            if not self._check_rate_limit(cat):
+                return
         if path in ("/", "/index.html"):
             body = (STATIC / "static" / "index.html").read_bytes()
             self._send(200, body, "text/html; charset=utf-8")
@@ -166,6 +210,20 @@ class Handler(BaseHTTPRequestHandler):
                     store.close()
             self._send(200, payload, "application/jsonl; charset=utf-8")
             return
+        if path in ("/operator", "/operator/", "/operator.html"):
+            op_page = STATIC / "static" / "operator.html"
+            if op_page.is_file():
+                self._send(200, op_page.read_bytes(), "text/html; charset=utf-8")
+                return
+        if path == "/api/operator/status":
+            with _lock:
+                store = open_store(_db_path())
+                try:
+                    payload = get_operator_status(store)
+                finally:
+                    store.close()
+            self._json(200, payload)
+            return
         if path == "/api/model":
             with _lock:
                 message = update_data_message(_model())
@@ -178,8 +236,29 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("POST"):
             return
         path = self.path.split("?", 1)[0]
+        if path.startswith("/api/"):
+            cat = "operator" if path.startswith("/api/operator/") else "submissions"
+            if not self._check_rate_limit(cat):
+                return
         body = self._read_json()
         if body is None:
+            return
+
+        if path == "/api/operator/moderation":
+            item_id = str(body.get("itemId") or body.get("item_id") or "")
+            action = str(body.get("action") or "")
+            note = str(body.get("note") or "")
+            try:
+                res = moderate_queue_item(item_id, action, note)
+                self._json(200, res)
+            except (ValueError, KeyError) as e:
+                self._json(400, {"error": str(e), "code": "ERR_BAD_REQUEST"})
+            return
+
+        if path == "/api/operator/keys/rotate":
+            op_id = str(body.get("operator") or "operator-console")
+            res = rotate_active_key(op_id)
+            self._json(200, res)
             return
 
         if path == "/api/action":

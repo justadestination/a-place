@@ -1,0 +1,153 @@
+{
+  "active_key": {
+    "key_id": "key_2026_10_09_64b1d4eb",
+    "algorithm": "Ed25519",
+    "created_at": "2026-10-09T04:35:16.246000-07:00",
+    "expires_at": "2027-01-01T00:00:00Z",
+    "rotation_count": 8,
+    "rotated_by": "http-test-runner"
+  },
+  "key_history": [
+    {
+      "key_id": "key_2026_10_09_192475f0",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:05:47.388540-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 0,
+      "retired_at": "2026-10-09T04:05:47.393402-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_28cada4f",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:05:47.393441-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 1,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T04:05:47.461894-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_ecc59444",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:05:47.461970-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 2,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T04:07:26.588490-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_6ca4d6dd",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:07:26.588655-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 3,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T04:07:26.684220-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_e5add90d",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:07:26.684328-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 4,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T04:16:05.832567-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_70097b32",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:16:05.832620-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 5,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T04:16:05.892671-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_ed472505",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:16:05.892749-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 6,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T04:35:16.214522-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_a0fcc942",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:35:16.214651-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 7,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T04:35:16.245928-07:00"
+    }
+  ],
+  "moderation_queue": [],
+  "moderation_history": [
+    {
+      "id": "mod-101",
+      "item_type": "exposure",
+      "title": "Commercial spam on Flag #14",
+      "reporter": "steward-0x8a12",
+      "reason": "Commercial auto-posting bot violation",
+      "status": "approve",
+      "reported_at": "2026-10-09T04:05:47.388570-07:00",
+      "resolved_at": "2026-10-09T04:05:47.390918-07:00",
+      "operator_note": "Approved by test"
+    },
+    {
+      "id": "mod-102",
+      "item_type": "spot",
+      "title": "Suspicious venue takeover notice",
+      "reporter": "steward-0x3c99",
+      "reason": "Unverified address change",
+      "status": "approve",
+      "reported_at": "2026-10-09T04:05:47.388581-07:00",
+      "resolved_at": "2026-10-09T04:07:26.582595-07:00",
+      "operator_note": "Approved by test"
+    },
+    {
+      "id": "mod-103",
+      "item_type": "thought",
+      "title": "Abusive dispatch to public board",
+      "reporter": "steward-0x77ff",
+      "reason": "Harassment keyword match",
+      "status": "approve",
+      "reported_at": "2026-10-09T04:05:47.388588-07:00",
+      "resolved_at": "2026-10-09T04:16:05.829842-07:00",
+      "operator_note": "Approved by test"
+    }
+  ],
+  "scraper": {
+    "status": "idle",
+    "last_run": "2026-10-09T04:05:47.388628-07:00",
+    "venues_scraped": 48,
+    "spots_discovered": 172,
+    "error_count": 0,
+    "next_scheduled": "In 35 minutes"
+  },
+  "sync_mesh": {
+    "status": "connected",
+    "peer_count": 4,
+    "peers": [
+      {
+        "peer_id": "mesh-peer-01",
+        "ip": "203.0.113.10",
+        "latency_ms": 2.1,
+        "synced": true
+      },
+      {
+        "peer_id": "edge-01",
+        "ip": "shady.example.org",
+        "latency_ms": 14.8,
+        "synced": true
+      },
+      {
+        "peer_id": "local-node-downtown",
+        "ip": "127.0.0.1",
+        "latency_ms": 0.4,
+        "synced": true
+      }
+    ],
+    "last_synced_at": "2026-10-09T04:05:47.388642-07:00",
+    "sync_lag_seconds": 1.2
+  }
+}
