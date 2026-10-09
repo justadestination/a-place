@@ -65,11 +65,61 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 pass
 
     def do_GET(self):
+        if self.path.startswith("/api/venues/edit"):
+            try:
+                import sys
+                import json
+                from pathlib import Path
+                ROOT = Path(__file__).resolve().parent.parent.parent
+                if str(ROOT) not in sys.path:
+                    sys.path.insert(0, str(ROOT))
+                from shadenet.nightcal.venue_edits import get_overlay
+                import urllib.parse
+                qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                venue_id = qs.get("id", [""])[0]
+                data = json.dumps(get_overlay(venue_id)).encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            except Exception:
+                pass
         if self.path.startswith("/api/"):
             return self._proxy("GET")
         return super().do_GET()
 
     def do_POST(self):
+        if self.path.startswith("/api/venues/edit"):
+            try:
+                import sys
+                import json
+                from pathlib import Path
+                ROOT = Path(__file__).resolve().parent.parent.parent
+                if str(ROOT) not in sys.path:
+                    sys.path.insert(0, str(ROOT))
+                from shadenet.nightcal.venue_edits import update_info, add_event, add_blurb, get_overlay
+                length = int(self.headers.get("Content-Length") or 0)
+                body = json.loads(self.rfile.read(length)) if length else {}
+                venue_id = body.get("venue_id", "")
+                op = body.get("op", "")
+                owner = {"id": "dev_user", "username": "dev"}
+                if op == "info":
+                    update_info(venue_id, owner, body.get("info", {}))
+                elif op == "event":
+                    add_event(venue_id, owner, body.get("event", {}))
+                elif op == "blurb":
+                    add_blurb(venue_id, owner, body.get("title", ""), body.get("content", ""))
+                data = json.dumps(get_overlay(venue_id)).encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            except Exception:
+                pass
         if self.path.startswith("/api/"):
             return self._proxy("POST")
         self.send_error(405)

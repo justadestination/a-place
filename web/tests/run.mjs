@@ -47,7 +47,7 @@ async function audit(path, vpName, scheme) {
     }
     const small = [];
     for (const el of document.querySelectorAll("a, button, input, select, summary, [role='button'], [tabindex='0']")) {
-      const target = el.matches("input[type=radio]") ? el.parentElement : el.matches(".nc-zine-card__link") ? el.closest(".nc-zine-card") : el;
+      const target = el.matches("input[type=radio], input[type=checkbox]") ? (el.closest("label") || el.parentElement) : el.matches(".nc-zine-card__link") ? el.closest(".nc-zine-card") : el;
       if (!visible(target)) continue;
       if (el.matches("p a, li > a.nc-share__item ~ *, dd a, .nc-prose a, .nc-event-card__source a")) continue; // inline links in text: 2.5.8 exception
       if (el.matches(".nc-map__node")) continue; // SVG hit area is a 44px circle; bbox check below

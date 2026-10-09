@@ -352,6 +352,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/account-settings/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/account-settings/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/account-settings/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/account-settings/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/article-intake/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -960,12 +992,42 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/preference-tabs/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/preference-tabs/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/preference-tabs/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/preference-tabs/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/recovery/ mobile light": {
       "axe": [],
       "tiny": [],
-      "small": [
-        "input.nc-recovery__input 332x42"
-      ],
+      "small": [],
       "og": [],
       "hScroll": false,
       "errors": []
@@ -973,9 +1035,7 @@
     "/embed/recovery/ mobile dark": {
       "axe": [],
       "tiny": [],
-      "small": [
-        "input.nc-recovery__input 332x42"
-      ],
+      "small": [],
       "og": [],
       "hScroll": false,
       "errors": []
@@ -983,9 +1043,7 @@
     "/embed/recovery/ desktop light": {
       "axe": [],
       "tiny": [],
-      "small": [
-        "input.nc-recovery__input 561x42"
-      ],
+      "small": [],
       "og": [],
       "hScroll": false,
       "errors": []
@@ -993,9 +1051,7 @@
     "/embed/recovery/ desktop dark": {
       "axe": [],
       "tiny": [],
-      "small": [
-        "input.nc-recovery__input 561x42"
-      ],
+      "small": [],
       "og": [],
       "hScroll": false,
       "errors": []
@@ -1255,6 +1311,134 @@
       "og": [],
       "hScroll": false,
       "errors": []
+    },
+    "/embed/venue-page/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-page/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-page/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-page/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zkp-gate/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zkp-gate/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zkp-gate/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/zkp-gate/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
     }
   },
   "checks": {
@@ -1363,7 +1547,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1840,
+      "layoutMs": 1336,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1408,12 +1592,52 @@
       "embedBuilt": true,
       "selfServiceRecoveryVerified": true,
       "supportEscalationVerified": true
+    },
+    "timezone correctness": {
+      "westCoastAbbr": "PDT",
+      "eastCoastAbbr": "EDT",
+      "multiTimezoneVerified": true
+    },
+    "21+ zkp gate": {
+      "embedBuilt": true,
+      "gateUxVerified": true,
+      "writeProtectionEnforced": true
+    },
+    "venue & entity schemas": {
+      "schemaDocExists": true,
+      "v2SchemasVerified": true,
+      "migrationEngineVerified": true
+    },
+    "account deletion + export": {
+      "embedBuilt": true,
+      "docExists": true,
+      "exportComplianceVerified": true,
+      "zeroResidualRowsEnforced": true
+    },
+    "venue pages": {
+      "embedBuilt": true,
+      "pageBuilt": true,
+      "docExists": true,
+      "closedProtectionVerified": true
+    },
+    "preference and settings tabs": {
+      "embedBuilt": true,
+      "docExists": true,
+      "liveApplyVerified": true,
+      "persistenceVerified": true
+    },
+    "entity pages": {
+      "embedBuilt": true,
+      "pageBuilt": true,
+      "docExists": true,
+      "bidirectionalLinksVerified": true
+    },
+    "venue quick-edit": {
+      "embedBuilt": true,
+      "pageBuilt": true,
+      "docExists": true,
+      "ownerGateVerified": true
     }
   },
-  "failures": [
-    "/embed/recovery/ mobile light: targets under 44px: input.nc-recovery__input 332x42",
-    "/embed/recovery/ mobile dark: targets under 44px: input.nc-recovery__input 332x42",
-    "/embed/recovery/ desktop light: targets under 44px: input.nc-recovery__input 561x42",
-    "/embed/recovery/ desktop dark: targets under 44px: input.nc-recovery__input 561x42"
-  ]
+  "failures": []
 }
