@@ -1,0 +1,256 @@
+/* Venue Page Component (Task 2.12) */
+.nc-venue-page {
+  display: grid;
+  gap: var(--nc-space-5);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+.nc-venue-page__header {
+  display: grid;
+  gap: var(--nc-space-2);
+}
+
+.nc-venue-page__eyebrow {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: var(--nc-font-tracking-caps);
+  margin: var(--nc-space-0);
+}
+
+.nc-venue-page__title {
+  font-size: var(--nc-font-size-xl);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: var(--nc-space-0);
+  line-height: var(--nc-line-height-tight);
+}
+
+/* Status Banners */
+.nc-venue-banner {
+  display: grid;
+  gap: var(--nc-space-1);
+  padding: var(--nc-space-3) var(--nc-space-4);
+  border-radius: var(--nc-radius-sm);
+  border: var(--nc-size-border) solid;
+}
+
+.nc-venue-banner--active {
+  background: var(--nc-color-kind-music-bg);
+  border-color: var(--nc-color-kind-music-mark);
+  color: var(--nc-color-kind-music-fg);
+}
+
+.nc-venue-banner--closed {
+  background: var(--nc-color-kind-comedy-bg);
+  border-color: var(--nc-color-kind-comedy-mark);
+  color: var(--nc-color-kind-comedy-fg);
+}
+
+.nc-venue-banner__badge {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--nc-font-tracking-caps);
+}
+
+.nc-venue-banner__text {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  line-height: 1.5;
+}
+
+/* Section Containers */
+.nc-venue-section {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface-raised, var(--nc-color-surface));
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  box-sizing: border-box;
+}
+
+.nc-venue-section__title {
+  font-size: var(--nc-font-size-md);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: var(--nc-space-0);
+  border-bottom: var(--nc-size-border) solid var(--nc-color-border);
+  padding-bottom: var(--nc-space-2);
+}
+
+/* Profile Grid */
+.nc-venue-profile-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--nc-space-2) var(--nc-space-4);
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  align-items: center;
+}
+
+.nc-venue-profile-grid dt {
+  font-weight: var(--nc-font-weight-medium);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-venue-profile-grid dd {
+  margin: var(--nc-space-0);
+  color: var(--nc-color-text);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--nc-space-2);
+}
+
+.nc-venue-address {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--nc-space-1);
+}
+
+.nc-venue-btn-wrapper {
+  margin-top: var(--nc-space-1);
+}
+
+.nc-venue-action-btn {
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nc-space-2) var(--nc-space-3);
+  text-decoration: none;
+}
+
+.nc-venue-link {
+  color: var(--nc-color-link);
+  text-decoration: underline;
+  min-height: var(--nc-size-target);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Blurbs */
+.nc-venue-blurbs-list {
+  display: grid;
+  gap: var(--nc-space-3);
+}
+
+.nc-venue-blurb-card {
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-venue-blurb-card__title {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-base);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+
+.nc-venue-blurb-card__date {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-venue-blurb-card__content {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text);
+  line-height: 1.5;
+}
+
+/* Events Feed */
+.nc-venue-events-container {
+  display: grid;
+  gap: var(--nc-space-2);
+}
+
+.nc-venue-no-events {
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) dashed var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+  text-align: center;
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-venue-no-events--closed {
+  background: var(--nc-color-kind-comedy-bg);
+  border-color: var(--nc-color-kind-comedy-mark);
+  color: var(--nc-color-kind-comedy-fg);
+  font-weight: var(--nc-font-weight-medium);
+}
+
+.nc-venue-events-list {
+  list-style: none;
+  margin: var(--nc-space-0);
+  padding: var(--nc-space-0);
+  display: grid;
+  gap: var(--nc-space-2);
+}
+
+.nc-venue-event-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-venue-event-item__time {
+  display: flex;
+  flex-direction: column;
+  min-width: var(--nc-space-8);
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-accent-text);
+  font-weight: var(--nc-font-weight-bold);
+}
+
+.nc-venue-event-item__main {
+  flex: 1;
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-venue-event-item__title {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-base);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+
+.nc-venue-event-item__lineup {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+}
+
+.nc-venue-event-item__action a {
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+}
+
+.nc-venue-empty-text {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: var(--nc-space-0);
+}

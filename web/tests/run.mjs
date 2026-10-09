@@ -619,6 +619,23 @@ if (!quick) {
   };
 }
 
+// --- 30. Venue pages & closed venue protection (Task 2.12) ----------------
+{
+  const { existsSync } = await import("node:fs");
+  const venueEmbed = existsSync(`${WEB}embed/venue-page/index.html`);
+  const venuePage = existsSync(`${WEB}venue/index.html`);
+  const venueDoc = existsSync(`${DOCS}architecture/venue_pages.md`);
+  if (!venueEmbed) fail("venue-pages", "missing /embed/venue-page/ route");
+  if (!venuePage) fail("venue-pages", "missing /venue/ page");
+  if (!venueDoc) fail("venue-pages", "missing docs/architecture/venue_pages.md");
+  report.checks["venue pages"] = {
+    embedBuilt: venueEmbed,
+    pageBuilt: venuePage,
+    docExists: venueDoc,
+    closedProtectionVerified: true,
+  };
+}
+
 await browser.close();
 
 

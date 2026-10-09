@@ -264,6 +264,16 @@
     "readme": true
   },
   {
+    "name": "venue-page",
+    "title": "Venue profile page",
+    "summary": "Dedicated venue profile: upcoming events, operator blurbs, contact, map, and closed status banner.",
+    "params": {
+      "id": "venue id",
+      "closed": "Set to 1 to simulate closed venue state"
+    },
+    "readme": true
+  },
+  {
     "name": "zkp-gate",
     "title": "21+ ZKP age gate",
     "summary": "Privacy-preserving zero-knowledge proof age gate for write operations using mDL selective disclosure.",

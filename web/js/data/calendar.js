@@ -149,6 +149,8 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
     source, place: raw.place || "",
     today: overrideToday || raw.today || today(),
     venues, venuesById,
+    rawVenues: raw.venues || [],
+    raw,
     events, eventsById: new Map(events.map(e => [e.id, e])),
     notes: {
       status: ui.status || "",
