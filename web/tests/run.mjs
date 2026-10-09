@@ -235,6 +235,21 @@ if (!quick) {
   if (offenders.length) fail("token discipline", offenders.slice(0, 5).join(" | "));
 }
 
+// --- 9. billboard sizing curve (Decision 005) ---------------------------------
+{
+  const { billboardScale } = await import("../components/event-card/event-card.js");
+  const tallies = [0, 1, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
+  let prev = 0;
+  for (const b of tallies) {
+    const s = billboardScale(b);
+    if (s < 1.0 || s > 1.75 || s < prev) fail("billboard curve", `invalid scale for bodies ${b}: ${s}`);
+    prev = s;
+  }
+  if (billboardScale(25) - billboardScale(5) < 0.1) fail("billboard curve", "insufficient 5 vs 25 differentiation");
+  if (billboardScale(10000) !== 1.75) fail("billboard curve", "10,000 bodies not clamped at 1.75");
+  report.checks["billboard curve"] = { min: billboardScale(0), mid: billboardScale(50), max: billboardScale(10000) };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

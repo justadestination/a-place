@@ -1,4 +1,5 @@
 .nc-event-card {
+  --nc-card-scale: 1;
   display: grid;
   overflow: clip;
   background: var(--nc-color-surface);
@@ -8,12 +9,53 @@
 }
 .nc-event-card__media { aspect-ratio: 16 / 9; background: var(--nc-color-surface-sunken); }
 .nc-event-card__media img { width: 100%; height: 100%; object-fit: cover; }
-.nc-event-card__body { display: grid; gap: var(--nc-space-4); padding: var(--nc-space-5); justify-items: start; }
-.nc-event-card__title { font-size: var(--nc-font-size-2xl); }
-.nc-event-card__facts { display: grid; gap: var(--nc-space-3); margin: 0; }
-.nc-event-card__facts > div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--nc-space-3); }
+.nc-event-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nc-space-3);
+  width: 100%;
+}
+.nc-event-card__gauge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-1);
+  padding: calc(var(--nc-space-1) * 0.5) var(--nc-space-3);
+  font-size: var(--nc-font-size-sm);
+  line-height: var(--nc-font-line-height-normal);
+  font-weight: var(--nc-font-weight-bold);
+  border-radius: var(--nc-radius-pill);
+  background: var(--nc-color-surface-sunken);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  color: var(--nc-color-text);
+}
+.nc-event-card__gauge-count {
+  color: var(--nc-color-accent-text);
+  font-weight: var(--nc-font-weight-black);
+}
+.nc-event-card__gauge-label {
+  color: var(--nc-color-text-muted);
+  font-weight: var(--nc-font-weight-normal);
+}
+.nc-event-card__body {
+  display: grid;
+  gap: calc(var(--nc-space-4) * var(--nc-card-scale, 1));
+  padding: calc(var(--nc-space-5) * var(--nc-card-scale, 1));
+  justify-items: start;
+}
+.nc-event-card__title {
+  font-size: calc(var(--nc-font-size-2xl) * min(1.3, var(--nc-card-scale, 1)));
+  line-height: var(--nc-font-line-height-tight);
+}
+.nc-event-card__facts {
+  display: grid;
+  gap: calc(var(--nc-space-3) * var(--nc-card-scale, 1));
+  margin: 0;
+}
+.nc-event-card__facts > div { display: grid; grid-template-columns: 6.5rem 1fr; gap: var(--nc-space-3); }
 .nc-event-card__facts dt { color: var(--nc-color-text-muted); font-weight: var(--nc-font-weight-bold); }
-.nc-event-card__facts dd { margin: 0; font-size: var(--nc-font-size-lg); line-height: var(--nc-font-line-height-snug); }
+.nc-event-card__facts dd { margin: 0; font-size: calc(var(--nc-font-size-lg) * min(1.15, var(--nc-card-scale, 1))); line-height: var(--nc-font-line-height-snug); }
 .nc-event-card__source { color: var(--nc-color-text-muted); font-size: var(--nc-font-size-sm); }
 .nc-event-card__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--nc-space-3); padding-top: var(--nc-space-2); }
 

@@ -81,6 +81,9 @@ export function normalize(raw, source = "live") {
         image: safeUrl(e.image),
         performers: (e.performers || []).map(p => p.name).filter(Boolean),
         up: e.up || 0, down: e.down || 0, score: e.score || 0,
+        bodies: Number.isFinite(e.bodies) ? e.bodies : (Number.isFinite(e.up) ? e.up : 0),
+        verifiedBodies: Number.isFinite(e.verified_bodies) ? e.verified_bodies : 0,
+        unverifiedBodies: Number.isFinite(e.unverified_bodies) ? e.unverified_bodies : 0,
         needsReview: !!e.needsReview,
         startsAt: e.startsAt || "", endsAt: e.endsAt || "",
       };

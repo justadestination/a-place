@@ -5,10 +5,12 @@ __pycache__/
 .pytest_cache/
 
 # Scratch databases and sqlite sidecars
+*.db
 *.db-wal
 *.db-shm
 *.sqlite
 *.sqlite3
+data/
 
 # Caches & environments
 .cache/

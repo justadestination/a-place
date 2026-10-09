@@ -47,10 +47,11 @@
   {
     "name": "event-card",
     "title": "Event card",
-    "summary": "One event in full: kind, title, when, where, lineup, sources, and the single primary action (the listing).",
+    "summary": "One event in full: kind, title, when, where, lineup, sources, attendance gauge scaled by billboard curve, and the single primary action (the listing).",
     "params": {
       "id": "event id (defaults to the next night out)",
-      "image": "0 to hide the listing image"
+      "image": "0 to hide the listing image",
+      "bodies": "override bodies attendance tally (for testing the billboard curve)"
     },
     "readme": true
   },
