@@ -156,6 +156,16 @@
     "readme": true
   },
   {
+    "name": "portal",
+    "title": "Paper-to-screen portal",
+    "summary": "Zine paper-to-screen portal bridging physical print markers into AR spatial content or responsive reader fallback.",
+    "params": {
+      "target": "target node or entity ID (defaults to sample note)",
+      "ar": "1 to request AR mode"
+    },
+    "readme": true
+  },
+  {
     "name": "road-timeline",
     "title": "Road timeline",
     "summary": "Chronological road into the distance for today's events: position = start time, box size = attendance gauge.",

@@ -33,6 +33,13 @@
       "og": "ar"
     },
     {
+      "path": "/portal/",
+      "title": "Zine Portal — NightCal",
+      "description": "Physical print-to-screen portal bridging printed zine markers into AR and digital reader content.",
+      "module": "js/pages/portal.js",
+      "og": "zine"
+    },
+    {
       "path": "/system/",
       "title": "NightCal design system",
       "description": "Tokens, themes, components, embed routes and the theme API behind NightCal.",

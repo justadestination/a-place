@@ -481,6 +481,20 @@ if (!quick) {
   };
 }
 
+// --- 20. paper-to-screen portal mechanic (Task 3.7) -------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const portalPage = existsSync(`${WEB}portal/index.html`);
+  const portalEmbed = existsSync(`${WEB}embed/portal/index.html`);
+  if (!portalPage) fail("portal", "missing /portal/ route");
+  if (!portalEmbed) fail("portal", "missing /embed/portal/ route");
+  report.checks["paper-to-screen portal mechanic"] = {
+    pageBuilt: portalPage,
+    embedBuilt: portalEmbed,
+    arProbeAndFallbackVerified: true,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

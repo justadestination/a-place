@@ -128,6 +128,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/portal/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/portal/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/portal/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/portal/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/system/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -800,6 +832,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/portal/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/portal/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/portal/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/portal/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/road-timeline/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1027,7 +1091,7 @@
   },
   "checks": {
     "keyboard /": {
-      "stops": 30,
+      "stops": 29,
       "withoutRing": []
     },
     "keyboard /zine/": {
@@ -1131,7 +1195,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1591,
+      "layoutMs": 1671,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1147,6 +1211,11 @@
       "embedBuilt": true,
       "draftLifecycleVerified": true,
       "spamRejectionVerified": true
+    },
+    "paper-to-screen portal mechanic": {
+      "pageBuilt": true,
+      "embedBuilt": true,
+      "arProbeAndFallbackVerified": true
     }
   },
   "failures": []

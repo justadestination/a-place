@@ -1,0 +1,107 @@
+.nc-portal {
+  display: grid;
+  gap: var(--nc-space-4);
+  max-width: var(--nc-size-measure);
+  margin-inline: auto;
+  padding: var(--nc-space-3);
+}
+
+.nc-portal__header {
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-portal__eyebrow {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nc-portal__title {
+  font-size: var(--nc-font-size-xl);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-portal__subtitle {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  margin: 0;
+}
+
+.nc-portal__banner {
+  display: grid;
+  gap: var(--nc-space-2);
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-left: calc(var(--nc-size-border) * 4) solid var(--nc-color-accent);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-portal__banner--ar {
+  border-left-color: var(--nc-color-kind-show-mark);
+  background: var(--nc-color-kind-show-bg);
+}
+
+.nc-portal__banner--fallback {
+  border-left-color: var(--nc-color-kind-music-mark);
+  background: var(--nc-color-surface-sunken);
+}
+
+.nc-portal__badge {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nc-color-text);
+}
+
+.nc-portal__banner-text {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-portal__content {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding: var(--nc-space-4);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+}
+
+.nc-portal__node-title {
+  font-size: var(--nc-font-size-lg);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+  margin: 0;
+}
+
+.nc-portal__node-meta {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+  margin: 0;
+}
+
+.nc-portal__node-body {
+  font-size: var(--nc-font-size-base);
+  line-height: var(--nc-line-height-normal);
+  color: var(--nc-color-text);
+}
+
+.nc-portal__node-body p {
+  margin-top: 0;
+  margin-bottom: var(--nc-space-2);
+}
+
+.nc-portal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+  margin-top: var(--nc-space-3);
+}
