@@ -10,8 +10,21 @@
  */
 
 import { h } from "../../js/core/dom.js";
+import { entityByName, entityHref, getEntity } from "../../js/data/entities.js";
 import { button } from "../button/button.js";
 import { getVenueById, normalizeVenue } from "../../js/data/venues.js";
+
+function lineupLinks(performers) {
+  const row = h("p.nc-venue-event-item__lineup");
+  performers.forEach((performer, index) => {
+    if (index) row.append(" · ");
+    const name = typeof performer === "string" ? performer : (performer?.name || "");
+    const known = (performer && performer.id && getEntity(performer.id)) || entityByName(name);
+    if (known) row.append(h("a.nc-entity-link", { href: entityHref(known) }, name));
+    else row.append(name);
+  });
+  return row;
+}
 
 const DEFAULT_VENUE = {
   id: "ven_a261886187f23bb1",
@@ -228,7 +241,7 @@ export function venuePageView(options = {}) {
           {},
           h("h3.nc-venue-event-item__title", {}, ev.title),
           ev.performers && ev.performers.length > 0
-            ? h("p.nc-venue-event-item__lineup", {}, ev.performers.join(" · "))
+            ? lineupLinks(ev.performers)
             : null
         ),
         h(

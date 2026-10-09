@@ -1,4 +1,5 @@
 import { h, emit } from "../../js/core/dom.js";
+import { entityHref, linkifySegments } from "../../js/data/entities.js";
 import { nodeTypeTag, byline, zineCard } from "../zine-card/zine-card.js";
 import { eventCard } from "../event-card/event-card.js";
 import { eventRow } from "../event-row/event-row.js";
@@ -76,7 +77,25 @@ export function zineReader(node, { graph, calendar, level = 2 } = {}) {
       emit(root, "nc-select", { kind: "node", id: `event:${e.detail.id}` });
     }
   });
+  linkifyEntityNames(root);
   return root;
+}
+
+function linkifyEntityNames(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  const texts = [];
+  while (walker.nextNode()) texts.push(walker.currentNode);
+  for (const node of texts) {
+    if (node.parentElement?.closest("a, button, script, style")) continue;
+    const parts = linkifySegments(node.nodeValue || "");
+    if (parts.every(part => part.kind === "text")) continue;
+    const frag = document.createDocumentFragment();
+    for (const part of parts) {
+      if (part.kind === "text") frag.append(document.createTextNode(part.text));
+      else frag.append(h("a.nc-entity-link", { href: entityHref(part.entity) }, part.text));
+    }
+    node.parentNode.replaceChild(frag, node);
+  }
 }
 
 export const meta = {

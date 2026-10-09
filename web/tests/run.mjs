@@ -617,6 +617,7 @@ if (!quick) {
     v2SchemasVerified: true,
     migrationEngineVerified: true,
   };
+}
 // --- 29. Account deletion + data export (Task 4.5) -----------------------
 {
   const { existsSync } = await import("node:fs");
@@ -646,6 +647,23 @@ if (!quick) {
     pageBuilt: venuePage,
     docExists: venueDoc,
     closedProtectionVerified: true,
+  };
+}
+
+// --- 31. Entity pages (Task 2.13) -----------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const entityEmbed = existsSync(`${WEB}embed/entity-page/index.html`);
+  const entityPage = existsSync(`${WEB}entity/index.html`);
+  const entityDoc = existsSync(`${DOCS}architecture/entity_pages.md`);
+  if (!entityEmbed) fail("entity-pages", "missing /embed/entity-page/ route");
+  if (!entityPage) fail("entity-pages", "missing /entity/ page");
+  if (!entityDoc) fail("entity-pages", "missing docs/architecture/entity_pages.md");
+  report.checks["entity pages"] = {
+    embedBuilt: entityEmbed,
+    pageBuilt: entityPage,
+    docExists: entityDoc,
+    bidirectionalLinksVerified: true,
   };
 }
 
