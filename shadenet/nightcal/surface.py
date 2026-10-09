@@ -9,12 +9,12 @@ leaves the tree alone.
 from __future__ import annotations
 
 import json
-import logging
 import re
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
+from shadenet.logging import get_logger
 from shadenet.nightcal.closures import cite_closures, is_closed, note_for
 from shadenet.nightcal.fill import AGENT_SOURCE, DAO_SOURCE, DB_PATH
 from shadenet.nightcal.lifecycle import compute_event_lifecycle
@@ -26,7 +26,7 @@ from shadenet.towncrier.store import Store
 CATALOG_ID = "https://towncrier.local/catalogs/nightcal/v1/catalog.json"
 SURFACE_ID = "downtown-nights"
 LA = ZoneInfo("America/Los_Angeles")
-logger = logging.getLogger("shadenet.nightcal.surface")
+logger = get_logger("shadenet.nightcal.surface")
 
 NIGHT_KINDS = {"music", "comedy", "show", "trivia"}
 
@@ -507,7 +507,7 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
         if venue.get("closed") or is_closed(venue["name"]):
             hidden.append(venue["name"])
             closed_ids.add(venue["id"])
-            logger.info("Closed venue detected and excluded: %s (id=%s)", venue["name"], venue["id"])
+            logger.info("closed_venue_excluded", venue_name=venue["name"], venue_id=venue["id"])
             continue
         open_rooms.append(venue)
     events = [event for event in events if event.get("venueId") not in closed_ids]

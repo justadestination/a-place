@@ -18,9 +18,10 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+WEB_DIR = ROOT / "web"
 
 from shadenet.nightcal.agent_events import (
     EventWriteError,
@@ -89,19 +90,47 @@ def _model(status: str | None = None) -> dict:
         store.close()
 
 
+MIME_MAP = {
+    ".html": "text/html; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+    ".mjs": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".json": "application/json; charset=utf-8",
+    ".map": "application/json; charset=utf-8",
+    ".webmanifest": "application/manifest+json",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".gif": "image/gif",
+    ".ico": "image/x-icon",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2",
+    ".ttf": "font/ttf",
+    ".xml": "application/xml; charset=utf-8",
+    ".txt": "text/plain; charset=utf-8",
+    ".md": "text/markdown; charset=utf-8",
+}
+
+
 class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def log_message(self, fmt: str, *args) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
 
-    def _send(self, code: int, body: bytes, content_type: str) -> None:
+    def _send(self, code: int, body: bytes, content_type: str, cache_control: str = "no-store", extra_headers: dict | None = None) -> None:
         self.send_response(code)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
+        self.send_header("Cache-Control", cache_control)
+        if extra_headers:
+            for k, v in extra_headers.items():
+                self.send_header(k, v)
         self.end_headers()
-        self.wfile.write(body)
+        if self.command != "HEAD":
+            self.wfile.write(body)
 
     def _json(self, code: int, payload: dict) -> None:
         self._send(code, json.dumps(payload).encode(), "application/json; charset=utf-8")
@@ -228,39 +257,11 @@ class Handler(BaseHTTPRequestHandler):
             else:
                 self._json(200, {"room_id": room_id, "messages": msgs})
             return
-        if path in ("/status", "/status/", "/status.html"):
-            st_page = STATIC / "static" / "status.html"
-            if st_page.is_file():
-                self._send(200, st_page.read_bytes(), "text/html; charset=utf-8")
-                return
         if path.startswith("/api/"):
             cat = "operator" if path.startswith("/api/operator/") else "api"
             if not self._check_rate_limit(cat):
                 return
-        if path in ("/", "/index.html"):
-            body = (STATIC / "static" / "index.html").read_bytes()
-            self._send(200, body, "text/html; charset=utf-8")
-            return
-        if path == "/catalog.json":
-            self._send(200, (STATIC / "catalog.json").read_bytes(), "application/json; charset=utf-8")
-            return
-        static_file = STATIC / "static" / path.lstrip("/")
-        if static_file.is_file() and not path.startswith("/api/"):
-            mime = "text/plain"
-            if path.endswith(".js"):
-                mime = "application/javascript; charset=utf-8"
-            elif path.endswith(".css"):
-                mime = "text/css; charset=utf-8"
-            elif path.endswith(".html"):
-                mime = "text/html; charset=utf-8"
-            elif path.endswith(".json"):
-                mime = "application/json; charset=utf-8"
-            elif path.endswith(".webmanifest"):
-                mime = "application/manifest+json"
-            elif path.endswith(".svg"):
-                mime = "image/svg+xml"
-            self._send(200, static_file.read_bytes(), mime)
-            return
+
         if path == "/api/surface":
             with _lock:
                 store = open_store(_db_path())
@@ -270,11 +271,7 @@ class Handler(BaseHTTPRequestHandler):
                     store.close()
             self._send(200, payload, "application/jsonl; charset=utf-8")
             return
-        if path in ("/operator", "/operator/", "/operator.html"):
-            op_page = STATIC / "static" / "operator.html"
-            if op_page.is_file():
-                self._send(200, op_page.read_bytes(), "text/html; charset=utf-8")
-                return
+
         if path == "/api/operator/status":
             with _lock:
                 store = open_store(_db_path())
@@ -284,6 +281,7 @@ class Handler(BaseHTTPRequestHandler):
                     store.close()
             self._json(200, payload)
             return
+
         if path.startswith("/api/auth/"):
             qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             if path == "/api/auth/register/options":
@@ -363,12 +361,72 @@ class Handler(BaseHTTPRequestHandler):
                     self._json(401, {"error": str(e)})
                 return
 
-
-
         if path == "/api/model":
             with _lock:
                 message = update_data_message(_model())
             self._send(200, json.dumps(message).encode(), "application/json; charset=utf-8")
+            return
+
+        if path.startswith("/api/"):
+            self._json(404, {"error": "not found"})
+            return
+
+        if path in ("/operator", "/operator/", "/operator.html"):
+            op_page = WEB_DIR / "operator" / "index.html"
+            if not op_page.is_file():
+                op_page = STATIC / "static" / "operator.html"
+            if op_page.is_file():
+                self._send(200, op_page.read_bytes(), "text/html; charset=utf-8")
+                return
+
+        if path in ("/status", "/status/", "/status.html"):
+            st_page = WEB_DIR / "status" / "index.html"
+            if not st_page.is_file():
+                st_page = STATIC / "static" / "status.html"
+            if st_page.is_file():
+                self._send(200, st_page.read_bytes(), "text/html; charset=utf-8")
+                return
+
+        if path == "/catalog.json":
+            self._send(200, (STATIC / "catalog.json").read_bytes(), "application/json; charset=utf-8")
+            return
+
+        # Static file resolution from WEB_DIR
+        clean = path.strip("/")
+        candidate = None
+        if not clean or clean == "index.html":
+            candidate = WEB_DIR / "index.html"
+        else:
+            target = WEB_DIR / clean
+            if target.is_file():
+                candidate = target
+            elif (target / "index.html").is_file():
+                candidate = target / "index.html"
+            elif (WEB_DIR / f"{clean}.html").is_file():
+                candidate = WEB_DIR / f"{clean}.html"
+            elif (STATIC / "static" / clean).is_file():
+                candidate = STATIC / "static" / clean
+            elif (STATIC / "static" / f"{clean}.html").is_file():
+                candidate = STATIC / "static" / f"{clean}.html"
+
+        if candidate and candidate.is_file():
+            ext = candidate.suffix.lower()
+            mime = MIME_MAP.get(ext, "application/octet-stream")
+            extra_headers = {
+                "X-Content-Type-Options": "nosniff",
+                "Referrer-Policy": "strict-origin-when-cross-origin",
+            }
+            if not clean.startswith("embed/"):
+                extra_headers["X-Frame-Options"] = "SAMEORIGIN"
+            cache = "no-cache"
+            if ext != ".html" and ("/css/" in path or "/vendor/" in path):
+                cache = "public, max-age=31536000, immutable"
+            self._send(200, candidate.read_bytes(), mime, cache_control=cache, extra_headers=extra_headers)
+            return
+
+        not_found = WEB_DIR / "404.html"
+        if not_found.is_file():
+            self._send(404, not_found.read_bytes(), "text/html; charset=utf-8")
             return
         self._send(404, b"not found", "text/plain; charset=utf-8")
 
