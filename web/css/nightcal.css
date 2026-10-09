@@ -909,6 +909,38 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   .nc-event-card__media { aspect-ratio: auto; min-height: 100%; }
 }
 
+.nc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-1);
+  padding: calc(var(--nc-space-1) * 0.5) var(--nc-space-2);
+  border-radius: var(--nc-radius-pill);
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-bold);
+  line-height: var(--nc-font-line-height-normal);
+}
+.nc-badge--earmarked {
+  background: var(--nc-color-selected-bg);
+  color: var(--nc-color-selected-text);
+  border: var(--nc-size-border) solid var(--nc-color-selected-border);
+}
+.nc-badge--personal {
+  background: var(--nc-color-surface-sunken);
+  color: var(--nc-color-accent-text);
+  border: var(--nc-size-border) solid var(--nc-color-accent);
+}
+.nc-event-card__attention {
+  margin: 0;
+  padding: var(--nc-space-2) var(--nc-space-3);
+  background: var(--nc-color-surface-sunken);
+  color: var(--nc-color-text);
+  border-left: calc(var(--nc-size-border) * 3) solid var(--nc-color-accent);
+  border-radius: var(--nc-radius-sm);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+}
+
+
 /* --- components/event-row --- */
 .nc-event-row {
   display: grid;

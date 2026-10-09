@@ -12,10 +12,17 @@ import { filterBar } from "../../components/filter-bar/filter-bar.js";
 import { calendarWeek } from "../../components/calendar-week/calendar-week.js";
 import { dayAgenda } from "../../components/day-agenda/day-agenda.js";
 import { SITE } from "../core/site.js";
+import { applyStewardPersonalization, loadStewardStub } from "../data/steward.js";
 
 const app = document.getElementById("app");
-const model = await loadCalendar();
+const rawModel = await loadCalendar();
 const q = params();
+const stewardEnabled = q.get("steward") === "1" || window.__STEWARD_ENABLED__ === true;
+let stewardPayload = null;
+if (stewardEnabled) {
+  stewardPayload = window.__STEWARD_PAYLOAD__ || await loadStewardStub();
+}
+const model = applyStewardPersonalization(rawModel, stewardPayload, { enabled: stewardEnabled });
 const pathDay = location.pathname.match(/\/day\/(\d{4}-\d{2}-\d{2})/);
 const initialDate = isValidDate(q.get("date"))
   ? q.get("date")

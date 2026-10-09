@@ -803,7 +803,7 @@
   },
   "checks": {
     "keyboard /": {
-      "stops": 29,
+      "stops": 30,
       "withoutRing": []
     },
     "keyboard /zine/": {
@@ -891,6 +891,14 @@
       "rolloverSuccess": true,
       "todayPageBuilt": true,
       "archivePageBuilt": true
+    },
+    "steward personalization hooks": {
+      "defaultEvents": 2,
+      "activeEvents": 2,
+      "personalMerged": true,
+      "mutedHidden": true,
+      "earmarkedHighlighted": true,
+      "attentionSurfaced": true
     }
   },
   "failures": []
