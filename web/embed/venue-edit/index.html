@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Edit venue · NightCal embed</title>
-<meta name="description" content="Update venue details, add a show, and publish news.">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;sha256-MWfGbnoZSzPtwaRdt79JrkxnORjfzJQgEsk6h0CLBBo=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; https: data: blob:; connect-src &#x27;self&#x27;; frame-src &#x27;self&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;">
+<title>Edit a venue · NightCal embed</title>
+<meta name="description" content="Venue owners and operators update details, add a show, and publish news.">
 <link rel="canonical" href="https://nightcal.example.org/embed/venue-edit/">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F6F4EE">
@@ -12,18 +13,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NightCal">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="Edit venue · NightCal embed">
-<meta property="og:description" content="Update venue details, add a show, and publish news.">
+<meta property="og:title" content="Edit a venue · NightCal embed">
+<meta property="og:description" content="Venue owners and operators update details, add a show, and publish news.">
 <meta property="og:url" content="https://nightcal.example.org/embed/venue-edit/">
 <meta property="og:image" content="https://nightcal.example.org/og/embed-venue-edit.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Edit venue · NightCal embed">
+<meta property="og:image:alt" content="Edit a venue · NightCal embed">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Edit venue · NightCal embed">
-<meta name="twitter:description" content="Update venue details, add a show, and publish news.">
+<meta name="twitter:title" content="Edit a venue · NightCal embed">
+<meta name="twitter:description" content="Venue owners and operators update details, add a show, and publish news.">
 <meta name="twitter:image" content="https://nightcal.example.org/og/embed-venue-edit.png">
-<meta name="twitter:image:alt" content="Edit venue · NightCal embed">
+<meta name="twitter:image:alt" content="Edit a venue · NightCal embed">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>(function () {
   var d = document.documentElement, s = null, q = null;
@@ -48,9 +49,17 @@
     document.head.appendChild(el);
   }
 })();</script>
-<link rel="stylesheet" href="/css/nightcal.css?v=476deafda8">
+<link rel="stylesheet" href="/css/nightcal.css?v=f67aa75110">
 <link rel="modulepreload" href="/js/pages/embed.js">
+<link rel="modulepreload" href="/js/data/graph.js">
+<link rel="modulepreload" href="/js/layout/force.js">
+<link rel="modulepreload" href="/js/data/calendar.js">
+<link rel="modulepreload" href="/js/data/tz.js">
+<link rel="modulepreload" href="/js/data/lifecycle.js">
+<link rel="modulepreload" href="/js/data/dates.js">
 <link rel="modulepreload" href="/js/core/frame.js">
+<link rel="modulepreload" href="/js/core/theme.js">
+<link rel="modulepreload" href="/js/core/tokens.js">
 <link rel="modulepreload" href="/js/core/dom.js">
 <link rel="modulepreload" href="/components/venue-edit/venue-edit.js">
 <link rel="modulepreload" href="/components/button/button.js">

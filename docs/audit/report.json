@@ -160,6 +160,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/chat/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/chat/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/chat/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/chat/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/auth/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -352,38 +384,6 @@
       "hScroll": false,
       "errors": []
     },
-    "/embed/account-settings/ mobile light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/account-settings/ mobile dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/account-settings/ desktop light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/account-settings/ desktop dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
     "/embed/article-intake/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -544,6 +544,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/chat/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/chat/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/chat/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/chat/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/corrections/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -601,6 +633,38 @@
       "errors": []
     },
     "/embed/day-agenda/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/entity-page/ desktop dark": {
       "axe": [],
       "tiny": [],
       "small": [],
@@ -1248,6 +1312,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/venue-edit/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/venue-edit/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/zine-card/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1312,102 +1408,6 @@
       "hScroll": false,
       "errors": []
     },
-    "/embed/venue-page/ mobile light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-page/ mobile dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-page/ desktop light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-page/ desktop dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/entity-page/ mobile light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/entity-page/ mobile dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/entity-page/ desktop light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/entity-page/ desktop dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-edit/ mobile light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-edit/ mobile dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-edit/ desktop light": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
-    "/embed/venue-edit/ desktop dark": {
-      "axe": [],
-      "tiny": [],
-      "small": [],
-      "og": [],
-      "hScroll": false,
-      "errors": []
-    },
     "/embed/zkp-gate/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1443,7 +1443,7 @@
   },
   "checks": {
     "keyboard /": {
-      "stops": 29,
+      "stops": 30,
       "withoutRing": []
     },
     "keyboard /zine/": {
@@ -1547,7 +1547,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 1336,
+      "layoutMs": 1263,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1637,6 +1637,13 @@
       "pageBuilt": true,
       "docExists": true,
       "ownerGateVerified": true
+    },
+    "embedded matrix chat node": {
+      "embedBuilt": true,
+      "pageBuilt": true,
+      "docExists": true,
+      "pseudonymAuthVerified": true,
+      "stewardAssistantVerified": true
     }
   },
   "failures": []

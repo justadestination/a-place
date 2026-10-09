@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;sha256-MWfGbnoZSzPtwaRdt79JrkxnORjfzJQgEsk6h0CLBBo=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; https: data: blob:; connect-src &#x27;self&#x27;; frame-src &#x27;self&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;">
 <title>Entity page · NightCal embed</title>
 <meta name="description" content="Profile, contact, linked events, and linked zine articles for a promoter, band, comedian, or other entity.">
 <link rel="canonical" href="https://nightcal.example.org/embed/entity-page/">
@@ -48,13 +49,20 @@
     document.head.appendChild(el);
   }
 })();</script>
-<link rel="stylesheet" href="/css/nightcal.css?v=476deafda8">
+<link rel="stylesheet" href="/css/nightcal.css?v=f67aa75110">
 <link rel="modulepreload" href="/js/pages/embed.js">
+<link rel="modulepreload" href="/js/data/graph.js">
+<link rel="modulepreload" href="/js/layout/force.js">
+<link rel="modulepreload" href="/js/data/calendar.js">
+<link rel="modulepreload" href="/js/data/tz.js">
+<link rel="modulepreload" href="/js/data/lifecycle.js">
+<link rel="modulepreload" href="/js/data/dates.js">
 <link rel="modulepreload" href="/js/core/frame.js">
+<link rel="modulepreload" href="/js/core/theme.js">
+<link rel="modulepreload" href="/js/core/tokens.js">
 <link rel="modulepreload" href="/js/core/dom.js">
-<link rel="modulepreload" href="/js/data/entities.js">
 <link rel="modulepreload" href="/components/entity-page/entity-page.js">
-<link rel="modulepreload" href="/components/button/button.js">
+<link rel="modulepreload" href="/js/data/entities.js">
 
 <script type="module" src="/js/pages/embed.js"></script>
 </head>

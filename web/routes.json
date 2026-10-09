@@ -40,6 +40,13 @@
       "og": "zine"
     },
     {
+      "path": "/chat/",
+      "title": "Downtown Night Chat — NightCal",
+      "description": "Embedded chat node for downtown nightlife patrons and venue rooms with steward assistance.",
+      "module": "js/pages/chat.js",
+      "og": "chat"
+    },
+    {
       "path": "/auth/",
       "title": "Identity & Passkeys — NightCal",
       "description": "Account registration and authentication via Passkeys (WebAuthn) with username fallback.",

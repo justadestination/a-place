@@ -86,11 +86,114 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 return
             except Exception:
                 pass
+        if self.path.startswith("/api/chat/") or self.path.startswith("/_matrix/"):
+            try:
+                import sys
+                import json
+                import urllib.parse
+                from pathlib import Path
+                ROOT = Path(__file__).resolve().parent.parent.parent
+                if str(ROOT) not in sys.path:
+                    sys.path.insert(0, str(ROOT))
+                from shadenet.chat import (
+                    DOMAIN as CHAT_DOMAIN,
+                    EXTERNAL_MATRIX_URL,
+                    get_db as get_chat_db,
+                    get_pseudonym_for_user,
+                    list_rooms as list_chat_rooms,
+                    get_room_messages,
+                )
+                db_path = ROOT / "shadenet" / "data" / "shadenet.db"
+                conn = get_chat_db(db_path)
+                path = self.path.split("?", 1)[0]
+                if path == "/_matrix/client/versions":
+                    data = json.dumps({"versions": ["v1.1", "v1.5", "v1.6"], "unstable_features": {}}).encode()
+                elif path in ("/_matrix/client/v3/publicRooms", "/api/chat/rooms"):
+                    rooms = list_chat_rooms(conn)
+                    if path.startswith("/_matrix/"):
+                        chunk = [{"room_id": r["room_id"], "name": r["name"], "topic": r["topic"], "canonical_alias": r["alias"], "num_joined_members": 2} for r in rooms]
+                        data = json.dumps({"chunk": chunk, "total_room_count_estimate": len(chunk)}).encode()
+                    else:
+                        data = json.dumps({"rooms": rooms, "server": CHAT_DOMAIN, "external_matrix_url": EXTERNAL_MATRIX_URL}).encode()
+                elif path == "/api/chat/auth":
+                    auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+                    token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+                    user_id = "user_" + token[:8] if token else "anon_patron"
+                    pseudonym = get_pseudonym_for_user(conn, user_id)
+                    data = json.dumps({"pseudonym": pseudonym, "server": CHAT_DOMAIN, "external_matrix_url": EXTERNAL_MATRIX_URL, "matrix_user_id": pseudonym}).encode()
+                elif "/messages" in path:
+                    qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                    limit = int(qs.get("limit", [50])[0])
+                    since = int(qs.get("since", [0])[0])
+                    parts = path.split("/")
+                    room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
+                    msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since)
+                    if path.startswith("/_matrix/"):
+                        chunk = [{"event_id": m["event_id"], "sender": m["sender"], "origin_server_ts": m["timestamp"], "type": "m.room.message", "content": {"body": m["content"], "msgtype": "m.text"}} for m in msgs]
+                        data = json.dumps({"chunk": chunk, "start": str(since), "end": str(msgs[-1]["timestamp"] if msgs else since)}).encode()
+                    else:
+                        data = json.dumps({"room_id": room_id, "messages": msgs}).encode()
+                else:
+                    data = b"{}"
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            except Exception:
+                pass
         if self.path.startswith("/api/"):
             return self._proxy("GET")
         return super().do_GET()
 
     def do_POST(self):
+        if self.path.startswith("/api/chat/") or self.path.startswith("/_matrix/"):
+            try:
+                import sys
+                import json
+                import urllib.parse
+                from pathlib import Path
+                ROOT = Path(__file__).resolve().parent.parent.parent
+                if str(ROOT) not in sys.path:
+                    sys.path.insert(0, str(ROOT))
+                from shadenet.chat import (
+                    get_db as get_chat_db,
+                    get_pseudonym_for_user,
+                    post_message as post_chat_message,
+                    moderate_message as moderate_chat_message,
+                )
+                db_path = ROOT / "shadenet" / "data" / "shadenet.db"
+                conn = get_chat_db(db_path)
+                length = int(self.headers.get("Content-Length") or 0)
+                body = json.loads(self.rfile.read(length)) if length else {}
+                path = self.path.split("?", 1)[0]
+                auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+                token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+                user_id = "user_" + token[:8] if token else "anon_patron"
+                pseudonym = get_pseudonym_for_user(conn, user_id)
+                if "/send" in path:
+                    parts = path.split("/")
+                    room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
+                    raw = body.get("content")
+                    content = str(raw.get("body") if isinstance(raw, dict) else (raw or body.get("body") or ""))
+                    res = post_chat_message(conn, room_id, pseudonym, content)
+                    data = json.dumps(res).encode()
+                elif path == "/api/chat/moderate":
+                    op = str(body.get("op") or "redact")
+                    target = str(body.get("target_id") or body.get("message_id") or body.get("pseudonym") or "")
+                    res = moderate_chat_message(conn, "operator", op, target)
+                    data = json.dumps(res).encode()
+                else:
+                    data = b"{}"
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+                return
+            except Exception:
+                pass
         if self.path.startswith("/api/venues/edit"):
             try:
                 import sys

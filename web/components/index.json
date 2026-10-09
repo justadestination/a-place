@@ -1,14 +1,5 @@
 [
   {
-    "name": "account-settings",
-    "title": "Account settings & data lifecycle",
-    "summary": "Full GDPR/CCPA personal data export (JSON) and permanent account deletion with zero residual rows.",
-    "params": {
-      "username": "account username"
-    },
-    "readme": true
-  },
-  {
     "name": "article-intake",
     "title": "Article intake and review",
     "summary": "Zine article intake pipeline: draft submission, spam moderation, and graph node instantiation.",
@@ -61,6 +52,16 @@
     "readme": true
   },
   {
+    "name": "chat",
+    "title": "Chat \u00b7 NightCal embed",
+    "summary": "Embedded Matrix chat node with transparent pseudonyms and steward assistance.",
+    "params": {
+      "room": "room id or alias",
+      "token": "session token"
+    },
+    "readme": true
+  },
+  {
     "name": "corrections",
     "title": "Corrections and forget UI",
     "summary": "Zine contract corrections UI implementing append+outrank semantics and separate Forget policy control.",
@@ -77,6 +78,16 @@
       "date": "YYYY-MM-DD (defaults to today)",
       "scope": "nights | all",
       "venue": "venue id"
+    },
+    "readme": true
+  },
+  {
+    "name": "entity-page",
+    "title": "Entity page",
+    "summary": "Profile, contact, linked events, and linked zine articles for a promoter, band, comedian, or other entity.",
+    "params": {
+      "id": "entity id",
+      "type": "promoter | band | comedian | other"
     },
     "readme": true
   },
@@ -195,8 +206,10 @@
   {
     "name": "preference-tabs",
     "title": "Settings",
-    "summary": "Steward settings hub: notifications, muted venues, theme and display, steward.",
-    "params": {},
+    "summary": "Notifications, muted venues, theme, density, and steward settings in one place.",
+    "params": {
+      "session": "session token used to load and save preferences"
+    },
     "readme": true
   },
   {
@@ -261,6 +274,17 @@
     "readme": true
   },
   {
+    "name": "venue-edit",
+    "title": "Edit a venue",
+    "summary": "Venue owners and operators update details, add a show, and publish news.",
+    "params": {
+      "id": "venue id",
+      "session": "session token",
+      "zkp": "age-verification token"
+    },
+    "readme": true
+  },
+  {
     "name": "zine-card",
     "title": "Zine card",
     "summary": "One zine node as a card: type, title link, byline, summary. Works without script.",
@@ -276,37 +300,6 @@
     "summary": "Reads one zine node (note, event, venue or unresolved link) and lists what it links to.",
     "params": {
       "node": "node id (defaults to the first note)"
-    },
-    "readme": true
-  },
-  {
-    "name": "venue-page",
-    "title": "Venue profile page",
-    "summary": "Dedicated venue profile: upcoming events, operator blurbs, contact, map, and closed status banner.",
-    "params": {
-      "id": "venue id",
-      "closed": "Set to 1 to simulate closed venue state"
-    },
-    "readme": true
-  },
-  {
-    "name": "entity-page",
-    "title": "Entity page",
-    "summary": "Profile, contact, linked events, and linked zine articles for a promoter, band, comedian, or other entity.",
-    "params": {
-      "id": "entity id",
-      "type": "promoter | band | comedian | other"
-    },
-    "readme": true
-  },
-  {
-    "name": "venue-edit",
-    "title": "Edit a venue",
-    "summary": "Venue owners and operators update details, add a show, and publish news that appears on the venue page.",
-    "params": {
-      "id": "venue id",
-      "session": "session token",
-      "zkp": "age-verification token"
     },
     "readme": true
   },

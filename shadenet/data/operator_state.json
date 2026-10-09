@@ -1,10 +1,10 @@
 {
   "active_key": {
-    "key_id": "key_2026_10_09_64b1d4eb",
+    "key_id": "key_2026_10_09_4d9e1472",
     "algorithm": "Ed25519",
-    "created_at": "2026-10-09T04:35:16.246000-07:00",
+    "created_at": "2026-10-09T10:57:32.383223-07:00",
     "expires_at": "2027-01-01T00:00:00Z",
-    "rotation_count": 8,
+    "rotation_count": 12,
     "rotated_by": "http-test-runner"
   },
   "key_history": [
@@ -78,6 +78,42 @@
       "rotation_count": 7,
       "rotated_by": "automated-test",
       "retired_at": "2026-10-09T04:35:16.245928-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_64b1d4eb",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T04:35:16.246000-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 8,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T10:36:12.285448-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_62e3fbf3",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T10:36:12.285512-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 9,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T10:36:12.299763-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_7d99c3cf",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T10:36:12.299829-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 10,
+      "rotated_by": "http-test-runner",
+      "retired_at": "2026-10-09T10:57:32.366229-07:00"
+    },
+    {
+      "key_id": "key_2026_10_09_e18cf3b5",
+      "algorithm": "Ed25519",
+      "created_at": "2026-10-09T10:57:32.366336-07:00",
+      "expires_at": "2027-01-01T00:00:00Z",
+      "rotation_count": 11,
+      "rotated_by": "automated-test",
+      "retired_at": "2026-10-09T10:57:32.383165-07:00"
     }
   ],
   "moderation_queue": [],
@@ -149,5 +185,137 @@
     ],
     "last_synced_at": "2026-10-09T04:05:47.388642-07:00",
     "sync_lag_seconds": 1.2
-  }
+  },
+  "alerts": [
+    {
+      "id": "alert-444b966d",
+      "type": "automation.backup_verification",
+      "title": "Automation Alert: Scheduled Backup & Integrity Verification failed",
+      "details": "Backup checksum mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, got 8f53628a3b259f14209cdf87dfa527e8162bb47b761e15eab685d732ec003d29",
+      "severity": "critical",
+      "metadata": {
+        "automation": "backup_verification",
+        "owner": "backup-daemon"
+      },
+      "timestamp": "2026-10-09T10:57:31.124533-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-4b6c9152",
+      "type": "automation.summary_ingest",
+      "title": "Automation Alert: Syndicated & Editorial Summary Ingest failed",
+      "details": "Summary ingest rejected: missing required fields ['date', 'title', 'summary']",
+      "severity": "critical",
+      "metadata": {
+        "automation": "summary_ingest",
+        "owner": "editor"
+      },
+      "timestamp": "2026-10-09T10:57:31.118802-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-0a756295",
+      "type": "automation.daily_page_build",
+      "title": "Automation Alert: Daily Calendar & Archive Auto-Build failed",
+      "details": "Daily page build failed: missing template or build process exit code 1",
+      "severity": "critical",
+      "metadata": {
+        "automation": "daily_page_build",
+        "owner": "publisher"
+      },
+      "timestamp": "2026-10-09T10:57:31.116032-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-04ff1628",
+      "type": "automation.scraper_supervision",
+      "title": "Automation Alert: Scraper Supervision & Wall Detection failed",
+      "details": "Scraper error spike: 12 errors exceeded threshold 5",
+      "severity": "critical",
+      "metadata": {
+        "automation": "scraper_supervision",
+        "owner": "crawler-bot"
+      },
+      "timestamp": "2026-10-09T10:57:31.112993-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-36acf698",
+      "type": "automation.scraper_supervision",
+      "title": "Automation Alert: Scraper Supervision & Wall Detection failed",
+      "details": "Scraper blocked: login wall or anti-bot challenge detected (Cloudflare Turnstile challenge (HTTP 403 Forbidden))",
+      "severity": "critical",
+      "metadata": {
+        "automation": "scraper_supervision",
+        "owner": "crawler-bot"
+      },
+      "timestamp": "2026-10-09T10:57:31.110695-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-1a1cefb9",
+      "type": "automation.backup_verification",
+      "title": "Automation Alert: Scheduled Backup & Integrity Verification failed",
+      "details": "Backup checksum mismatch: expected 0000000000000000000000000000000000000000000000000000000000000000, got 8f53628a3b259f14209cdf87dfa527e8162bb47b761e15eab685d732ec003d29",
+      "severity": "critical",
+      "metadata": {
+        "automation": "backup_verification",
+        "owner": "backup-daemon"
+      },
+      "timestamp": "2026-10-09T10:36:10.902318-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-33166a48",
+      "type": "automation.summary_ingest",
+      "title": "Automation Alert: Syndicated & Editorial Summary Ingest failed",
+      "details": "Summary ingest rejected: missing required fields ['date', 'title', 'summary']",
+      "severity": "critical",
+      "metadata": {
+        "automation": "summary_ingest",
+        "owner": "editor"
+      },
+      "timestamp": "2026-10-09T10:36:10.894136-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-71bbdc62",
+      "type": "automation.daily_page_build",
+      "title": "Automation Alert: Daily Calendar & Archive Auto-Build failed",
+      "details": "Daily page build failed: missing template or build process exit code 1",
+      "severity": "critical",
+      "metadata": {
+        "automation": "daily_page_build",
+        "owner": "publisher"
+      },
+      "timestamp": "2026-10-09T10:36:10.890774-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-e6cdb56c",
+      "type": "automation.scraper_supervision",
+      "title": "Automation Alert: Scraper Supervision & Wall Detection failed",
+      "details": "Scraper error spike: 12 errors exceeded threshold 5",
+      "severity": "critical",
+      "metadata": {
+        "automation": "scraper_supervision",
+        "owner": "crawler-bot"
+      },
+      "timestamp": "2026-10-09T10:36:10.886020-07:00",
+      "status": "active"
+    },
+    {
+      "id": "alert-bfb593e9",
+      "type": "automation.scraper_supervision",
+      "title": "Automation Alert: Scraper Supervision & Wall Detection failed",
+      "details": "Scraper blocked: login wall or anti-bot challenge detected (Cloudflare Turnstile challenge (HTTP 403 Forbidden))",
+      "severity": "critical",
+      "metadata": {
+        "automation": "scraper_supervision",
+        "owner": "crawler-bot"
+      },
+      "timestamp": "2026-10-09T10:36:10.883174-07:00",
+      "status": "active"
+    }
+  ]
 }

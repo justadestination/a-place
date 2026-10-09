@@ -53,6 +53,17 @@ from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
 from shadenet.zkp import create_age_challenge, verify_age_proof, validate_age_token, require_zkp_gate
 from shadenet.nightcal.venue_edits import add_blurb, add_event, claim, get_overlay, update_info
+from shadenet.chat import (
+    DOMAIN as CHAT_DOMAIN,
+    EXTERNAL_MATRIX_URL,
+    STEWARD_PSEUDONYM,
+    get_db as get_chat_db,
+    get_pseudonym_for_user,
+    list_rooms as list_chat_rooms,
+    get_room_messages,
+    post_message as post_chat_message,
+    moderate_message as moderate_chat_message,
+)
 
 
 STATIC = Path(__file__).resolve().parent
@@ -176,6 +187,46 @@ class Handler(BaseHTTPRequestHandler):
             qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             venue_id = qs.get("id", [""])[0]
             self._json(200, get_overlay(venue_id))
+            return
+        if path == "/_matrix/client/versions":
+            self._json(200, {"versions": ["v1.1", "v1.5", "v1.6"], "unstable_features": {}})
+            return
+        if path in ("/_matrix/client/v3/publicRooms", "/api/chat/rooms"):
+            conn = get_chat_db(_db_path())
+            rooms = list_chat_rooms(conn)
+            if path.startswith("/_matrix/"):
+                chunk = [{"room_id": r["room_id"], "name": r["name"], "topic": r["topic"], "canonical_alias": r["alias"], "num_joined_members": 2} for r in rooms]
+                self._json(200, {"chunk": chunk, "total_room_count_estimate": len(chunk)})
+            else:
+                self._json(200, {"rooms": rooms, "server": CHAT_DOMAIN, "external_matrix_url": EXTERNAL_MATRIX_URL})
+            return
+        if path == "/api/chat/auth":
+            auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+            session = default_auth_manager.validate_session(token) if token else None
+            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            conn = get_chat_db(_db_path())
+            pseudonym = get_pseudonym_for_user(conn, user_id)
+            self._json(200, {
+                "pseudonym": pseudonym,
+                "server": CHAT_DOMAIN,
+                "external_matrix_url": EXTERNAL_MATRIX_URL,
+                "matrix_user_id": pseudonym,
+            })
+            return
+        if (path.startswith("/api/chat/rooms/") and path.endswith("/messages")) or (path.startswith("/_matrix/client/v3/rooms/") and "/messages" in path):
+            qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            limit = int(qs.get("limit", [50])[0])
+            since = int(qs.get("since", [0])[0])
+            parts = path.split("/")
+            room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
+            conn = get_chat_db(_db_path())
+            msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since)
+            if path.startswith("/_matrix/"):
+                chunk = [{"event_id": m["event_id"], "sender": m["sender"], "origin_server_ts": m["timestamp"], "type": "m.room.message", "content": {"body": m["content"], "msgtype": "m.text"}} for m in msgs]
+                self._json(200, {"chunk": chunk, "start": str(since), "end": str(msgs[-1]["timestamp"] if msgs else since)})
+            else:
+                self._json(200, {"room_id": room_id, "messages": msgs})
             return
         if path in ("/status", "/status/", "/status.html"):
             st_page = STATIC / "static" / "status.html"
@@ -534,6 +585,49 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(200, saved)
             except PermissionError as exc:
                 self._json(403, {"error": str(exc)})
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+            return
+
+        if (path.startswith("/api/chat/rooms/") and path.endswith("/send")) or (path.startswith("/_matrix/client/v3/rooms/") and "/send/" in path):
+            parts = path.split("/")
+            room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
+            auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+            session = default_auth_manager.validate_session(token) if token else None
+            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            conn = get_chat_db(_db_path())
+            pseudonym = get_pseudonym_for_user(conn, user_id)
+            raw_content = body.get("content")
+            if isinstance(raw_content, dict):
+                content = str(raw_content.get("body") or "")
+            else:
+                content = str(raw_content or body.get("body") or "")
+            try:
+                res = post_chat_message(conn, room_id, pseudonym, content)
+                self._json(200, res)
+            except PermissionError as exc:
+                self._json(403, {"error": str(exc)})
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+            return
+
+        if path == "/api/chat/moderate":
+            auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+            session = default_auth_manager.validate_session(token) if token else None
+            user = default_auth_manager.store.get_user_by_id(session["user_id"]) if session else None
+            operators = set(os.environ.get("NIGHTCAL_OPERATORS", "op,admin,operator").split(","))
+            if not user or user.get("username") not in operators:
+                self._json(403, {"error": "Operator authorization required"})
+                return
+            conn = get_chat_db(_db_path())
+            op = str(body.get("op") or "redact")
+            target_id = str(body.get("target_id") or body.get("message_id") or body.get("pseudonym") or "")
+            reason = str(body.get("reason") or "Operator action")
+            try:
+                res = moderate_chat_message(conn, user.get("username"), op, target_id, reason)
+                self._json(200, res)
             except ValueError as exc:
                 self._json(400, {"error": str(exc)})
             return

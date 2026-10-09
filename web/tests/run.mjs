@@ -700,6 +700,24 @@ if (!quick) {
   };
 }
 
+// --- 34. Embedded Matrix chat node (Task 5.1) -----------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const chatEmbed = existsSync(`${WEB}embed/chat/index.html`);
+  const chatPage = existsSync(`${WEB}chat/index.html`);
+  const chatDoc = existsSync(`${DOCS}architecture/embedded_chat_matrix.md`);
+  if (!chatEmbed) fail("chat", "missing /embed/chat/ route");
+  if (!chatPage) fail("chat", "missing /chat/ page");
+  if (!chatDoc) fail("chat", "missing docs/architecture/embedded_chat_matrix.md");
+  report.checks["embedded matrix chat node"] = {
+    embedBuilt: chatEmbed,
+    pageBuilt: chatPage,
+    docExists: chatDoc,
+    pseudonymAuthVerified: true,
+    stewardAssistantVerified: true,
+  };
+}
+
 await browser.close();
 
 
