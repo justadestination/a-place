@@ -288,6 +288,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/article-intake/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/article-intake/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/article-intake/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/article-intake/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/button/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1099,7 +1131,7 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 987,
+      "layoutMs": 1591,
       "usableAt500Nodes": true
     },
     "corrections UI (append + outrank)": {
@@ -1110,6 +1142,11 @@
       "feedExists": true,
       "rssValid": true,
       "itemsCount": 3
+    },
+    "article intake & instantiation": {
+      "embedBuilt": true,
+      "draftLifecycleVerified": true,
+      "spamRejectionVerified": true
     }
   },
   "failures": []

@@ -1,5 +1,14 @@
 [
   {
+    "name": "article-intake",
+    "title": "Article intake and review",
+    "summary": "Zine article intake pipeline: draft submission, spam moderation, and graph node instantiation.",
+    "params": {
+      "status": "filter by status"
+    },
+    "readme": true
+  },
+  {
     "name": "button",
     "title": "Button",
     "summary": "The one control style. Primary is reserved for the single main action on a screen.",

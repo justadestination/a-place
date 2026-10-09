@@ -462,6 +462,25 @@ if (!quick) {
   };
 }
 
+// --- 19. article intake & instantiation (Task 3.5) ---------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const embedExists = existsSync(`${WEB}embed/article-intake/index.html`);
+  if (!embedExists) fail("article intake", "missing /embed/article-intake/ route");
+  const { submitArticleDraft, rejectArticleDraft, approveArticleDraft } = await import("../components/article-intake/article-intake.js");
+  const testDraft = submitArticleDraft({ title: "Audit Verification Dispatch", body: "Checking draft intake flow for audit pass.", type: "article" });
+  if (testDraft.status !== "pending") fail("article intake", "draft status not pending");
+  const spamDraft = submitArticleDraft({ title: "Spam crypto pump", body: "casino win telegram @spam", type: "article" });
+  if (spamDraft.status !== "rejected" || !spamDraft.rejectionReason) fail("article intake", "spam not rejected with reason");
+  const approved = approveArticleDraft(testDraft.id);
+  if (approved.status !== "instantiated" || !approved.nodeId) fail("article intake", "draft approval did not instantiate");
+  report.checks["article intake & instantiation"] = {
+    embedBuilt: embedExists,
+    draftLifecycleVerified: true,
+    spamRejectionVerified: true,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));
