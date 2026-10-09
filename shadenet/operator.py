@@ -162,6 +162,7 @@ def get_operator_status(store: Any = None) -> dict[str, Any]:
             },
             "scraper_status": state.get("scraper", {}),
             "sync_mesh_status": state.get("sync_mesh", {}),
+            "alerts": state.get("alerts", []),
         }
 
 
@@ -248,3 +249,67 @@ def rotate_active_key(operator_identity: str = "operator-console") -> dict[str, 
             "old_key_id": current_key.get("key_id"),
             "new_key": new_key,
         }
+
+
+def add_operator_alert(
+    alert_type: str,
+    title: str,
+    details: str,
+    severity: str = "warning",
+    metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Record an operator alert (from automations, health check, or security)."""
+    with _lock:
+        state = _load_state()
+        alerts = state.get("alerts", [])
+        alert_id = f"alert-{secrets.token_hex(4)}"
+        alert = {
+            "id": alert_id,
+            "type": alert_type,
+            "title": title,
+            "details": details,
+            "severity": severity,
+            "metadata": metadata or {},
+            "timestamp": _now_iso(),
+            "status": "active",
+        }
+        alerts.insert(0, alert)
+        state["alerts"] = alerts[:100]  # retain 100 most recent
+        _save_state(state)
+
+        logger.warning(
+            "operator_alert_recorded",
+            alert_id=alert_id,
+            alert_type=alert_type,
+            title=title,
+            severity=severity,
+        )
+        return alert
+
+
+def get_operator_alerts(active_only: bool = True) -> list[dict[str, Any]]:
+    """Retrieve recorded operator alerts."""
+    with _lock:
+        state = _load_state()
+        alerts = state.get("alerts", [])
+        if active_only:
+            return [a for a in alerts if a.get("status") == "active"]
+        return list(alerts)
+
+
+def dismiss_operator_alert(alert_id: str) -> bool:
+    """Dismiss an active alert."""
+    with _lock:
+        state = _load_state()
+        alerts = state.get("alerts", [])
+        found = False
+        for a in alerts:
+            if a.get("id") == alert_id:
+                a["status"] = "dismissed"
+                a["dismissed_at"] = _now_iso()
+                found = True
+                break
+        if found:
+            _save_state(state)
+        return found
+
