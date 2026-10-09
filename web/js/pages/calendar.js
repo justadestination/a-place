@@ -16,8 +16,17 @@ import { SITE } from "../core/site.js";
 const app = document.getElementById("app");
 const model = await loadCalendar();
 const q = params();
+const pathDay = location.pathname.match(/\/day\/(\d{4}-\d{2}-\d{2})/);
+const initialDate = isValidDate(q.get("date"))
+  ? q.get("date")
+  : (document.body.dataset.date && isValidDate(document.body.dataset.date))
+    ? document.body.dataset.date
+    : (pathDay && isValidDate(pathDay[1]))
+      ? pathDay[1]
+      : model.today;
+
 const state = {
-  date: isValidDate(q.get("date")) ? q.get("date") : model.today,
+  date: initialDate,
   scope: q.get("scope") === "all" ? "all" : "nights",
   venueId: model.venuesById.has(q.get("venue")) ? q.get("venue") : "",
   kind: KINDS[q.get("kind")] ? q.get("kind") : (KINDS[q.get("tag")] ? q.get("tag") : ""),
@@ -66,11 +75,42 @@ function drawMonth(focusDate) {
 function drawAll() { drawWeek(); drawAgenda(); drawMonth(); }
 
 function syncUrl() {
-  setParam("date", state.date === model.today ? "" : state.date);
-  setParam("scope", state.scope === "nights" ? "" : state.scope);
-  setParam("venue", state.venueId);
-  setParam("kind", state.kind);
+  const isArchiveOrToday = location.pathname.startsWith("/day/") || location.pathname.startsWith("/today");
+  if (isArchiveOrToday) {
+    const targetPath = state.date === model.today ? "/today/" : `/day/${state.date}/`;
+    const url = new URL(location.href);
+    url.pathname = targetPath;
+    url.searchParams.delete("date");
+    if (state.scope && state.scope !== "nights") url.searchParams.set("scope", state.scope); else url.searchParams.delete("scope");
+    if (state.venueId) url.searchParams.set("venue", state.venueId); else url.searchParams.delete("venue");
+    if (state.kind) url.searchParams.set("kind", state.kind); else url.searchParams.delete("kind");
+    history.pushState(null, "", url.toString());
+  } else {
+    setParam("date", state.date === model.today ? "" : state.date);
+    setParam("scope", state.scope === "nights" ? "" : state.scope);
+    setParam("venue", state.venueId);
+    setParam("kind", state.kind);
+  }
 }
+
+window.addEventListener("popstate", () => {
+  const curQ = params();
+  const curPathDay = location.pathname.match(/\/day\/(\d{4}-\d{2}-\d{2})/);
+  const curDate = isValidDate(curQ.get("date"))
+    ? curQ.get("date")
+    : (curPathDay && isValidDate(curPathDay[1]))
+      ? curPathDay[1]
+      : (document.body.dataset.date && isValidDate(document.body.dataset.date))
+        ? document.body.dataset.date
+        : model.today;
+  state.date = curDate;
+  state.month = curDate.slice(0, 7);
+  state.scope = curQ.get("scope") === "all" ? "all" : "nights";
+  state.venueId = model.venuesById.has(curQ.get("venue")) ? curQ.get("venue") : "";
+  state.kind = KINDS[curQ.get("kind")] ? curQ.get("kind") : "";
+  drawControls();
+  drawAll();
+});
 
 function selectDate(date, { focus } = {}) {
   state.date = date;

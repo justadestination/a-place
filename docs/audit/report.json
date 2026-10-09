@@ -32,6 +32,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/today/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/today/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/today/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/today/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/zine/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -852,6 +884,13 @@
       "venueFiltered": 2,
       "kindFiltered": 1,
       "intersection": 1
+    },
+    "daily page auto-build": {
+      "preMidnightDay": "2026-10-15",
+      "postMidnightDay": "2026-10-16",
+      "rolloverSuccess": true,
+      "todayPageBuilt": true,
+      "archivePageBuilt": true
     }
   },
   "failures": []

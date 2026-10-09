@@ -66,7 +66,7 @@ export function isClosedVenue(v) {
 }
 
 /** Pure: raw server model -> CalendarModel. Exported for tests and the 3D page. */
-export function normalize(raw, source = "live") {
+export function normalize(raw, source = "live", { today: overrideToday } = {}) {
   const closedVenueIds = new Set();
   for (const v of raw.venues || []) {
     if (isClosedVenue(v)) {
@@ -124,7 +124,7 @@ export function normalize(raw, source = "live") {
   const ui = raw.ui || {};
   return {
     source, place: raw.place || "",
-    today: today(),
+    today: overrideToday || raw.today || today(),
     venues, venuesById,
     events, eventsById: new Map(events.map(e => [e.id, e])),
     notes: {

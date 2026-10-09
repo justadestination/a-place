@@ -226,6 +226,36 @@ def main() -> int:
                               og=r["og"], body_attrs=attrs, shell=r.get("shell", ""), css_hash=css_hash, boot=boot,
                               importmap=importmap if r["path"] == "/3d/" else ""))
         urls.append(r["path"])
+
+    # Daily archive pages (/day/YYYY-MM-DD/)
+    sample_file = WEB / "data" / "sample-model.json"
+    archive_dates = set()
+    if sample_file.exists():
+        try:
+            raw_sample = json.loads(sample_file.read_text())
+            events = raw_sample.get("events") or raw_sample.get("updateDataModel", {}).get("value", {}).get("events") or []
+            for ev in events:
+                d = ev.get("date")
+                if d and re.match(r"^\d{4}-\d{2}-\d{2}$", d):
+                    archive_dates.add(d)
+        except Exception:
+            pass
+
+    for date_str in sorted(archive_dates):
+        day_path = f"/day/{date_str}/"
+        write(day_path, page(
+            path=day_path,
+            title=f"NightCal — {date_str} in Downtown Santa Rosa",
+            description=f"Events and shows in Downtown Santa Rosa on {date_str}. Archived listings.",
+            module="js/pages/calendar.js",
+            og="calendar",
+            shell="calendar",
+            body_attrs=f' data-date="{date_str}"',
+            css_hash=css_hash,
+            boot=boot,
+        ))
+        urls.append(day_path)
+
     for c in comps:
         path = f"/embed/{c['name']}/"
         write(path, page(path=path, title=f"{c['title']} · {SITE['name']} embed", description=c["summary"],

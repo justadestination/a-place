@@ -10,6 +10,14 @@
       "shell": "calendar"
     },
     {
+      "path": "/today/",
+      "title": "Today in Downtown Santa Rosa — NightCal",
+      "description": "Live music, comedy, shows and trivia in downtown Santa Rosa today. Every listing cites where it came from.",
+      "module": "js/pages/calendar.js",
+      "og": "calendar",
+      "shell": "calendar"
+    },
+    {
       "path": "/zine/",
       "title": "AVR+JIT — the NightCal zine",
       "description": "Reviews, articles and letters about downtown nights, mapped as a graph of the rooms and shows they talk about.",

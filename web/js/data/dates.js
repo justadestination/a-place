@@ -52,6 +52,7 @@ export const label = {
 export function relative(iso, now = today()) {
   if (iso === now) return "Tonight";
   if (iso === addDays(now, 1)) return "Tomorrow";
+  if (iso === addDays(now, -1)) return "Yesterday";
   return label.long(iso);
 }
 

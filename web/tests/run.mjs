@@ -319,6 +319,46 @@ if (!quick) {
   };
 }
 
+// --- 13. daily page auto-build & local midnight clock rollover (Task 2.6) ----
+{
+  const { today, relative } = await import("../js/data/dates.js");
+  const { existsSync } = await import("node:fs");
+
+  const preMidnightUtc = new Date("2026-10-16T06:59:50Z");
+  const preMidnightDay = today(preMidnightUtc);
+  if (preMidnightDay !== "2026-10-15") {
+    fail("daily rollover", `pre-midnight day in LA zone expected 2026-10-15, got ${preMidnightDay}`);
+  }
+  if (relative("2026-10-15", preMidnightDay) !== "Tonight") {
+    fail("daily rollover", `pre-midnight relative label expected 'Tonight', got ${relative("2026-10-15", preMidnightDay)}`);
+  }
+
+  const postMidnightUtc = new Date("2026-10-16T07:00:10Z");
+  const postMidnightDay = today(postMidnightUtc);
+  if (postMidnightDay !== "2026-10-16") {
+    fail("daily rollover", `post-midnight day in LA zone expected 2026-10-16, got ${postMidnightDay}`);
+  }
+  if (relative("2026-10-15", postMidnightDay) !== "Yesterday") {
+    fail("daily rollover", `post-midnight relative label for yesterday expected 'Yesterday', got ${relative("2026-10-15", postMidnightDay)}`);
+  }
+  if (relative("2026-10-16", postMidnightDay) !== "Tonight") {
+    fail("daily rollover", `post-midnight relative label for today expected 'Tonight', got ${relative("2026-10-16", postMidnightDay)}`);
+  }
+
+  const todayPath = WEB + "today/index.html";
+  const dayArchivePath = WEB + "day/2026-10-15/index.html";
+  if (!existsSync(todayPath)) fail("daily build", "web/today/index.html does not exist");
+  if (!existsSync(dayArchivePath)) fail("daily build", "web/day/2026-10-15/index.html does not exist");
+
+  report.checks["daily page auto-build"] = {
+    preMidnightDay,
+    postMidnightDay,
+    rolloverSuccess: preMidnightDay !== postMidnightDay,
+    todayPageBuilt: existsSync(todayPath),
+    archivePageBuilt: existsSync(dayArchivePath),
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

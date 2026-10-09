@@ -2,7 +2,7 @@ import { h, emit } from "../../js/core/dom.js";
 import { eventRow } from "../event-row/event-row.js";
 import { roadTimeline } from "../road-timeline/road-timeline.js";
 import { button } from "../button/button.js";
-import { relative, label, isValidDate } from "../../js/data/dates.js";
+import { relative, label, isValidDate, addDays } from "../../js/data/dates.js";
 import { dayScene } from "../../js/data/scene.js";
 import { filterEvents, nextDateWithEvents } from "../../js/data/calendar.js";
 
@@ -15,19 +15,39 @@ const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
  *   today    ISO date for "Tonight"/"Tomorrow"
  *   next     ISO date of the next night with events (for the empty state)
  *   noun     "show"/"listing"
- * Fires nc-select {kind:"event", id} from rows and {kind:"day", date} from the empty-state jump.
+ * Fires nc-select {kind:"event", id} from rows and {kind:"day", date} from the empty-state jump or day nav.
  */
 export function dayAgenda(day, { today, next = "", nextCount = 0, noun = "show", level = 2, road = false } = {}) {
   const id = `nc-day-${++uid}`;
   const rel = relative(day.date, today);
   const isToday = day.isToday || rel === "Tonight" || day.date === today;
   const headingText = rel === "Tonight" || rel === "Tomorrow" ? rel : label.long(day.date);
+
+  const prevDate = addDays(day.date, -1);
+  const nextDate = addDays(day.date, 1);
+  const prevLabel = relative(prevDate, today) === "Yesterday" ? "← Yesterday" : `← ${label.weekdayShort(prevDate)}`;
+  const nextLabel = relative(nextDate, today) === "Tomorrow" ? "Tomorrow →" : `${label.weekdayShort(nextDate)} →`;
+
+  const prevBtn = button({ label: prevLabel, variant: "ghost" });
+  prevBtn.setAttribute("data-nav", "prev");
+  prevBtn.setAttribute("aria-label", `Previous day: ${label.long(prevDate)}`);
+
+  const nextBtn = button({ label: nextLabel, variant: "ghost" });
+  nextBtn.setAttribute("data-nav", "next");
+  nextBtn.setAttribute("aria-label", `Next day: ${label.long(nextDate)}`);
+
+  const dayNav = h("div.nc-day-agenda__nav", { "aria-label": "Day navigation" }, prevBtn, nextBtn);
+
   const header = h("header.nc-day-agenda__header", {},
     h("p.nc-eyebrow", {}, rel === "Tonight" || rel === "Tomorrow" ? label.long(day.date) : label.monthYear(day.date.slice(0, 7))),
     h(`h${level}.nc-day-agenda__title`, { id }, headingText),
     h("p.nc-day-agenda__count", {}, day.events.length ? plural(day.events.length, noun, `${noun}s`) : `No ${noun}s listed`),
+    dayNav,
   );
   const section = h("section.nc-day-agenda", { "aria-labelledby": id, "data-date": day.date }, header);
+
+  prevBtn.addEventListener("click", () => emit(section, "nc-select", { kind: "day", date: prevDate }));
+  nextBtn.addEventListener("click", () => emit(section, "nc-select", { kind: "day", date: nextDate }));
   if (day.events.length) {
     if (isToday || road) {
       section.append(roadTimeline(day.events, { today, level: level + 1 }));

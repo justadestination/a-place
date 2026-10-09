@@ -12,3 +12,10 @@
   border-radius: var(--nc-radius-lg);
   font-size: var(--nc-font-size-lg);
 }
+.nc-day-agenda__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+  align-items: center;
+  margin-top: var(--nc-space-1);
+}
