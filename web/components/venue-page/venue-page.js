@@ -10,8 +10,43 @@
  */
 
 import { h } from "../../js/core/dom.js";
+import { entityByName, entityHref, getEntity } from "../../js/data/entities.js";
 import { button } from "../button/button.js";
 import { getVenueById, normalizeVenue } from "../../js/data/venues.js";
+
+export function mergeVenueOverlay(venue, overlay) {
+  if (!overlay || typeof overlay !== "object") return venue;
+  const next = { ...venue };
+  if (overlay.name) next.name = overlay.name;
+  if (overlay.address) next.address = overlay.address;
+  if (Array.isArray(overlay.blurbs) && overlay.blurbs.length) {
+    next.blurbs = overlay.blurbs.concat(venue.blurbs || []);
+  }
+  if (Array.isArray(overlay.events) && overlay.events.length) {
+    const extras = overlay.events.map(event => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      start: event.start,
+      venueId: venue.id,
+      performers: event.performers || [],
+    }));
+    next.events = extras.concat(venue.events || []);
+  }
+  return next;
+}
+
+function lineupLinks(performers) {
+  const row = h("p.nc-venue-event-item__lineup");
+  performers.forEach((performer, index) => {
+    if (index) row.append(" · ");
+    const name = typeof performer === "string" ? performer : (performer?.name || "");
+    const known = (performer && performer.id && getEntity(performer.id)) || entityByName(name);
+    if (known) row.append(h("a.nc-entity-link", { href: entityHref(known) }, name));
+    else row.append(name);
+  });
+  return row;
+}
 
 const DEFAULT_VENUE = {
   id: "ven_a261886187f23bb1",
@@ -228,7 +263,7 @@ export function venuePageView(options = {}) {
           {},
           h("h3.nc-venue-event-item__title", {}, ev.title),
           ev.performers && ev.performers.length > 0
-            ? h("p.nc-venue-event-item__lineup", {}, ev.performers.join(" · "))
+            ? lineupLinks(ev.performers)
             : null
         ),
         h(
@@ -301,8 +336,19 @@ export async function embed(params = new URLSearchParams(), ctx = {}) {
     }, []);
   }
 
+  if (!venue && venueId) {
+    venue = { id: venueId, name: "Venue", status: "active", address: "", blurbs: [], events: [], contact: {} };
+  }
   if (!venue) {
     venue = DEFAULT_VENUE;
+  }
+  if (venueId && params.get("closed") !== "1") {
+    try {
+      const resp = await fetch(`/api/venues/edit?id=${encodeURIComponent(venueId)}`);
+      if (resp.ok) venue = mergeVenueOverlay(venue, await resp.json());
+    } catch {
+      /* The static venue still renders when the edit API is down. */
+    }
   }
 
   return venuePageView({ venue });

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entity — NightCal</title>
+<meta name="theme-color" content="#0e0e10">
+<link rel="stylesheet" href="/css/nightcal.css?v=d7baa21beb">
+<script type="module" src="/js/pages/entity.js"></script>
+<script>
+try {
+  const saved = JSON.parse(localStorage.getItem("nightcal.theme.v1") || "null");
+  const d = document.documentElement;
+  if (saved) {
+    const scheme = saved.scheme === "system"
+      ? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+      : saved.scheme;
+    if (scheme) d.setAttribute("data-theme", scheme);
+  }
+} catch (e) {}
+</script>
+</head>
+<body>
+  <div id="nc-entity-root"></div>
+</body>
+</html>

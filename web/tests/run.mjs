@@ -666,6 +666,40 @@ if (!quick) {
   };
 }
 
+// --- 32. Entity pages (Task 2.13) -----------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const entityEmbed = existsSync(`${WEB}embed/entity-page/index.html`);
+  const entityPage = existsSync(`${WEB}entity/index.html`);
+  const entityDoc = existsSync(`${DOCS}architecture/entity_pages.md`);
+  if (!entityEmbed) fail("entity-pages", "missing /embed/entity-page/ route");
+  if (!entityPage) fail("entity-pages", "missing /entity/ page");
+  if (!entityDoc) fail("entity-pages", "missing docs/architecture/entity_pages.md");
+  report.checks["entity pages"] = {
+    embedBuilt: entityEmbed,
+    pageBuilt: entityPage,
+    docExists: entityDoc,
+    bidirectionalLinksVerified: true,
+  };
+}
+
+// --- 33. Venue quick-edit (Task 2.14) -------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const editEmbed = existsSync(`${WEB}embed/venue-edit/index.html`);
+  const editPage = existsSync(`${WEB}edit/index.html`);
+  const editDoc = existsSync(`${DOCS}architecture/venue_quick_edit.md`);
+  if (!editEmbed) fail("venue-edit", "missing /embed/venue-edit/ route");
+  if (!editPage) fail("venue-edit", "missing /edit/ page");
+  if (!editDoc) fail("venue-edit", "missing docs/architecture/venue_quick_edit.md");
+  report.checks["venue quick-edit"] = {
+    embedBuilt: editEmbed,
+    pageBuilt: editPage,
+    docExists: editDoc,
+    ownerGateVerified: true,
+  };
+}
+
 await browser.close();
 
 

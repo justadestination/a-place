@@ -52,6 +52,7 @@ from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
 from shadenet.zkp import create_age_challenge, verify_age_proof, validate_age_token, require_zkp_gate
+from shadenet.nightcal.venue_edits import add_blurb, add_event, claim, get_overlay, update_info
 
 
 STATIC = Path(__file__).resolve().parent
@@ -170,6 +171,11 @@ class Handler(BaseHTTPRequestHandler):
         if path in ("/healthz", "/api/health"):
             rep = check_subsystems(_db_path())
             self._json(rep["http_code"], rep)
+            return
+        if path == "/api/venues/edit":
+            qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            venue_id = qs.get("id", [""])[0]
+            self._json(200, get_overlay(venue_id))
             return
         if path in ("/status", "/status/", "/status.html"):
             st_page = STATIC / "static" / "status.html"
@@ -501,6 +507,36 @@ class Handler(BaseHTTPRequestHandler):
                 })
                 return
 
+        if path == "/api/venues/edit":
+            auth_hdr = self.headers.get("Authorization", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else ""
+            if not token:
+                token = self.headers.get("X-Session-Token", "")
+            session = default_auth_manager.validate_session(token) if token else None
+            user = default_auth_manager.store.get_user_by_id(session["user_id"]) if session else None
+            if not user:
+                self._json(401, {"error": "Unauthorized: valid session required"})
+                return
+            venue_id = str(body.get("venue_id") or body.get("id") or "")
+            op = str(body.get("op") or "update")
+            try:
+                if op == "claim":
+                    saved = claim(venue_id, user)
+                elif op == "update":
+                    saved = update_info(venue_id, user, {"name": body.get("name"), "address": body.get("address")})
+                elif op == "blurb":
+                    saved = add_blurb(venue_id, user, str(body.get("title") or ""), str(body.get("content") or body.get("text") or ""))
+                elif op == "event":
+                    saved = add_event(venue_id, user, {"title": body.get("title"), "date": body.get("date"), "start": body.get("start")})
+                else:
+                    self._json(400, {"error": "unknown edit"})
+                    return
+                self._json(200, saved)
+            except PermissionError as exc:
+                self._json(403, {"error": str(exc)})
+            except ValueError as exc:
+                self._json(400, {"error": str(exc)})
+            return
 
         if path == "/api/operator/moderation":
 
