@@ -384,6 +384,38 @@
       "hScroll": false,
       "errors": []
     },
+    "/embed/corrections/ mobile light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/corrections/ mobile dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/corrections/ desktop light": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
+    "/embed/corrections/ desktop dark": {
+      "axe": [],
+      "tiny": [],
+      "small": [],
+      "og": [],
+      "hScroll": false,
+      "errors": []
+    },
     "/embed/day-agenda/ mobile light": {
       "axe": [],
       "tiny": [],
@@ -1067,8 +1099,12 @@
     "node map view (500+ nodes)": {
       "nodes": 500,
       "edges": 500,
-      "layoutMs": 933,
+      "layoutMs": 1235,
       "usableAt500Nodes": true
+    },
+    "corrections UI (append + outrank)": {
+      "embedBuilt": true,
+      "appendOutrankVerified": true
     }
   },
   "failures": []

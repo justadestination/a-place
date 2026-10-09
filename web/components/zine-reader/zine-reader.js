@@ -3,6 +3,7 @@ import { nodeTypeTag, byline, zineCard } from "../zine-card/zine-card.js";
 import { eventCard } from "../event-card/event-card.js";
 import { eventRow } from "../event-row/event-row.js";
 import { shareButton } from "../share-button/share-button.js";
+import { correctionsUI, getCorrections } from "../corrections/corrections.js";
 import { typeOf, graphScene, neighbors } from "../../js/data/graph.js";
 import { label } from "../../js/data/dates.js";
 
@@ -57,7 +58,10 @@ export function zineReader(node, { graph, calendar, level = 2 } = {}) {
       ));
     }
   }
-  if (node.type !== "missing") root.append(h("div.nc-reader__actions", {}, shareButton({ title: node.title, text: `${t.label}: ${node.title}`, url })));
+  if (node.type !== "missing") {
+    root.append(correctionsUI(node.id, { level: level + 1 }));
+    root.append(h("div.nc-reader__actions", {}, shareButton({ title: node.title, text: `${t.label}: ${node.title}`, url })));
+  }
 
   root.addEventListener("click", e => {
     const a = e.target.closest("a[data-node]");

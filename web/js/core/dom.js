@@ -8,7 +8,7 @@ export function h(spec, attrs = {}, ...children) {
   if (classes.length) el.className = classes.join(" ");
   for (const [key, value] of Object.entries(attrs || {})) {
     if (value == null || value === false) continue;
-    if (key.startsWith("on") && typeof value === "function") el.addEventListener(key.slice(2), value);
+    if (key.startsWith("on") && typeof value === "function") el.addEventListener(key.slice(2).toLowerCase(), value);
     else if (key === "class") el.className = [el.className, value].filter(Boolean).join(" ");
     else if (key === "style" && typeof value === "object") {
       for (const [prop, v] of Object.entries(value)) {

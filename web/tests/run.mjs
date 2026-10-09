@@ -429,6 +429,23 @@ if (!quick) {
   };
 }
 
+// --- 17. corrections UI (Task 3.3) -------------------------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const embedExists = existsSync(`${WEB}embed/corrections/index.html`);
+  if (!embedExists) fail("corrections", "missing /embed/corrections/ route");
+  const { submitCorrection, getCorrections } = await import("../components/corrections/corrections.js");
+  const testId = "check-17-test-note";
+  submitCorrection(testId, { text: "Verified test correction" });
+  const entries = getCorrections(testId);
+  const outranks = entries.length > 0 && entries[0].outranks === true;
+  if (!outranks) fail("corrections", "correction does not specify outranks: true");
+  report.checks["corrections UI (append + outrank)"] = {
+    embedBuilt: embedExists,
+    appendOutrankVerified: outranks,
+  };
+}
+
 await browser.close();
 report.failures = failures;
 writeFileSync(DOCS + "audit/report.json", JSON.stringify(report, null, 2));

@@ -34,6 +34,15 @@
     "readme": true
   },
   {
+    "name": "corrections",
+    "title": "Corrections and forget UI",
+    "summary": "Zine contract corrections UI implementing append+outrank semantics and separate Forget policy control.",
+    "params": {
+      "node": "node id to display corrections for"
+    },
+    "readme": true
+  },
+  {
     "name": "day-agenda",
     "title": "Day agenda",
     "summary": "One night as a billboard: the date as a headline and every event as a large row. Has an empty state that jumps to the next night with events.",
