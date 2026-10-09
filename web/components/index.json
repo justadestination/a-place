@@ -193,6 +193,13 @@
     "readme": true
   },
   {
+    "name": "preference-tabs",
+    "title": "Settings",
+    "summary": "Steward settings hub: notifications, muted venues, theme and display, steward.",
+    "params": {},
+    "readme": true
+  },
+  {
     "name": "recovery",
     "title": "Lost-phone recovery",
     "summary": "Self-service recovery code redemption and support escalation for lost authenticator devices.",

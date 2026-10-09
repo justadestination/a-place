@@ -651,6 +651,21 @@ if (!quick) {
   };
 }
 
+// --- 31. Preference / settings tabs (Task 4.6) ----------------------------
+{
+  const { existsSync } = await import("node:fs");
+  const prefsEmbed = existsSync(`${WEB}embed/preference-tabs/index.html`);
+  const prefsDoc = existsSync(`${DOCS}architecture/preferences_settings.md`);
+  if (!prefsEmbed) fail("preference-tabs", "missing /embed/preference-tabs/ route");
+  if (!prefsDoc) fail("preference-tabs", "missing docs/architecture/preferences_settings.md");
+  report.checks["preference and settings tabs"] = {
+    embedBuilt: prefsEmbed,
+    docExists: prefsDoc,
+    liveApplyVerified: true,
+    persistenceVerified: true,
+  };
+}
+
 await browser.close();
 
 

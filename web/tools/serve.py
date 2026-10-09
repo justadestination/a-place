@@ -34,11 +34,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def _proxy(self, method: str):
         length = int(self.headers.get("Content-Length") or 0)
         body = self.rfile.read(length) if length else None
-        req = urllib.request.Request(self.api + self.path, data=body, method=method, headers={"Content-Type": self.headers.get("Content-Type", "application/json")})
+        headers = {"Content-Type": self.headers.get("Content-Type", "application/json")}
+        for name in ("Authorization", "X-Session-Token", "X-ZKP-Token"):
+            value = self.headers.get(name)
+            if value:
+                headers[name] = value
+        req = urllib.request.Request(self.api + self.path, data=body, method=method, headers=headers)
         try:
-            with urllib.request.urlopen(req, timeout=10) as res:
+            try:
+                res = urllib.request.urlopen(req, timeout=10)
+            except urllib.error.HTTPError as res:
+                pass
+            with res:
                 data = res.read()
-                self.send_response(res.status)
+                status = getattr(res, "status", None) or getattr(res, "code", 502)
+                self.send_response(status)
                 self.send_header("Content-Type", res.headers.get("Content-Type", "application/json"))
                 self.send_header("Content-Length", str(len(data)))
                 self.end_headers()

@@ -422,7 +422,15 @@ class AuthStore:
 
     # --- Preferences & Earmarks (Task 4.5 / 4.6) ---
     def set_user_preferences(self, user_id: str, preferences: dict[str, Any]) -> dict[str, Any]:
-        pref_json = json.dumps(preferences)
+        """Persist user preferences.
+
+        The stored JSON is a whole-document replace of the keys the caller sent,
+        but unmentioned keys are preserved so a partial update cannot wipe a
+        previously-set section (deep merge). Returns the merged preferences.
+        """
+        stored = self.get_user_preferences(user_id)
+        merged = self._deep_merge(stored, preferences)
+        pref_json = json.dumps(merged)
         updated_at = _now_iso()
         with self._get_connection() as con:
             con.execute(
@@ -430,7 +438,17 @@ class AuthStore:
                 "VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET preferences_json = ?, updated_at = ?",
                 (user_id, pref_json, updated_at, pref_json, updated_at)
             )
-        return {"user_id": user_id, "preferences": preferences, "updated_at": updated_at}
+        return {"user_id": user_id, "preferences": merged, "updated_at": updated_at}
+
+    def _deep_merge(self, base: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
+        """Deep-merge *incoming* into *base*, returning a new dict."""
+        result = dict(base)
+        for key, value in incoming.items():
+            if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                result[key] = self._deep_merge(result[key], value)
+            else:
+                result[key] = value
+        return result
 
     def get_user_preferences(self, user_id: str) -> dict[str, Any]:
         with self._get_connection() as con:
