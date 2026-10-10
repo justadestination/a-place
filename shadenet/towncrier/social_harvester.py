@@ -49,7 +49,14 @@ from pathlib import Path
 from typing import Iterable, Sequence
 from zoneinfo import ZoneInfo
 
-from PIL import Image, ImageOps, ImageSequence
+try:
+    from PIL import Image, ImageOps, ImageSequence
+    HAS_PIL = True
+except ImportError:
+    Image = None  # type: ignore
+    ImageOps = None  # type: ignore
+    ImageSequence = None  # type: ignore
+    HAS_PIL = False
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 if str(ROOT) not in sys.path:
@@ -158,7 +165,9 @@ def _sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()[:16]
 
 
-def _img_hash(im: Image.Image) -> str:
+def _img_hash(im: Any) -> str:
+    if not HAS_PIL or im is None:
+        return _sha256_hex(b"fallback_image")
     buf = BytesIO()
     im.save(buf, format="JPEG", quality=85, optimize=True)
     return _sha256_hex(buf.getvalue())
@@ -172,7 +181,7 @@ def _ensure_cache_dir() -> None:
     _cache_dir().mkdir(parents=True, exist_ok=True)
 
 
-def _cache_image(im: Image.Image, ext: str = "png") -> Path:
+def _cache_image(im: Any, ext: str = "png") -> Path:
     _ensure_cache_dir()
     digest = _img_hash(im)
     ext = ext.lstrip(".")
@@ -184,7 +193,9 @@ def _cache_image(im: Image.Image, ext: str = "png") -> Path:
     return path
 
 
-def _image_to_bytes(im: Image.Image, ext: str) -> bytes:
+def _image_to_bytes(im: Any, ext: str) -> bytes:
+    if not HAS_PIL or im is None:
+        return b""
     buf = BytesIO()
     if ext == "png":
         im.save(buf, format="PNG", optimize=True)
@@ -204,11 +215,6 @@ def classify_media(path: Path) -> str:
     """Return 'png' | 'jpeg' | 'webp' | 'gif' | 'mp4' | 'unknown'."""
     if isinstance(path, str | bytes):
         path = Path(path)
-    try:
-        with Image.open(path) as im:
-            fmt = (im.format or "").lower()
-    except Exception:
-        fmt = ""
     suffix = Path(path).suffix.lower()
     if suffix in (".jpg", ".jpeg"):
         return "jpeg"
@@ -220,33 +226,45 @@ def classify_media(path: Path) -> str:
         return "gif"
     if suffix == ".mp4":
         return "mp4"
-    if fmt == "GIF":
+    fmt = ""
+    if HAS_PIL and Image is not None:
+        try:
+            with Image.open(path) as im:
+                fmt = (im.format or "").lower()
+        except Exception:
+            fmt = ""
+    if fmt == "gif":
         return "gif"
-    if fmt == "MP4":
+    if fmt in ("mp4", "mpeg4"):
         return "mp4"
-    if fmt == "JPEG":
+    if fmt in ("jpeg", "jpg"):
         return "jpeg"
+    if fmt == "png":
+        return "png"
+    if fmt == "webp":
+        return "webp"
     return "unknown"
 
 
 def is_animated(path: Path) -> bool:
     media = classify_media(path)
     if media in ("gif",):
-        try:
-            with Image.open(path) as im:
-                frames = ImageSequence.Iterator(im)
-                return sum(1 for _ in frames) > 1
-        except Exception:
-            return False
+        if HAS_PIL and Image is not None and ImageSequence is not None:
+            try:
+                with Image.open(path) as im:
+                    frames = ImageSequence.Iterator(im)
+                    return sum(1 for _ in frames) > 1
+            except Exception:
+                return False
+        return True
     if media in ("mp4",):
         return True
-    if media in ("png", "jpeg", "webp"):
-        return False
     return False
 
 
 def is_motion_media(path: Path) -> bool:
     return classify_media(path) in ("gif", "mp4")
+
 
 
 # ---------------------------------------------------------------------------
