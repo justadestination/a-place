@@ -43,11 +43,31 @@ state.month = state.date.slice(0, 7);
 const noun = () => (state.scope === "all" ? "listing" : "show");
 
 // --- layout --------------------------------------------------------------
+const zombieBanner = h("aside.nc-zombie-banner", {
+  style: "background: linear-gradient(90deg, #18181b, #1f2937); border: 2px solid #84cc16; border-radius: 12px; padding: 0.9rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: 0 0 25px rgba(132, 204, 22, 0.2); flex-wrap: wrap;"
+},
+  h("div", { style: "display: flex; align-items: center; gap: 0.75rem;" },
+    h("span", { style: "font-size: 1.8rem; line-height: 1;" }, "🧟"),
+    h("div", {},
+      h("div", { style: "font-weight: 800; font-size: 1.05rem; color: #84cc16; letter-spacing: -0.01em;" },
+        "TONIGHT: Downtown Santa Rosa Zombie Crawl 2026 (6PM–Late)"
+      ),
+      h("div", { style: "font-size: 0.85rem; color: #a1a1aa;" },
+        "6 Participating Downtown Bars · Costume Contests · 21+ Fast Camera Entry"
+      )
+    )
+  ),
+  h("a", {
+    href: "/zombie-crawl/",
+    style: "background: #84cc16; color: #000; font-weight: 700; font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 0.4rem; box-shadow: 0 0 10px rgba(132, 204, 22, 0.4);"
+  }, "View Crawl Route & Specials ➔")
+);
+
 const controls = h("div.nc-cal__controls", {});
 const week = h("div.nc-cal__week", {});
 const agenda = h("div.nc-cal__agenda", { "aria-live": "polite", "aria-atomic": "false" });
 const monthSlot = h("section.nc-cal__month.nc-lazy", { "aria-label": "Plan ahead" });
-const main = h("main.nc-container.nc-page.nc-cal", { id: "main", tabindex: "-1" }, controls, week, agenda, monthSlot);
+const main = h("main.nc-container.nc-page.nc-cal", { id: "main", tabindex: "-1" }, zombieBanner, controls, week, agenda, monthSlot);
 const footer = siteFooter({ notes: model.notes, source: model.source });
 app.replaceChildren(siteHeader(), main, footer);
 
