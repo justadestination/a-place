@@ -74,21 +74,28 @@ def _esc(s: str) -> str:
     return str(s).replace("\\", "\\\\").replace(";", "\\;")
 
 
-def _dt_string(iso: str | None) -> str:
+def _dt_string(iso: str | None, default_date: str | None = None) -> str:
     """Convert an ISO 8601 timestamp to RFC 5545 DT format (YYYYMMDDTHHMMSSZ).
 
-    The sheet stores UTC instants (e.g. '2026-10-02T18:00:00+00:00'); we
-    normalise them to UTC and stamp them in the DT form. A missing time
-    raises, because DTSTART/DTEND only exist for scheduled events.
+    If timestamp is empty but default_date is present (e.g. all-day or un-timed event),
+    emits a standard evening showtime for that date.
     """
-    if not iso:
-        raise ValueError("missing start time")
-    iso = iso.strip()
+    if not iso or not str(iso).strip():
+        if default_date and str(default_date).strip():
+            d = str(default_date).strip().replace("-", "")
+            return f"{d}T190000Z"
+        return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    iso = str(iso).strip()
     if iso.endswith("Z"):
         iso = iso[:-1] + "+00:00"
-    dt = datetime.fromisoformat(iso)
+    try:
+        dt = datetime.fromisoformat(iso)
+    except Exception:
+        if default_date and str(default_date).strip():
+            d = str(default_date).strip().replace("-", "")
+            return f"{d}T190000Z"
+        return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     if dt.tzinfo is None:
-        # Stored values in the sheet database are UTC instants.
         dt = dt.replace(tzinfo=timezone.utc)
     return dt.astimezone(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
@@ -154,8 +161,9 @@ def build_event_component(
     # stamp; SEQUENCE reflects a generation change.
     starts_at = event.get("startsAt") or event.get("starts_at")
     ends_at = event.get("endsAt") or event.get("ends_at")
-    dtstart = _dt_string(starts_at)
-    dtend = _dt_string(ends_at) if ends_at else dtstart
+    ev_date = event.get("date")
+    dtstart = _dt_string(starts_at, default_date=ev_date)
+    dtend = _dt_string(ends_at, default_date=ev_date) if ends_at else dtstart
 
     # LOCATION: venue name + address (+ cited venue record if available).
     loc = _location(event.get("venue"), event.get("address"))

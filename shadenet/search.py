@@ -24,9 +24,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from shadenet.towncrier.store import Store
+from shadenet.logging import get_logger
 
-logger = logging.getLogger("search")
+logger = get_logger("search")
 
 FTS_SCHEMA = """
 CREATE VIRTUAL TABLE IF NOT EXISTS search_index USING fts5(
