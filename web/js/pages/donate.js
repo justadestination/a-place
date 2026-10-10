@@ -14,8 +14,8 @@ export function donatePage() {
   const root = h("main.nc-container.nc-page", { id: "main", tabindex: "-1" });
 
   const hero = h("section.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-3)" } },
-    h("p.nc-eyebrow", {}, "Fleet & Infrastructure"),
-    h("h1.nc-h1", {}, "Support the Fleet"),
+    h("p.nc-eyebrow", {}, "Network & Infrastructure"),
+    h("h1.nc-h1", {}, "Support the Network"),
     h("p.nc-lede", {}, "NightCal and ShadeNet operate an independent, ad-free privacy nodes, local zine broadsides, and downtown venue scrapers."),
     h("div", {
       style: {
@@ -33,7 +33,7 @@ export function donatePage() {
           color: "var(--nc-color-accent)",
           margin: 0
         }
-      }, "Any contributions to fleet costs are very appreciated.")
+      }, "Any contributions to network costs are very appreciated.")
     )
   );
 
@@ -121,7 +121,7 @@ export function donatePage() {
         border: "1px solid var(--nc-color-border)"
       }
     }, FLEET_XMR_ADDRESS),
-    h("p.nc-muted", { style: { fontSize: "0.85rem" } }, "All Monero contributions go directly to the host and privacy infrastructure expenses.")
+    h("p.nc-muted", { style: { fontSize: "0.85rem" } }, "All Monero contributions go directly to hosting and network infrastructure expenses.")
   );
 
   root.append(hero, tierGrid, privacySection);
