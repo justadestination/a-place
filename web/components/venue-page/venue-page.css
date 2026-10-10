@@ -254,3 +254,36 @@
   color: var(--nc-color-text-muted);
   margin: var(--nc-space-0);
 }
+
+/* Storefront & Merch Grid */
+.nc-venue-merch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--nc-space-8) * 3), 1fr));
+  gap: var(--nc-space-3);
+}
+
+.nc-venue-merch-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--nc-space-2);
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-venue-merch-card__name {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+
+.nc-venue-merch-card__price {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-accent-text);
+  font-weight: var(--nc-font-weight-bold);
+}
+

@@ -1,0 +1,191 @@
+[
+  {
+    "cycle_id": "cycle-20261010095909",
+    "timestamp": "2026-10-10T09:59:09.236176+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+          "source": "The Press Democrat",
+          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://pressdemocrat.com/local-music-ordinance-2026"
+        ],
+        "created_at": "2026-10-10T09:59:09.236176+00:00"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010095522",
+    "timestamp": "2026-10-10T09:55:22.366601+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+          "source": "The Press Democrat",
+          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://pressdemocrat.com/local-music-ordinance-2026"
+        ],
+        "created_at": "2026-10-10T09:55:22.366601+00:00"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010095326",
+    "timestamp": "2026-10-10T09:53:26.837866+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+          "source": "The Press Democrat",
+          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://pressdemocrat.com/local-music-ordinance-2026"
+        ],
+        "created_at": "2026-10-10T09:53:26.837866+00:00"
+      }
+    ]
+  }
+]

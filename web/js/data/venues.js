@@ -80,6 +80,8 @@ export function normalizeVenue(rawVenue, events = []) {
     socials,
     blurbs,
     events: upcomingEvents,
+    merch_items: rawVenue.merch_items || rawVenue.merch || [],
+    has_shop: Boolean(rawVenue.has_shop || (rawVenue.merch_items && rawVenue.merch_items.length)),
   };
 }
 

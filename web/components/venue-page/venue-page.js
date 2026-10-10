@@ -296,6 +296,42 @@ export function venuePageView(options = {}) {
   container.appendChild(blurbsSection);
   container.appendChild(eventsSection);
 
+  // 5. Storefront & Merchandise Section
+  const merchItems = venue.merch_items || venue.merch || [];
+  if (merchItems.length > 0) {
+    const merchContainer = h("div.nc-venue-merch-grid", { id: "nc-venue-merch" });
+    for (const item of merchItems) {
+      const card = h(
+        "div.nc-venue-merch-card",
+        {},
+        h("h3.nc-venue-merch-card__name", {}, item.name),
+        h("p.nc-venue-merch-card__price", {}, item.price || "")
+      );
+      if (item.buy_url) {
+        card.appendChild(
+          h(
+            "a.nc-button.nc-button--primary.nc-venue-action-btn",
+            {
+              href: item.buy_url,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              "aria-label": `Purchase ${item.name} from venue storefront`,
+            },
+            "Buy Direct"
+          )
+        );
+      }
+      merchContainer.appendChild(card);
+    }
+    const merchSection = h(
+      "section.nc-venue-section",
+      { "aria-labelledby": "nc-merch-heading" },
+      h("h2.nc-venue-section__title", { id: "nc-merch-heading" }, "Storefront & Merchandise"),
+      merchContainer
+    );
+    container.appendChild(merchSection);
+  }
+
   return container;
 }
 

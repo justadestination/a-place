@@ -74,3 +74,16 @@ def test_venue_directory_and_map_generation():
     v = validate_venue(raw)
     assert v["lat"] == 38.441
     assert v["lon"] == -122.712
+
+
+def test_venue_merch_enrichment():
+    from shadenet.nightcal.venue_products import enrich_venue_with_products, get_venue_merch
+
+    afc_merch = get_venue_merch("ven_arlene_francis")
+    assert len(afc_merch) >= 1
+    assert any("Tee" in item["name"] for item in afc_merch)
+
+    enriched = enrich_venue_with_products({"id": "ven_arlene_francis", "name": "Arlene Francis Center"})
+    assert enriched["has_shop"] is True
+    assert len(enriched["merch_items"]) >= 1
+

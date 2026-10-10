@@ -28,5 +28,5 @@ state/secrets.json
 node_modules/
 node_modules
 web/node_modules
-web/node_modules/
 web/tests/output/
+shadenet/data/flyer_cache/

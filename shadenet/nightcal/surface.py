@@ -351,7 +351,7 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             or handles.get("is_closed")
             or (isinstance(meta.get("status"), str) and meta.get("status").lower() == "closed")
         )
-        venues.append({
+        venue_dict = {
             "id": row["id"],
             "name": row["name"],
             "music": music,
@@ -365,7 +365,13 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             "osm": bool(meta.get("osm_id")),
             "closed": closed_flag,
             "is_closed": closed_flag,
-        })
+        }
+        try:
+            from shadenet.nightcal.venue_products import enrich_venue_with_products
+            venue_dict = enrich_venue_with_products(venue_dict)
+        except Exception:
+            pass
+        venues.append(venue_dict)
 
     events = []
     hidden_ids = rail_hidden(store)
