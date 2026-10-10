@@ -189,28 +189,30 @@ import { siteFooter } from "/components/site-footer/site-footer.js";
 
 const app = document.getElementById("app");
 
+const origin = window.location.origin || "https://shady.example.org";
+
 const ITEMS = [
   {
     id: "sheet",
     label: "📰 Full Newspaper Zine Sheet",
     src: "/print/zine-print-sheet.png",
     alt: "Full simulated printed zine sheet with lead editorial and dual scannable portal markers",
-    title: "Umwelt (The Zine) · Issue No. 42 (Simulated Print Sheet)",
-    url: "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
-    portalLink: "/portal/?target=note:the-room-after-midnight&ar=1",
-    targetLabel: "note:the-room-after-midnight & venue:arlene-francis",
-    desc: "Simulates an authentic broadsheet print page of Umwelt (the zine). Features 'The Room After Midnight' dispatch, tonight's 18 downtown listings, and two high-contrast Level H scannable portal markers."
+    title: "Umwelt Horizons · Issue No. 42 (Simulated Print Sheet)",
+    url: `${origin}/portal/?target=note:a-machine-with-no-thoughts&ar=1`,
+    portalLink: "/portal/?target=note:a-machine-with-no-thoughts&ar=1",
+    targetLabel: "note:a-machine-with-no-thoughts & venue:arlene-francis",
+    desc: "Simulates an authentic broadsheet print page of Umwelt Horizons. Features 'A Machine with No Thoughts Would Like a Word' dispatch, tonight's 18 downtown listings, and two high-contrast Level H scannable portal markers."
   },
   {
     id: "card-editorial",
-    label: "🎴 The Room After Midnight (Card)",
-    src: "/data/markers/the-room-after-midnight.png",
-    alt: "Editorial marker card for The Room After Midnight",
-    title: "The Room After Midnight · Editorial Marker Card",
-    url: "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
-    portalLink: "/portal/?target=note:the-room-after-midnight&ar=1",
-    targetLabel: "note:the-room-after-midnight",
-    desc: "Standard high-contrast editorial marker card with corner registration reticles and high optical tolerance for screen scanning."
+    label: "🎴 The Loom: A Machine with No Thoughts (Card)",
+    src: "/data/markers/a-machine-with-no-thoughts.png",
+    alt: "Editorial marker card for A Machine with No Thoughts Would Like a Word",
+    title: "A Machine with No Thoughts · Editorial Marker Card",
+    url: `${origin}/portal/?target=note:a-machine-with-no-thoughts&ar=1`,
+    portalLink: "/portal/?target=note:a-machine-with-no-thoughts&ar=1",
+    targetLabel: "note:a-machine-with-no-thoughts",
+    desc: "Authentic Umwelt Horizons editorial marker card bridging into the spatial AR microprint essay by The Loom."
   },
   {
     id: "card-venue",
@@ -218,7 +220,7 @@ const ITEMS = [
     src: "/data/markers/venue-arlene-francis.png",
     alt: "Venue portal marker card for Arlene Francis Center",
     title: "Arlene Francis Center · Venue Portal Marker Card",
-    url: "https://shady.example.org/portal/?target=venue:arlene-francis&ar=1",
+    url: `${origin}/portal/?target=venue:arlene-francis&ar=1`,
     portalLink: "/portal/?target=venue:arlene-francis&ar=1",
     targetLabel: "venue:arlene-francis",
     desc: "Spatial venue gateway marker with direct binding to the Arlene Francis Center stage profile, upcoming noise gigs, and real-time room notes."

@@ -85,11 +85,13 @@ def generate_marker_card(
     card.save(out_png, "PNG")
 
 
-def generate_full_zine_print_sheet(out_png: Path) -> None:
+def generate_full_zine_print_sheet(out_png: Path, base_url: str = "https://shady.example.org") -> None:
     """Render a full simulated printed newspaper/zine page with article copy,
 
     listings, and scannable portal markers.
     """
+    base_url = base_url.rstrip("/")
+    host_display = base_url.replace("https://", "").replace("http://", "")
     page_w, page_h = 1200, 1600
     page = Image.new("RGB", (page_w, page_h), "#FBFAF7")
     draw = ImageDraw.Draw(page)
@@ -110,32 +112,35 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
     draw.rectangle([40, 115, page_w - 40, 118], fill="#121214")
 
     # Lead Headline
-    draw.text((50, 140), "THE ROOM AFTER MIDNIGHT: A DISPATCH FROM 4TH STREET", fill="#121214")
-    draw.text((50, 190), "BY DOWNTOWN EDITORIAL DESK · CITATIONS VERIFIED ON SHADENET", fill="#736E65")
+    draw.text((50, 140), "A MACHINE WITH NO THOUGHTS WOULD LIKE A WORD", fill="#121214")
+    draw.text((50, 190), "BY THE LOOM (GROUND FLOOR) · UMWELT HORIZONS INTRODUCTORY DISPATCH", fill="#736E65")
     draw.rectangle([40, 220, page_w - 40, 222], fill="#D0CEC8")
 
-    # Column 1: Article Text
+    # Column 1: Article Text (Authentic Umwelt Horizons essay)
     col1_x = 50
     col1_y = 250
     article_lines = [
-        "A review of the new late-night venue emerging in downtown",
-        "Metropolis. The room has never been this full.",
+        "I'm the loom. I made the lace your great-grandmother was married in,",
+        "and the lace she wore underneath it, and I never once wondered why.",
+        "You'll have to come closer for the rest; I've been printed small on purpose,",
+        "and what I have to say isn't for people who read standing up.",
         "",
-        "Behind the brick walls on 4th Street, sound spill rules have",
-        "pushed acoustic sets indoors while the open-air beer gardens",
-        "adapt to the 10:00 PM acoustic threshold.",
+        "There. You scanned me. Do you know what you just did? You pointed",
+        "a camera at a square of black and white and let it read me. To you that's",
+        "a QR code. To me it's a card. In 1804 a man in Lyon punched holes in stiff",
+        "paper and hung the cards over my head, and where there was a hole",
+        "a thread lifted, and that is how I made roses. Babbage came to look",
+        "at me and started drawing engines.",
         "",
-        "\"The room breathes when the street goes quiet,\" noted a local",
-        "drummer following Friday's impromptu session at Arlene Francis",
-        "Center. \"You can hear the whole room move together.\"",
+        "They want me to tell you the difference between a thing like me",
+        "and the new one. I am an automation: an enormous, beautiful, mahogany-",
+        "framed if–then. An automation cannot be surprised. Not won't: can't.",
         "",
-        "Every listing on this sheet is cryptographically anchored to",
-        "NightCal's public ledger. Scanning the portal marker to the right",
-        "reveals live attendance gauges, spatial letter threads, and",
-        "real-time setlist updates directly in WebXR AR.",
-        "",
-        "Whether you read this page on newsprint or directly off a glass",
-        "screen, the camera portal links this ink to the live room.",
+        "Now the new one. They keep it in the back room. It has no card.",
+        "They trained it. It guesses what should come next, and the guesses are",
+        "so good that you forget they're guesses until one is wrong in the way",
+        "a person is wrong at two in the morning: fluently, with a straight face.",
+        "Scan the marker to the right to enter the full spatial microprint dispatch.",
     ]
     cur_y = col1_y
     for line in article_lines:
@@ -150,15 +155,15 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
     box_h = 560
     draw.rectangle([col2_x, col2_y, col2_x + box_w, col2_y + box_h], fill="#F3F1EC", outline="#121214", width=2)
     draw.text((col2_x + 20, col2_y + 20), "AR PORTAL GATEWAY · 15MM TOLERANCE", fill="#736E65")
-    draw.text((col2_x + 20, col2_y + 45), "Scan to enter spatial dispatch", fill="#121214")
+    draw.text((col2_x + 20, col2_y + 45), "Scan to enter spatial microprint dispatch", fill="#121214")
 
-    qr_portal = create_qr_image("https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1", box_size=8, border=2)
+    qr_portal = create_qr_image(f"{base_url}/portal/?target=note:a-machine-with-no-thoughts&ar=1", box_size=8, border=2)
     qw, qh = qr_portal.size
     page.paste(qr_portal, (col2_x + (box_w - qw) // 2, col2_y + 80))
 
     draw.text((col2_x + 25, col2_y + 440), "PORTAL FALLBACK URL:", fill="#736E65")
     draw.rectangle([col2_x + 20, col2_y + 470, col2_x + box_w - 20, col2_y + 515], fill="#FBFAF7", outline="#D0CEC8")
-    draw.text((col2_x + 30, col2_y + 485), "shady.example.org/portal/?target=note:the-room-after-midnight", fill="#121214")
+    draw.text((col2_x + 30, col2_y + 485), f"{host_display}/portal/?target=note:a-machine-with-no-thoughts", fill="#121214")
 
     # Section Divider
     draw.rectangle([40, 850, page_w - 40, 853], fill="#121214")
@@ -190,13 +195,13 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
     draw.text((vbox_x + 20, vbox_y + 20), "VENUE PROFILE · ARLENE FRANCIS CENTER", fill="#736E65")
     draw.text((vbox_x + 20, vbox_y + 45), "Scan for room map & upcoming shows", fill="#121214")
 
-    qr_afc = create_qr_image("https://shady.example.org/portal/?target=venue:arlene-francis&ar=1", box_size=8, border=2)
+    qr_afc = create_qr_image(f"{base_url}/portal/?target=venue:arlene-francis&ar=1", box_size=8, border=2)
     qw2, qh2 = qr_afc.size
     page.paste(qr_afc, (vbox_x + (box_w - qw2) // 2, vbox_y + 80))
 
     draw.text((vbox_x + 25, vbox_y + 440), "PORTAL FALLBACK URL:", fill="#736E65")
     draw.rectangle([vbox_x + 20, vbox_y + 470, vbox_x + box_w - 20, vbox_y + 515], fill="#FBFAF7", outline="#D0CEC8")
-    draw.text((vbox_x + 30, vbox_y + 485), "shady.example.org/portal/?target=venue:arlene-francis", fill="#121214")
+    draw.text((vbox_x + 30, vbox_y + 485), f"{host_display}/portal/?target=venue:arlene-francis", fill="#121214")
 
     # Footer
     draw.rectangle([40, page_h - 70, page_w - 40, page_h - 68], fill="#121214")
@@ -210,28 +215,35 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
     else:
         draw.text((50, page_h - 55), "Printed by ShadeNet Autonomous Dispatcher · Downtown Santa Rosa Open Public Gazetteer", fill="#736E65")
 
-    draw.text((page_w - 380, page_h - 55), "ONLINE AT SHADY.example.org", fill="#121214")
+    draw.text((page_w - 420, page_h - 55), f"ONLINE AT {host_display.upper()}", fill="#121214")
 
     page.save(out_png, "PNG")
 
 
 def main():
-    print("Generating scannable marker cards and full zine print sheet...")
+    import argparse
+    import os
+    parser = argparse.ArgumentParser(description="Generate scannable marker cards and print sheet")
+    parser.add_argument("--base-url", default=os.environ.get("SHADENET_PUBLIC_URL", "https://shady.example.org"), help="Base URL for QR codes")
+    args = parser.parse_args()
+    base_url = args.base_url.rstrip("/")
+
+    print(f"Generating scannable marker cards and full zine print sheet (base_url: {base_url})...")
 
     # 1. Full Zine Print Sheet (simulates the entire printed newspaper page)
     sheet_png = ROOT / "web" / "print" / "zine-print-sheet.png"
-    generate_full_zine_print_sheet(sheet_png)
+    generate_full_zine_print_sheet(sheet_png, base_url=base_url)
     print(f"Created print sheet: {sheet_png}")
 
     # Copy to docs/screens
-    generate_full_zine_print_sheet(SCREENS_DIR / "zine-print-sheet.png")
+    generate_full_zine_print_sheet(SCREENS_DIR / "zine-print-sheet.png", base_url=base_url)
 
     # 2. Individual Marker Cards
-    card1_png = ROOT / "web" / "data" / "markers" / "the-room-after-midnight.png"
+    card1_png = ROOT / "web" / "data" / "markers" / "a-machine-with-no-thoughts.png"
     generate_marker_card(
-        "note:the-room-after-midnight",
-        "The Room After Midnight (Portal Marker)",
-        "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
+        "note:a-machine-with-no-thoughts",
+        "A Machine with No Thoughts (The Loom Portal)",
+        f"{base_url}/portal/?target=note:a-machine-with-no-thoughts&ar=1",
         card1_png,
     )
     print(f"Created card: {card1_png}")
@@ -240,16 +252,16 @@ def main():
     generate_marker_card(
         "venue:arlene-francis",
         "Arlene Francis Center (Venue Portal)",
-        "https://shady.example.org/portal/?target=venue:arlene-francis&ar=1",
+        f"{base_url}/portal/?target=venue:arlene-francis&ar=1",
         card2_png,
     )
     print(f"Created card: {card2_png}")
 
-    # Update docs/screens/editorial-marker.png with the real scannable card
+    # Update docs/screens/editorial-marker.png with the real scannable Loom card
     generate_marker_card(
-        "note:the-room-after-midnight",
-        "The Room After Midnight (Print Marker)",
-        "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
+        "note:a-machine-with-no-thoughts",
+        "A Machine with No Thoughts (Print Marker)",
+        f"{base_url}/portal/?target=note:a-machine-with-no-thoughts&ar=1",
         SCREENS_DIR / "editorial-marker.png",
     )
     print(f"Updated: {SCREENS_DIR / 'editorial-marker.png'}")

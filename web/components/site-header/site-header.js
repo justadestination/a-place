@@ -6,7 +6,7 @@ import { searchDialog, searchButton } from "../search-dialog/search-dialog.js";
 
 const NAV = [
   { href: "/", label: "Calendar", match: p => p === "/" || p.startsWith("/calendar") },
-  { href: "/zine/", label: "Umwelt", match: p => p.startsWith("/zine") },
+  { href: "/zine/", label: "Umwelt Horizons", match: p => p.startsWith("/zine") },
   { href: "/print/", label: "Print", match: p => p.startsWith("/print") },
 ];
 

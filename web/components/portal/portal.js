@@ -46,10 +46,10 @@ export function portalView({
   const header = h("header.nc-portal__header", {},
     h("span.nc-portal__eyebrow", {},
       h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
-      "Umwelt (The Zine) · Print-to-Screen Portal"
+      "Umwelt Horizons (The Zine) · Print-to-Screen Portal"
     ),
-    h(titleTag, {}, "Umwelt Dispatch Portal"),
-    h("p.nc-portal__subtitle", {}, `Target: ${nodeData?.title || targetId} · Umwelt Zine Archive`)
+    h(titleTag, {}, "Umwelt Horizons Dispatch Portal"),
+    h("p.nc-portal__subtitle", {}, `Target: ${nodeData?.title || targetId} · Umwelt Horizons Zine Archive`)
   );
 
   // 2. 3D Stage & Status container
@@ -122,12 +122,12 @@ export function portalView({
 
     const navActions = h("div.nc-portal__actions", {},
       button({
-        label: "View in Umwelt Node Map",
+        label: "View in Umwelt Horizons Node Map",
         variant: "secondary",
         href: `/zine/?node=${encodeURIComponent(targetId)}`,
       }),
       button({
-        label: "Read Umwelt Zine",
+        label: "Read Umwelt Horizons Zine",
         variant: "secondary",
         href: "/zine/",
       }),
@@ -142,10 +142,10 @@ export function portalView({
   } else {
     contentHolder.append(
       h(nodeTitleTag, {}, `Bridged Content: ${targetId}`),
-      h("p.nc-portal__node-meta", {}, "Physical Umwelt zine marker acquired. Opening live graph context."),
+      h("p.nc-portal__node-meta", {}, "Physical Umwelt Horizons zine marker acquired. Opening live graph context."),
       h("p.nc-portal__node-body", {}, "This portal links directly from printed paper into the live nightlife graph."),
       h("div.nc-portal__actions", {},
-        button({ label: "Open Umwelt Zine", variant: "primary", href: "/zine/" }),
+        button({ label: "Open Umwelt Horizons Zine", variant: "primary", href: "/zine/" }),
         button({ label: "View Calendar", variant: "secondary", href: "/" })
       )
     );
