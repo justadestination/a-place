@@ -6,6 +6,9 @@ from shadenet.zine_automations import (
     select_two_models,
     get_pending_editorial_queue,
     get_model_scorecards,
+    validate_word_count_and_read_time,
+    verify_article_sources,
+    verify_editorial_charter,
     MODEL_ROSTER,
 )
 from shadenet.nightcal.venue_products import (
@@ -34,6 +37,9 @@ def test_newsroom_cycle_calibration_flow():
     assert art["status"] == "pending_editor_review"
     assert len(art["models_involved"]) == 2
     assert len(art["scorecard"]) >= 1
+    assert "compliance" in art
+    assert art["compliance"]["cleared_for_publication"] is True
+    assert "reading_time" in art
 
     # Verify scorecards have confidence and testable check-by dates
     for sc in art["scorecard"]:
@@ -41,6 +47,41 @@ def test_newsroom_cycle_calibration_flow():
         assert sc["confidence"] > 0
         assert "check_by" in sc
         assert "claim" in sc
+
+
+def test_editorial_charter_verification():
+    valid_art = {
+        "title": "Acoustic Attenuation in Downtown Corridors",
+        "executive_summary": "Analysis of sound reflection along 4th Street.",
+        "dossier": {"overview": "Decibel drops follow inverse-square decay modified by street tree foliage."},
+        "headline_ref": {"id": "ref-1", "url": "https://srcity.org/2180/Noise-Regulations"},
+        "sources": ["https://srcity.org/2180/Noise-Regulations"],
+        "scorecard": [{"claim": "Tree canopy absorbs 3dB", "check_by": "2027-01-01"}],
+    }
+    report = verify_editorial_charter(valid_art)
+    assert report["cleared_for_publication"] is True
+    assert report["ground_truth_verified"] is True
+    assert report["sources"]["valid"] is True
+    assert report["length_and_read_time"]["is_within_limit"] is True
+
+
+def test_word_count_and_read_time_limits():
+    # Under limit
+    ok_res = validate_word_count_and_read_time(800)
+    assert ok_res["is_within_limit"] is True
+    assert ok_res["requires_chaining"] is False
+    assert "min read" in ok_res["read_time_label"]
+
+    # Over 1400 words requires backlink chaining
+    over_res = validate_word_count_and_read_time(1500)
+    assert over_res["is_within_limit"] is False
+    assert over_res["requires_chaining"] is True
+
+
+def test_article_sources_verification():
+    assert verify_article_sources([])["valid"] is False
+    assert verify_article_sources(["not-a-url"])["valid"] is False
+    assert verify_article_sources(["https://srcity.org/noise"])["valid"] is True
 
 
 def test_queue_and_scorecard_persistence():

@@ -1,7 +1,7 @@
 [
   {
-    "cycle_id": "cycle-20261010202352",
-    "timestamp": "2026-10-10T20:23:52.572140+00:00",
+    "cycle_id": "cycle-20261010233228",
+    "timestamp": "2026-10-10T23:32:28.995715+00:00",
     "is_calibration": true,
     "models": [
       "Claude 3.5 Sonnet",
@@ -10,7 +10,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -20,14 +20,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -43,7 +43,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -56,7 +56,299 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-10T23:32:28.995715+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010233136",
+    "timestamp": "2026-10-10T23:31:36.354450+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-10T23:31:36.354450+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010232836",
+    "timestamp": "2026-10-10T23:28:36.591454+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-10T23:28:36.591454+00:00"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010223834",
+    "timestamp": "2026-10-10T22:38:34.985244+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-10T22:38:34.985244+00:00"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261010202352",
+    "timestamp": "2026-10-10T20:23:52.572140+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T20:23:52.572140+00:00"
       }
@@ -73,7 +365,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -83,14 +375,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -106,7 +398,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -119,7 +411,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T20:14:56.657987+00:00"
       }
@@ -136,7 +428,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -146,14 +438,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -169,7 +461,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -182,7 +474,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T18:40:38.459420+00:00"
       }
@@ -199,7 +491,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -209,14 +501,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -232,7 +524,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -245,7 +537,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T17:10:27.211709+00:00"
       }
@@ -262,7 +554,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -272,14 +564,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -295,7 +587,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -308,7 +600,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T15:51:17.541004+00:00"
       }
@@ -325,7 +617,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -335,14 +627,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -358,7 +650,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -371,7 +663,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T15:46:59.891351+00:00"
       }
@@ -388,7 +680,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -398,14 +690,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -421,7 +713,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -434,7 +726,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T15:06:08.262508+00:00"
       }
@@ -451,7 +743,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -461,14 +753,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -484,7 +776,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -497,7 +789,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T14:57:23.067971+00:00"
       }
@@ -514,7 +806,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -524,14 +816,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -547,7 +839,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -560,7 +852,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T14:55:04.147046+00:00"
       }
@@ -577,7 +869,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -587,14 +879,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -610,7 +902,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -623,7 +915,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T09:59:09.236176+00:00"
       }
@@ -640,7 +932,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -650,14 +942,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -673,7 +965,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -686,7 +978,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T09:55:22.366601+00:00"
       }
@@ -703,7 +995,7 @@
     "articles": [
       {
         "id": "art-hl-101-calibration",
-        "title": "Calibration Dispatch: Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
         "type": "article",
         "status": "pending_editor_review",
         "models_involved": [
@@ -713,14 +1005,14 @@
         "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
         "headline_ref": {
           "id": "hl-101",
-          "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-          "source": "The Press Democrat",
-          "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
           "category": "nightlife-policy"
         },
         "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
         "dossier": {
-          "overview": "Investigative synthesis on Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits.",
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
           "perspectives": [
             {
               "model": "Claude 3.5 Sonnet",
@@ -736,7 +1028,7 @@
         },
         "scorecard": [
           {
-            "claim": "Outcome concerning 'Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits' formalizes within 90 days",
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
             "check_by": "2027-01-15",
             "confidence": 75,
             "model": "Claude 3.5 Sonnet"
@@ -749,7 +1041,7 @@
           }
         ],
         "sources": [
-          "https://pressdemocrat.com/local-music-ordinance-2026"
+          "https://srcity.org/2180/Noise-Regulations"
         ],
         "created_at": "2026-10-10T09:53:26.837866+00:00"
       }

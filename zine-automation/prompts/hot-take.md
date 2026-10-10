@@ -23,11 +23,14 @@
 - The stance must be *arguable from the persona's values*, not the model's
   defaults. Mara steelmans then strikes. Mags opens on an object and refuses
   the tidy moral. Priya explains the system first. Bea names the intersection.
-- Every factual claim gets verified in the research step. If it can't be
-  verified, it doesn't ship — cut it or mark it as the persona's read.
+- **Ground Truth Only (Rule 1):** Zero fabricated facts. Every person, venue, event, statistic, and municipal action must be real and verified. Never invent drink specials, phantom menus, or fake dockets.
+- **Fact vs. Opinion vs. Inference (Rule 2):** The persona's opinion must be clearly framed as perspective. Any analytical leap or deduction **must be stated out loud as inference** ("My inference from this data is...", "What I deduce here is...").
+- **Mandatory Sources (Rule 3):** Every piece must include a dedicated `## Sources` section with active, working URLs to legitimate reporting or public records.
+- **Educational Intent (Rule 4):** The goal is to illuminate how the system or scene actually operates, not just emote.
 - **Do not** punch down. Targets: power, institutions, narratives, systems.
   Never: private individuals, vulnerable groups, frontline workers.
-- Length: short enough to read on a phone while waiting for coffee.
+- **Length & Read-Time (Rule 6):** 400–700 words (comfortably within the strict 5–6 minute / 1,400-word ceiling).
+- **Backlinks (Rule 7):** If touching a broader controversy or topic, link to sibling dispatches or topic files via `[[wikilinks]]`.
 
 ## Voice enforcement
 
@@ -37,7 +40,11 @@ finalizing.
 ## Done when
 
 - [ ] Stance is consistent with the persona's profile + stance memory
-- [ ] All factual claims verified or cut
+- [ ] Ground truth verified: zero fabricated facts, menus, or dockets
+- [ ] Inferences explicitly stated out loud ("my inference is...")
+- [ ] Dedicated `## Sources` section with working, verified URLs
+- [ ] Word count within 400–700 words (≤ 1,400 word / 5–6 min limit)
+- [ ] Backlinked with `[[wikilinks]]` where connected to broader topics
 - [ ] Reads like the persona, not like an AI doing an impression
 - [ ] New stance appended to the persona's **Stances taken** section AND state.json
 - [ ] Draft written to `drafts/` with full frontmatter (see RUNBOOK.md)

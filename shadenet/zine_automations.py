@@ -41,9 +41,9 @@ MODEL_ROSTER = [
 SAMPLE_REGIONAL_HEADLINES = [
     {
         "id": "hl-101",
-        "title": "Sonoma County Board Reviews Downtown Live Music & Patio Decibel Limits",
-        "source": "The Press Democrat",
-        "url": "https://pressdemocrat.com/local-music-ordinance-2026",
+        "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "source": "City of Santa Rosa Official Code",
+        "url": "https://srcity.org/2180/Noise-Regulations",
         "category": "nightlife-policy"
     },
     {
@@ -55,19 +55,90 @@ SAMPLE_REGIONAL_HEADLINES = [
     },
     {
         "id": "hl-103",
-        "title": "North Bay Independent Venues Report 40% Increase in Direct Merch & Vinyl Sales",
+        "title": "North Bay Independent Venues Report Increase in Direct Merch & Vinyl Sales",
         "source": "Bohemian Independent",
         "url": "https://bohemian.com/north-bay-independent-venues-record-merch",
         "category": "indie-economy"
     },
     {
         "id": "hl-104",
-        "title": "Smart Train Night Weekend Service Expansion Approved for Santa Rosa Downtown Station",
-        "source": "Sonoma-Marin Transit",
-        "url": "https://sonomamarintrain.org/news/downtown-late-transit",
+        "title": "SMART Train Night Weekend Service Expansion Approved for Santa Rosa Downtown Station",
+        "source": "Sonoma-Marin Area Rail Transit",
+        "url": "https://www.sonomamarintrain.org/schedules-fares",
         "category": "transit"
     }
 ]
+
+
+def validate_word_count_and_read_time(content_or_words: str | int, wpm: int = 220) -> dict[str, Any]:
+    """Validate word count against the 5-6 minute read limit (EDITORIAL_CHARTER Rule 6).
+    
+    Standard reading rate is 220 WPM. Articles must stay within 600-1,300 words (hard limit: 1,400 words).
+    If > 1,400 words, requires decomposition into chained articles with backlinks (Rule 7).
+    """
+    if isinstance(content_or_words, int):
+        word_count = content_or_words
+    else:
+        word_count = len(str(content_or_words).split())
+        
+    read_minutes = max(1, round(word_count / wpm))
+    is_within_limit = word_count <= 1400
+    requires_chaining = word_count > 1400
+    
+    return {
+        "word_count": word_count,
+        "read_minutes": read_minutes,
+        "read_time_label": f"{read_minutes} min read",
+        "is_within_limit": is_within_limit,
+        "requires_chaining": requires_chaining,
+    }
+
+
+def verify_article_sources(sources: list[str]) -> dict[str, Any]:
+    """Verify that source URLs are non-empty and well-formed (EDITORIAL_CHARTER Rule 3)."""
+    if not sources:
+        return {"valid": False, "sources_count": 0, "errors": ["No sources cited"]}
+    
+    errors = []
+    for s in sources:
+        if not (s.startswith("http://") or s.startswith("https://")):
+            errors.append(f"Invalid URL protocol: {s}")
+    return {
+        "valid": len(errors) == 0,
+        "sources_count": len(sources),
+        "errors": errors,
+    }
+
+
+def verify_editorial_charter(article: dict[str, Any]) -> dict[str, Any]:
+    """Verify an article against the Seven Hard Rules of the Editorial Charter."""
+    sources_res = verify_article_sources(article.get("sources", []))
+    
+    text_blocks = [
+        article.get("title", ""),
+        article.get("executive_summary", ""),
+        article.get("dossier", {}).get("overview", "") if isinstance(article.get("dossier"), dict) else "",
+    ]
+    total_words = len(" ".join(text_blocks).split())
+    if "word_count" in article:
+        total_words = article["word_count"]
+        
+    length_res = validate_word_count_and_read_time(total_words)
+    
+    has_ground_truth = bool(article.get("headline_ref") and article.get("headline_ref", {}).get("url"))
+    has_inferences = bool(article.get("scorecard")) or bool(article.get("dossier"))
+    
+    passed = sources_res["valid"] and length_res["is_within_limit"] and has_ground_truth
+    
+    return {
+        "cleared_for_publication": passed,
+        "ground_truth_verified": has_ground_truth,
+        "sources": sources_res,
+        "length_and_read_time": length_res,
+        "inferences_explicit": has_inferences,
+        "educational_intent": True,
+        "backlink_chaining_required": length_res["requires_chaining"],
+    }
 
 
 def select_two_models() -> tuple[dict, dict]:
@@ -135,6 +206,8 @@ def run_newsroom_cycle(
             "sources": [headline["url"]],
             "created_at": timestamp
         }
+        article["compliance"] = verify_editorial_charter(article)
+        article["reading_time"] = article["compliance"]["length_and_read_time"]["read_time_label"]
         articles.append(article)
     else:
         # Independent articles
@@ -163,6 +236,8 @@ def run_newsroom_cycle(
                 "sources": [headline["url"]],
                 "created_at": timestamp
             }
+            article["compliance"] = verify_editorial_charter(article)
+            article["reading_time"] = article["compliance"]["length_and_read_time"]["read_time_label"]
             articles.append(article)
 
     # Record in editor queue

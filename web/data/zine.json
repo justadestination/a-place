@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-10T20:17:15+00:00",
+ "generatedAt": "2026-10-10T23:31:45+00:00",
  "vault": "shadenet/horizon/vault",
  "nodes": [
   {
@@ -163,13 +163,31 @@
     "editorial",
     "operations"
    ],
-   "summary": "Pre-publication checklist for the downtown zine and autonomous research pipelines.",
+   "summary": "Pre-publication checklist for the downtown zine and autonomous research pipelines. Adheres strictly to `EDITORIAL_CHARTER.md`.",
    "source": "shadenet/horizon/vault/editorial-checklist.md",
-   "html": "<p>Pre-publication checklist for the downtown zine and autonomous research pipelines.</p>\n<ul><li>Verify all downtown <a href=\"?node=venue:ven_a261886187f23bb1\" data-node=\"venue:ven_a261886187f23bb1\">Annie O&#x27;s Music Hall</a> and venue IDs resolve before build</li><li>Confirm every event and scheduled set is in the local store</li><li>Review interconnected dispatches: <a href=\"?node=note:a-machine-with-no-thoughts\" data-node=\"note:a-machine-with-no-thoughts\">A Machine with No Thoughts Would Like a Word</a> and <a href=\"?node=note:topic-downtown-noise-ordinance-2026\" data-node=\"note:topic-downtown-noise-ordinance-2026\">Downtown Noise Ordinance (2026) Overview</a></li><li>Trace all bidirectional backlinks across the AR scape</li></ul>",
+   "html": "<p>Pre-publication checklist for the downtown zine and autonomous research pipelines. Adheres strictly to <code>EDITORIAL_CHARTER.md</code>.</p>\n<h3>The Seven Hard Rules</h3>\n<ul><li>[ ] <strong>1. Ground Truth Only (No Made-Up Facts):</strong> Every venue, event, artist, statistic, and ordinance is real. Zero fabricated drink specials, phantom menus, or synthetic dockets.</li><li>[ ] <strong>2. Explicit Boundaries (Fact vs. Opinion vs. Inference):</strong> Opinions clearly framed as writer/persona stances. All analytical extrapolations and deductions stated explicitly out loud (<em>&quot;My inference from this data is...&quot;</em>).</li><li>[ ] <strong>3. Mandatory Source Citations:</strong> Dedicated <code>## Sources</code> section in every dispatch with active, working URLs to legitimate reporting, public filings, or official transcripts.</li><li>[ ] <strong>4. Educational Intent:</strong> The piece explains, illuminates, or teaches how a soundscape, municipal system, economic dynamic, or technical architecture operates.</li><li>[ ] <strong>5. Mandatory Editor Verification Gate:</strong> Every load-bearing claim and URL verified before flipping from <code>draft</code> to <code>published</code>. If unverified, escalate to operator (<code>needs-operator/</code>).</li><li>[ ] <strong>6. Read-Time Limit (5–6 Minutes or Less):</strong> Word count between 600 and 1,300 words (hard limit: 1,400 words).</li><li>[ ] <strong>7. Backlink Chaining:</strong> Expansive topics decomposed into modular, interconnected boxes linked via bidirectional <code><a href=\"?node=missing:wikilinks\" data-node=\"missing:wikilinks\" class=\"is-missing\">wikilinks</a></code> across the AR scape.</li></ul>\n<h3>Spatial AR-Scape &amp; Network Checks</h3>\n<ul><li>[ ] Verify all downtown venue IDs resolve before build (e.g., <a href=\"?node=venue:ven_a261886187f23bb1\" data-node=\"venue:ven_a261886187f23bb1\">Annie O&#x27;s Music Hall</a>, <a href=\"?node=venue:ven_097c696c87a03f80\" data-node=\"venue:ven_097c696c87a03f80\">Barrel Proof Lounge</a>, <a href=\"?node=venue:ven_e743921f1a49d21b\" data-node=\"venue:ven_e743921f1a49d21b\">The California Theatre</a>)</li><li>[ ] Confirm every event and scheduled set is in the local store</li><li>[ ] Trace all bidirectional backlinks across the AR scape (overview ↔ stance ↔ technical dossier)</li><li>[ ] Review interconnected dispatches: <a href=\"?node=note:a-machine-with-no-thoughts\" data-node=\"note:a-machine-with-no-thoughts\">A Machine with No Thoughts Would Like a Word</a> and <a href=\"?node=note:topic-downtown-noise-ordinance-2026\" data-node=\"note:topic-downtown-noise-ordinance-2026\">Downtown Noise Ordinance (2026) Overview</a></li></ul>",
    "links": [
+    {
+     "id": "missing:wikilinks",
+     "title": "wikilinks",
+     "type": "missing",
+     "kind": "link"
+    },
     {
      "id": "venue:ven_a261886187f23bb1",
      "title": "Annie O's Music Hall",
+     "type": "venue",
+     "kind": "link"
+    },
+    {
+     "id": "venue:ven_097c696c87a03f80",
+     "title": "Barrel Proof Lounge",
+     "type": "venue",
+     "kind": "link"
+    },
+    {
+     "id": "venue:ven_e743921f1a49d21b",
+     "title": "The California Theatre",
      "type": "venue",
      "kind": "link"
     },
@@ -1144,6 +1162,22 @@
    "backlinks": []
   },
   {
+   "id": "missing:wikilinks",
+   "slug": "wikilinks",
+   "type": "missing",
+   "title": "wikilinks",
+   "summary": "Linked from the zine but nothing with that name exists yet.",
+   "links": [],
+   "backlinks": [
+    {
+     "id": "note:editorial-checklist",
+     "title": "Downtown Zine Editorial Checklist",
+     "type": "editorial",
+     "kind": "link"
+    }
+   ]
+  },
+  {
    "id": "venue:ven_a643f31b440ba2f2",
    "slug": "ven_a643f31b440ba2f2",
    "type": "venue",
@@ -1239,6 +1273,12 @@
    "summary": "",
    "links": [],
    "backlinks": [
+    {
+     "id": "note:editorial-checklist",
+     "title": "Downtown Zine Editorial Checklist",
+     "type": "editorial",
+     "kind": "link"
+    },
     {
      "id": "note:late-show-review",
      "title": "Late Show, Every Night",
@@ -1405,6 +1445,12 @@
    "links": [],
    "backlinks": [
     {
+     "id": "note:editorial-checklist",
+     "title": "Downtown Zine Editorial Checklist",
+     "type": "editorial",
+     "kind": "link"
+    },
+    {
      "id": "note:the-room-after-midnight",
      "title": "The Room After Midnight",
      "type": "article",
@@ -1485,7 +1531,22 @@
   },
   {
    "source": "note:editorial-checklist",
+   "target": "missing:wikilinks",
+   "kind": "link"
+  },
+  {
+   "source": "note:editorial-checklist",
    "target": "venue:ven_a261886187f23bb1",
+   "kind": "link"
+  },
+  {
+   "source": "note:editorial-checklist",
+   "target": "venue:ven_097c696c87a03f80",
+   "kind": "link"
+  },
+  {
+   "source": "note:editorial-checklist",
+   "target": "venue:ven_e743921f1a49d21b",
    "kind": "link"
   },
   {
