@@ -2,8 +2,8 @@
 # ==============================================================================
 # provision.sh — One-Shot Master Production Deployment for Fresh production host
 # Run on fresh server as root:
-#   bash provision.sh
-# Or remotely from operator laptop:
+#   bash deploy/production/provision.sh
+# Or remotely from operator workstation:
 #   ssh root@<NEW_VPS_IP> 'bash -s' < deploy/production/provision.sh
 # ==============================================================================
 set -euo pipefail
@@ -11,76 +11,51 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "======================================================================"
-echo " Starting Full Production Provisioning on Fresh production host"
-echo " Node: Monero Pruned Node + Matrix Synapse + Element Web + Tor + ShadeNet"
-echo " Security: UFW + SSH Hardening + Fail2ban + Backups to backup-host"
+echo " Starting Full Hardened Production Provisioning on Fresh production host"
+echo " Filesystem: Organized /srv/shadenet + LUKS2 Encryption at Rest"
+echo " Networking: Single Caddy Ingress (80/443), Zero Public Ports"
+echo " Management: WireGuard VPN (203.0.113.1) + Privacy DNS (DoT)"
+echo " Containers: Caddy, Synapse, Postgres, Monerod, Element, Tor, Autoheal"
+echo " Resilience: Noisy Structured Logs + Automated Sentinel Repairs (3m)"
+echo " Redundancy: Encrypted Cross-Server Backups -> the backup host"
 echo "======================================================================"
 
-chmod +x "${SCRIPT_DIR}/01_hardening.sh"
-chmod +x "${SCRIPT_DIR}/02_backup.sh"
-chmod +x "${SCRIPT_DIR}/03_monero.sh"
-chmod +x "${SCRIPT_DIR}/04_matrix_element.sh"
-chmod +x "${SCRIPT_DIR}/05_tor.sh"
+chmod +x "${SCRIPT_DIR}"/*.sh
 
-echo "[Phase 1/6] Running OS Hardening & Security Baseline..."
-"${SCRIPT_DIR}/01_hardening.sh"
+echo "[Phase 1/6] Setting Up Standardized Filesystem & LUKS2 Encryption at Rest..."
+"${SCRIPT_DIR}/01_filesystem_luks.sh"
 
-echo "[Phase 2/6] Setting Up Automated Backups to backup-host (backup-host)..."
-"${SCRIPT_DIR}/02_backup.sh"
+echo "[Phase 2/6] Configuring WireGuard VPN Mesh & Zero-Exposed-Port Firewall..."
+"${SCRIPT_DIR}/02_wireguard_vpn.sh"
 
-echo "[Phase 3/6] Deploying Monero Full Node (Pruned) & Wallet RPC..."
-"${SCRIPT_DIR}/03_monero.sh"
+echo "[Phase 3/6] Deploying Privacy DNS Server (Unbound with DNS-over-TLS)..."
+"${SCRIPT_DIR}/03_dns_unbound.sh"
 
-echo "[Phase 4/6] Deploying Matrix Synapse + Element Web + Caddy..."
-"${SCRIPT_DIR}/04_matrix_element.sh"
+echo "[Phase 4/6] Deploying Isolated Container Stack & Single Caddy Ingress..."
+"${SCRIPT_DIR}/04_containers_compose.sh"
 
-echo "[Phase 5/6] Deploying Hardened Tor Daemon & Onion Services..."
-"${SCRIPT_DIR}/05_tor.sh"
+echo "[Phase 5/6] Initializing Noisy Logging, Automated Repairs & shadenet-ctl..."
+"${SCRIPT_DIR}/05_logging_repairs.sh"
 
-echo "[Phase 6/6] Deploying ShadeNet NightCal Core Service..."
-mkdir -p /opt/shadenet
-if [ -d "/opt/shadenet/shadenet" ]; then
-  chown -R www-data:www-data /opt/shadenet
-fi
+echo "[Phase 6/6] Establishing Automated Encrypted Backups to backup-host..."
+"${SCRIPT_DIR}/06_backup_sync.sh"
 
-cat > /etc/systemd/system/shadenet.service <<'EOF'
-[Unit]
-Description=Shadenet NightCal & Steward Web Service
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-User=www-data
-Group=www-data
-WorkingDirectory=/opt/shadenet
-Environment="PYTHONPATH=/opt/shadenet"
-Environment="NIGHTCAL_PORT=8765"
-Environment="NIGHTCAL_HOST=127.0.0.1"
-ExecStart=/usr/bin/python3 -m shadenet.nightcal.server
-Restart=always
-RestartSec=5
-
-ProtectSystem=full
-PrivateTmp=yes
-NoNewPrivileges=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl daemon-reload
-systemctl enable shadenet.service
-systemctl restart shadenet.service || true
+echo ""
+echo "Starting container stack..."
+cd /srv/shadenet && docker compose up -d
 
 echo "======================================================================"
-echo " ✓ Turnkey Production Deployment Complete!"
-echo "   - Monerod P2P: 0.0.0.0:18080 (Synchronizing pruned blockchain)"
-echo "   - Monero Wallet RPC: 127.0.0.1:18082"
-echo "   - Monero Tx Anonymization: Via Tor SOCKS5 (127.0.0.1:9050)"
-echo "   - Matrix Synapse: https://matrix.example.org"
-echo "   - Element Web: https://chat.example.org"
-echo "   - ShadeNet Core: https://shady.example.org"
-echo "   - Tor Onion Addresses: /etc/shadenet/onion_addresses.txt"
-echo "   - Backup Timer: Daily @ 03:00 UTC -> backup-host"
+echo " ✓ Institutional Production Stack Successfully Deployed!"
+echo "======================================================================"
+echo " • Single Ingress Ports:  80/tcp, 443/tcp (Caddy), 51820/udp (WireGuard)"
+echo " • Closed to Internet:    SSH (22), Postgres (5432), Synapse (8008), Monero RPC"
+echo " • Management VPN:        203.0.113.1 (WireGuard)"
+echo "   - Operator Laptop Conf: /srv/shadenet/config/wireguard/clients/operator-laptop.conf"
+echo "   - Operator Phone Conf:  /srv/shadenet/config/wireguard/clients/operator-phone.conf"
+echo "   - View Phone QR Code:   shadenet-ctl vpn-qr"
+echo " • Encryption at Rest:    LUKS2 AES-XTS on /srv/shadenet/data"
+echo " • Privacy DNS Resolver:  203.0.113.1:53 (Unbound DoT to Quad9/Cloudflare)"
+echo " • Automated Repairs:     Active via autoheal + shadenet-repair.timer (3 min)"
+echo " • Master CLI Utility:     Run 'shadenet-ctl status' or 'shadenet-ctl logs <svc>'"
+echo " • Matrix Admin Setup:     shadenet-ctl matrix-create-admin <username> <password>"
 echo "======================================================================"
