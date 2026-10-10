@@ -53,6 +53,7 @@ from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
 from shadenet.zkp import create_age_challenge, verify_age_proof, validate_age_token, require_zkp_gate
+from shadenet.nightcal.ical import build_ical, feed_etags
 from shadenet.nightcal.venue_edits import add_blurb, add_event, claim, get_overlay, update_info
 from shadenet.chat import (
     DOMAIN as CHAT_DOMAIN,
@@ -389,6 +390,46 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/catalog.json":
             self._send(200, (STATIC / "catalog.json").read_bytes(), "application/json; charset=utf-8")
+            return
+
+        # ======================================================================
+        # iCal feed (Task 5.5): RFC 5545, stable UID, cached, cancelled-aware.
+        # ======================================================================
+        if path == "/ical":
+            store = open_store(_db_path())
+            try:
+                result = list_events(store, {})
+                events = result["events"]
+            finally:
+                store.close()
+            body = build_ical(None, events)
+            etag, lm = feed_etags(events).values()
+            self._send(
+                200,
+                body.encode("utf-8"),
+                "text/calendar; charset=utf-8",
+                cache_control="public, max-age=0, no-cache",
+                extra_headers={"ETag": etag, "Last-Modified": lm, "Content-Disposition": 'attachment; filename="nightcal.ical"'},
+            )
+            return
+
+        if path.startswith("/ical/space/"):
+            space_id = path.split("/", 2)[2]
+            store = open_store(_db_path())
+            try:
+                result = list_events(store, {"venueId": space_id})
+                events = result["events"]
+            finally:
+                store.close()
+            body = build_ical(space_id, events)
+            etag, lm = feed_etags(events).values()
+            self._send(
+                200,
+                body.encode("utf-8"),
+                "text/calendar; charset=utf-8",
+                cache_control="public, max-age=0, no-cache",
+                extra_headers={"ETag": etag, "Last-Modified": lm, "Content-Disposition": f'attachment; filename="nightcal-{space_id}.ical"'},
+            )
             return
 
         # Static file resolution from WEB_DIR
