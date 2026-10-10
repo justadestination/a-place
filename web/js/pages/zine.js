@@ -5,7 +5,7 @@
 import { h, params, setParam } from "../core/dom.js";
 import "../core/theme.js";
 import { SITE } from "../core/site.js";
-import { loadZine, graphScene, NODE_TYPES } from "../data/graph.js";
+import { loadZine, graphScene, NODE_TYPES, neighbors } from "../data/graph.js";
 import { loadCalendar } from "../data/calendar.js";
 import { siteHeader } from "../../components/site-header/site-header.js";
 import { siteFooter } from "../../components/site-footer/site-footer.js";
@@ -16,7 +16,6 @@ import { zineCard, nodeTypeTag } from "../../components/zine-card/zine-card.js";
 const app = document.getElementById("app");
 const [zine, calendar] = await Promise.all([loadZine(), loadCalendar()]);
 const graph = graphScene(zine, { dims: 2 });
-const q = params();
 const q = params();
 let view = q.get("view") || "read"; // "read" (default editorial) | "map" | "list"
 let current = graph.byId.has(q.get("node")) ? q.get("node") : "";
@@ -45,9 +44,7 @@ const reader = h("div.nc-zine__reader", { "aria-live": "polite" });
 
 // Entity Pods Dock (Shows related entities floating around current node)
 const entityPods = h("aside.nc-zine__pods", { "aria-label": "Connected Entity Pods" });
-const readLayout = h("div.nc-zine__read-layout", {
-  style: "display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: var(--nc-space-6); align-items: start;"
-}, reader, entityPods);
+const readLayout = h("div.nc-zine__read-layout", {}, reader, entityPods);
 
 const mapView = h("div.nc-zine__layout", {}, map);
 const listView = h("div.nc-zine__list", {});
@@ -62,13 +59,26 @@ function drawList() {
     h("ul.nc-zine__cards", { role: "list" }, ns.map(n => h("li", {}, zineCard(n)))))));
 }
 
+function updatePods(node) {
+  entityPods.replaceChildren();
+  const near = [...neighbors(graph, node.id)].map(n => graph.byId.get(n)).filter(Boolean);
+  if (!near.length) return;
+  entityPods.append(
+    h("h2.nc-zine__sub", { style: "font-size: var(--nc-font-size-sm); text-transform: uppercase; letter-spacing: var(--nc-font-tracking-caps); color: var(--nc-color-text-muted); margin-bottom: var(--nc-space-3);" }, `Connected (${near.length})`),
+    h("ul", { role: "list", style: "display: grid; gap: var(--nc-space-2); list-style: none; padding: 0; margin: 0;" },
+      near.map(n => h("li", {}, zineCard(n, { level: 3 })))
+    )
+  );
+}
+
 function read(id, { focus = true, push = true } = {}) {
   const node = graph.byId.get(id);
   if (!node) return;
   current = id;
   if (push) setParam("node", id, { replace: false });
-  if (view === "list") setView("map", { push: false });
+  if (view === "list") setView("read", { push: false });
   reader.replaceChildren(zineReader(node, { graph, calendar }));
+  updatePods(node);
   map.select(id);
   document.title = `${node.title} — ${SITE.zineName} zine`;
   if (focus) {
@@ -80,11 +90,19 @@ function read(id, { focus = true, push = true } = {}) {
 
 function setView(v, { push = true } = {}) {
   view = v;
+  readLayout.hidden = v !== "read";
   mapView.hidden = v !== "map";
   listView.hidden = v !== "list";
+
+  if (v === "read") {
+    if (reader.parentElement !== readLayout) readLayout.prepend(reader);
+  } else if (v === "map") {
+    if (reader.parentElement !== mapView) mapView.append(reader);
+  }
+
   if (v === "list" && !listView.childElementCount) drawList();
   viewSwitch.querySelectorAll("input").forEach(i => { i.checked = i.value === v; });
-  if (push) setParam("view", v === "list" ? "" + v : "");
+  if (push) setParam("view", v === "read" ? "" : v);
 }
 
 main.addEventListener("nc-select", e => { if (e.detail.kind === "node") read(e.detail.id); });

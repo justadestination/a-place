@@ -544,8 +544,10 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 .nc-zine__group { display: grid; gap: var(--nc-space-3); }
 .nc-zine__group h2 { font-size: var(--nc-font-size-xl); }
 .nc-zine__cards { display: grid; gap: var(--nc-space-3); margin: 0; padding: 0; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+.nc-zine__read-layout { display: grid; gap: var(--nc-space-6); align-items: start; }
 @container (min-width: 64rem) {
   .nc-zine__layout { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .nc-zine__read-layout { grid-template-columns: minmax(0, 3fr) minmax(0, 1.2fr); }
   .nc-zine__reader { position: sticky; top: var(--nc-space-4); max-height: calc(100vh - 2 * var(--nc-space-4)); overflow: auto; padding-inline-end: var(--nc-space-2); }
 }
 
