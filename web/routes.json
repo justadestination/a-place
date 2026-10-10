@@ -19,7 +19,7 @@
     },
     {
       "path": "/zine/",
-      "title": "AVR+JIT — the NightCal zine",
+      "title": "Umwelt Horizons — the NightCal zine",
       "description": "Reviews, articles and letters about downtown nights, mapped as a graph of the rooms and shows they talk about.",
       "module": "js/pages/zine.js",
       "og": "zine",
@@ -90,6 +90,48 @@
       "module": "js/pages/landing.js",
       "og": "landing-c",
       "variant": "c"
+    },
+    {
+      "path": "/market/",
+      "title": "Community Listings — Serendipilyst",
+      "description": "Patron and venue community listings for music gear, backstage crew, lost & found, and nightlife services.",
+      "module": "js/pages/market.js",
+      "og": "calendar"
+    },
+    {
+      "path": "/about/",
+      "title": "About Us — NightCal & ShadeNet",
+      "description": "About NightCal, the autonomous AI-curated nightlife directory, Umwelt Horizons zine, and the ShadeNet protocol.",
+      "module": "js/pages/about.js",
+      "og": "system"
+    },
+    {
+      "path": "/how-it-works/",
+      "title": "How It Works — NightCal, Umwelt & Steward",
+      "description": "How our zero-knowledge 21+ age verification, personal steward, AI newsroom, and local self-hosting nodes work.",
+      "module": "js/pages/how-it-works.js",
+      "og": "system"
+    },
+    {
+      "path": "/terms/",
+      "title": "Terms & Conditions — NightCal & ShadeNet",
+      "description": "Terms of use, patron guidelines, 21+ requirements for interactive participation, and data licensing.",
+      "module": "js/pages/terms.js",
+      "og": "system"
+    },
+    {
+      "path": "/privacy/",
+      "title": "Privacy Policy — NightCal & ShadeNet",
+      "description": "Zero tracking cookies, local storage only, client-side zero-knowledge proofs, and zero personal data harvesting.",
+      "module": "js/pages/privacy.js",
+      "og": "system"
+    },
+    {
+      "path": "/donate/",
+      "title": "Support & Donate — NightCal",
+      "description": "Support independent, decentralized nightlife journalism, open-source development, and local venue operations.",
+      "module": "js/pages/donate.js",
+      "og": "system"
     }
   ]
 }

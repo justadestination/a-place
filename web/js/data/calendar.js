@@ -68,6 +68,15 @@ export function isClosedVenue(v) {
   return false;
 }
 
+export function isChildrenEvent(e) {
+  if (!e) return false;
+  const title = (e.title || "").toLowerCase();
+  const cats = (e.categories || []).map(c => String(c).toLowerCase());
+  if (cats.includes("family friendly") || cats.includes("children") || cats.includes("kids")) return true;
+  if (/children|toddler|winnie the pooh|kids theater|youth theater/i.test(title)) return true;
+  return false;
+}
+
 /** Pure: raw server model -> CalendarModel. Exported for tests and the 3D page. */
 export function normalize(raw, source = "live", { today: overrideToday } = {}) {
   const closedVenueIds = new Set();
@@ -88,7 +97,7 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
     }));
   const venuesById = new Map(venues.map(v => [v.id, v]));
   const events = (raw.events || [])
-    .filter(e => !e.suppressed && e.date && !closedVenueIds.has(e.venueId))
+    .filter(e => !e.suppressed && e.date && !closedVenueIds.has(e.venueId) && !isChildrenEvent(e))
     .map(e => {
       const kind = KINDS[e.kind] ? e.kind : "other";
       const meta = KINDS[kind];

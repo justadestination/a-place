@@ -12,6 +12,12 @@
   <url><loc>https://nightcal.example.org/landing/a/</loc></url>
   <url><loc>https://nightcal.example.org/landing/b/</loc></url>
   <url><loc>https://nightcal.example.org/landing/c/</loc></url>
+  <url><loc>https://nightcal.example.org/market/</loc></url>
+  <url><loc>https://nightcal.example.org/about/</loc></url>
+  <url><loc>https://nightcal.example.org/how-it-works/</loc></url>
+  <url><loc>https://nightcal.example.org/terms/</loc></url>
+  <url><loc>https://nightcal.example.org/privacy/</loc></url>
+  <url><loc>https://nightcal.example.org/donate/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-02/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-03/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-04/</loc></url>

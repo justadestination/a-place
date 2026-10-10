@@ -17,6 +17,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -62,7 +63,7 @@ def test_registry_tasks_metadata(test_registry):
 def test_scraper_supervision_healthy():
     healthy_status = {
         "status": "idle",
-        "last_run": "2026-10-09T06:00:00Z",
+        "last_run": datetime.now(timezone.utc).isoformat(),
         "venues_scraped": 48,
         "spots_discovered": 172,
         "error_count": 0,

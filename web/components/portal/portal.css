@@ -127,3 +127,30 @@
   border-left: 3px solid var(--nc-color-accent);
   margin: var(--nc-space-2) 0;
 }
+
+:xr-overlay {
+  background: transparent !important;
+}
+
+.nc-xr-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: transparent !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--nc-space-4);
+  z-index: 99999;
+}
+
+.nc-xr-card {
+  pointer-events: auto;
+  background: rgba(18, 18, 20, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--nc-color-accent, #E5A93C);
+  border-radius: var(--nc-radius-lg);
+  padding: var(--nc-space-4);
+  color: #FFFFFF;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}

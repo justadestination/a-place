@@ -5,6 +5,8 @@ import { shareButton } from "../share-button/share-button.js";
 import { label, relative } from "../../js/data/dates.js";
 import { shareUrl } from "../../js/core/share.js";
 
+import { isStewardActive, openStewardDrawer } from "../steward-drawer/steward-drawer.js";
+
 let uid = 0;
 const timeRange = e => e.timeDisplay || e.localizedTime || [e.start, e.end].filter(Boolean).join(" – ");
 
@@ -33,7 +35,12 @@ export function billboardScale(bodies, { minSize = 1.0, maxSize = 1.75, k = 0.08
  */
 export function eventCard(event, { venue, level = 2, today, showImage = true, shareHref } = {}) {
   const id = `nc-event-${++uid}`;
-  const bodies = Math.max(0, Number(event.bodies ?? event.up ?? 0));
+  let bodies = Math.max(0, Number(event.bodies ?? event.up ?? 0));
+  const userVotedKey = `nc_tally_${event.id}`;
+  let hasUserVoted = typeof localStorage !== "undefined" && localStorage.getItem(userVotedKey) === "1";
+  if (hasUserVoted) {
+    bodies = Math.max(bodies, 1);
+  }
   const scale = billboardScale(bodies);
   const scaleStr = scale.toFixed(3);
   const lineup = event.performers.filter(p => p.toLowerCase() !== event.title.toLowerCase());
@@ -53,9 +60,71 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
     ? h("div.nc-event-card__media", {}, h("img", { src: event.image, alt: `Listing image for ${event.title}`, loading: "lazy", decoding: "async", width: 640, height: 360 }))
     : null;
 
-  const gauge = h("span.nc-event-card__gauge", { "aria-label": `${bodies} intended attendance` },
-    h("span.nc-event-card__gauge-count", {}, `${bodies}`),
-    h("span.nc-event-card__gauge-label", {}, ` ${bodies === 1 ? "body" : "bodies"}`),
+  const countSpan = h("span.nc-event-card__gauge-count", {}, String(bodies));
+  const labelSpan = h("span.nc-event-card__gauge-label", {}, ` ${bodies === 1 ? "body" : "bodies"}`);
+
+  const updateVoteDisplay = () => {
+    countSpan.textContent = String(bodies);
+    labelSpan.textContent = ` ${bodies === 1 ? "body" : "bodies"}`;
+    if (btnPlus) btnPlus.className = `nc-button ${hasUserVoted ? "nc-button--primary" : "nc-button--ghost"}`;
+    if (btnMinus) {
+      if (hasUserVoted) btnMinus.removeAttribute("disabled");
+      else btnMinus.setAttribute("disabled", "true");
+    }
+  };
+
+  const btnPlus = button({
+    label: "+1",
+    variant: hasUserVoted ? "primary" : "ghost",
+    attrs: {
+      title: "Add +1 intended attendance (Steward required)",
+      "aria-label": `Add 1 to attendance for ${event.title}`,
+      style: "padding: 2px 8px; font-size: 0.8rem; min-height: 26px; line-height: 1;",
+    },
+    onClick: (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isStewardActive()) {
+        openStewardDrawer("Adding your intended attendance (+1) requires an active Personal Steward. Complete the quick 21+ verification to participate.");
+        return;
+      }
+      if (!hasUserVoted) {
+        hasUserVoted = true;
+        bodies += 1;
+        try { localStorage.setItem(userVotedKey, "1"); } catch {}
+        updateVoteDisplay();
+      }
+    }
+  });
+
+  const btnMinus = button({
+    label: "-1",
+    variant: "ghost",
+    attrs: {
+      title: "Retract intended attendance",
+      "aria-label": `Retract attendance for ${event.title}`,
+      disabled: hasUserVoted ? null : "true",
+      style: "padding: 2px 8px; font-size: 0.8rem; min-height: 26px; line-height: 1;",
+    },
+    onClick: (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isStewardActive()) {
+        openStewardDrawer("Modifying attendance tallies requires an active Personal Steward.");
+        return;
+      }
+      if (hasUserVoted) {
+        hasUserVoted = false;
+        bodies = Math.max(0, bodies - 1);
+        try { localStorage.removeItem(userVotedKey); } catch {}
+        updateVoteDisplay();
+      }
+    }
+  });
+
+  const gauge = h("div.nc-event-card__gauge-wrap", { style: "display: inline-flex; align-items: center; gap: 6px;" },
+    h("span.nc-event-card__gauge", { "aria-label": `${bodies} intended attendance` }, countSpan, labelSpan),
+    h("div.nc-event-card__tally-btns", { style: "display: inline-flex; gap: 3px;" }, btnPlus, btnMinus)
   );
 
   return h("article.nc-event-card", {

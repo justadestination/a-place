@@ -17,31 +17,42 @@ const app = document.getElementById("app");
 const [zine, calendar] = await Promise.all([loadZine(), loadCalendar()]);
 const graph = graphScene(zine, { dims: 2 });
 const q = params();
-let view = q.get("view") === "list" ? "list" : "map";
+const q = params();
+let view = q.get("view") || "read"; // "read" (default editorial) | "map" | "list"
 let current = graph.byId.has(q.get("node")) ? q.get("node") : "";
 
 const notes = graph.nodes.filter(n => n.html).length;
 const count = t => graph.nodes.filter(n => n.type === t).length;
 const intro = h("div.nc-zine__intro", {},
-  h("p.nc-eyebrow", {}, `The ${SITE.zineName} zine`),
-  h("h1.nc-h1", {}, "The zine, as a map"),
-  h("p.nc-lede", {}, `${notes} ${notes === 1 ? "piece" : "pieces"} of writing, ${count("event")} shows, ${count("venue")} rooms, and ${count("missing")} links still to be written. Pick any dot to read it.`),
+  h("p.nc-eyebrow", {},
+    h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
+    "Umwelt Horizons (The Zine)"
+  ),
+  h("h1.nc-h1", {}, "Editorial Dispatches & Field Dossiers"),
+  h("p.nc-lede", {}, `${notes} regional essays & dispatches, ${count("venue")} downtown rooms, and ${count("event")} scheduled shows. Pick an article to read below, or explore the entity map.`),
 );
 
 const viewSwitch = h("fieldset.nc-segmented", {},
-  h("legend.nc-label", {}, "View"),
-  h("div.nc-segmented__options", {}, [["map", "Map"], ["list", "List"]].map(([v, t]) =>
+  h("legend.nc-label", {}, "View Mode"),
+  h("div.nc-segmented__options", {}, [["read", "Read Dispatch"], ["map", "Entity Map"], ["list", "Index"]].map(([v, t]) =>
     h("label.nc-segmented__option", {}, h("input", { type: "radio", name: "zine-view", value: v, checked: v === view }), h("span", {}, t)))),
 );
 const legend = h("ul.nc-zine__legend", { role: "list", "aria-label": "Legend" },
   Object.keys(NODE_TYPES).filter(t => graph.nodes.some(n => n.type === t)).map(t => h("li", {}, nodeTypeTag(t))));
 
-const map = nodeMap(graph, { selectedId: current, label: `${SITE.zineName} zine map` });
+const map = nodeMap(graph, { selectedId: current, label: "Umwelt Horizons entity graph" });
 const reader = h("div.nc-zine__reader", { "aria-live": "polite" });
-const mapView = h("div.nc-zine__layout", {}, map, reader);
+
+// Entity Pods Dock (Shows related entities floating around current node)
+const entityPods = h("aside.nc-zine__pods", { "aria-label": "Connected Entity Pods" });
+const readLayout = h("div.nc-zine__read-layout", {
+  style: "display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 320px); gap: var(--nc-space-6); align-items: start;"
+}, reader, entityPods);
+
+const mapView = h("div.nc-zine__layout", {}, map);
 const listView = h("div.nc-zine__list", {});
 const main = h("main.nc-container.nc-page.nc-zine", { id: "main", tabindex: "-1" },
-  intro, h("div.nc-zine__bar", {}, legend, viewSwitch), mapView, listView);
+  intro, h("div.nc-zine__bar", {}, legend, viewSwitch), readLayout, mapView, listView);
 app.replaceChildren(siteHeader(), main, siteFooter({ notes: calendar.notes, source: calendar.source }));
 
 function drawList() {

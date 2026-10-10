@@ -64,20 +64,97 @@ function drawWeek() {
   week.replaceChildren(calendarWeek(weekScene(model, state), { noun: noun() }));
 }
 import { hubLayout } from "../../components/hub-layout/hub-layout.js";
+import { roadTimeline } from "../../components/road-timeline/road-timeline.js";
 
 function drawAgenda() {
   const day = dayScene(model, state);
   const filtered = filterEvents(model, state);
   const next = day.events.length ? "" : nextDateWithEvents(filtered, addDays(state.date, 1));
-  const heroAgenda = dayAgenda(day, { today: model.today, noun: noun(), level: 1 });
-  if (next) heroAgenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
-  
+  const standardAgenda = dayAgenda(day, { today: model.today, noun: noun(), level: 1 });
+  if (next) standardAgenda.append(h("div.nc-cal__next", {}, dayAgenda(dayScene(model, { ...state, date: next }), { today: model.today, noun: noun(), level: 2 })));
+
+  const roadView = h("section.nc-cal__road-wrap", {},
+    h("header.nc-cal__road-header", { style: "margin-bottom: 1rem;" },
+      h("h2.nc-h2", {}, "Road Timeline Perspective"),
+      h("p.nc-muted", {}, "Chronological distance with attendance-scaled billboard sizes")
+    ),
+    roadTimeline(day.events, { today: model.today, level: 2, showImage: true })
+  );
+
+  let currentView = state.viewMode || "compare";
+
+  const viewSwitcher = h("div.nc-pill-group.nc-cal__view-switch", { style: "display: inline-flex; gap: 6px; margin-bottom: 1.5rem;" },
+    h("button.nc-button", {
+      type: "button",
+      class: `nc-button ${currentView === "compare" ? "nc-button--primary" : "nc-button--ghost"}`,
+      onclick: () => { state.viewMode = "compare"; drawAgenda(); }
+    }, "Side-by-Side Compare"),
+    h("button.nc-button", {
+      type: "button",
+      class: `nc-button ${currentView === "agenda" ? "nc-button--primary" : "nc-button--ghost"}`,
+      onclick: () => { state.viewMode = "agenda"; drawAgenda(); }
+    }, "Agenda Grid"),
+    h("button.nc-button", {
+      type: "button",
+      class: `nc-button ${currentView === "road" ? "nc-button--primary" : "nc-button--ghost"}`,
+      onclick: () => { state.viewMode = "road"; drawAgenda(); }
+    }, "Road Timeline")
+  );
+
+  let heroNode = null;
+  if (currentView === "compare") {
+    heroNode = h("div.nc-cal__compare-container", {},
+      viewSwitcher,
+      h("div.nc-cal__compare-grid", {
+        style: "display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: var(--nc-space-6); align-items: start;"
+      },
+        h("div.nc-cal__compare-col", {},
+          h("div.nc-badge", { style: "margin-bottom: 8px; display: inline-block;" }, "Standard Daily Agenda"),
+          standardAgenda
+        ),
+        h("div.nc-cal__compare-col", {},
+          h("div.nc-badge", { style: "margin-bottom: 8px; display: inline-block;" }, "Road Perspective (Time + Bodies)"),
+          roadView
+        )
+      )
+    );
+  } else if (currentView === "road") {
+    heroNode = h("div.nc-cal__single-view", {}, viewSwitcher, roadView);
+  } else {
+    heroNode = h("div.nc-cal__single-view", {}, viewSwitcher, standardAgenda);
+  }
+
+  const showCount = day.events.length;
+  const venuesSet = new Set(day.events.map(e => e.venueName).filter(Boolean));
+  const summaryText = showCount > 0
+    ? `Tonight in downtown Santa Rosa: ${showCount} scheduled show${showCount === 1 ? "" : "s"} across ${venuesSet.size} room${venuesSet.size === 1 ? "" : "s"} (${Array.from(venuesSet).slice(0, 3).join(", ")}).`
+    : `No shows listed downtown for ${label.long(state.date)}.`;
+
   agenda.replaceChildren(hubLayout({
-    heroNode: heroAgenda,
-    zine: null,
-    summary: null,
-    inbox: null,
-    market: null,
+    heroNode,
+    zine: {
+      title: "A Machine with No Thoughts Would Like a Word",
+      excerpt: "I'm the loom. I made the lace your great-grandmother was married in... An automation cannot be surprised. Not won't: can't.",
+      url: "/zine/?node=note:a-machine-with-no-thoughts"
+    },
+    summary: {
+      headline: "Downtown Rundown",
+      text: summaryText,
+      url: `/today/?date=${state.date}`
+    },
+    inbox: {
+      summary: "Steward pacing active for Santa Rosa. All dispatches up to date.",
+      items: [
+        { from: "Downtown Steward", text: `Lineup monitoring active for ${venuesSet.size || 6} downtown rooms.` }
+      ]
+    },
+    market: {
+      items: [
+        { title: "Vintage Sansui Tube Amp", desc: "Working condition. In-person cash trade downtown." },
+        { title: "Carpool to San Francisco SFJAZZ", desc: "Leaving 4th St Friday 5:30pm, 2 spots open." },
+        { title: "Analog Synth Jam & Patch Exchange", desc: "Sunday afternoon meetup at Arlene Francis." }
+      ]
+    }
   }));
   document.title = `${relative(state.date, model.today)} — ${SITE.name}, ${SITE.place}`;
 }
@@ -157,7 +234,6 @@ monthSlot.addEventListener("nc-select", e => {
   if (e.detail.kind !== "day") return;
   selectDate(e.detail.date);
   drawMonth(e.detail.date);
-  agenda.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
 });
 monthSlot.addEventListener("nc-shift", e => {
   const [y, m] = state.month.split("-").map(Number);

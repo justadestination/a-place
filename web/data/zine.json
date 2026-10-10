@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-10-10T02:53:25+00:00",
+ "generatedAt": "2026-10-10T07:47:09+00:00",
  "vault": "shadenet/horizon/vault",
  "nodes": [
   {
@@ -224,16 +224,6 @@
    "date": "2026-10-23",
    "summary": "2026-10-23 · 8:00 pm · Barrel Proof Lounge",
    "kind": "music"
-  },
-  {
-   "id": "event:evt_8f78045a33c38e37",
-   "slug": "evt_8f78045a33c38e37",
-   "type": "event",
-   "title": "A Theater for Children Presents: Winnie the Pooh",
-   "ref": "evt_8f78045a33c38e37",
-   "date": "2026-10-30",
-   "summary": "2026-10-30",
-   "kind": "show"
   },
   {
    "id": "event:evt_16c91131588a948d",

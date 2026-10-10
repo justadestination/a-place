@@ -2,11 +2,18 @@ import { h } from "../../js/core/dom.js";
 import { SITE } from "../../js/core/site.js";
 
 /**
- * Footer: the data notes the old page printed above the calendar (status,
- * closures, attribution) live here, behind one "About this data" disclosure.
- * OpenStreetMap attribution stays visible because the licence requires it.
+ * Footer:
+ *   - ShadeNet logo watermark centered above footer
+ *   - "About this data" disclosure
+ *   - OpenStreetMap attribution
+ *   - Primary links: About Us · How It Works · T&C · Privacy · iCal Feed · Donate
+ *   - AI statement: "Yes, we use AI. Site features work by Gemini, Claude, Hermes, Grok, Muse, and ChatGPT."
  */
 export function siteFooter({ notes = {}, source = "live" } = {}) {
+  const watermark = h("div.nc-site-footer__watermark", { "aria-hidden": "true" },
+    h("img", { src: "/assets/brand/shadenet-accent.png", alt: "", width: "96", height: "96" })
+  );
+
   const about = h("details.nc-site-footer__about", {},
     h("summary", {}, "About this data"),
     h("div.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-3)" } },
@@ -15,18 +22,26 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
       source === "sample" ? h("p", {}, "The live listings service did not answer, so this page is showing a saved copy.") : null,
     ),
   );
+
   return h("footer.nc-site-footer", {},
+    watermark,
     h("div.nc-container.nc-site-footer__inner", {},
       about,
       h("p.nc-site-footer__attribution", {}, notes.attribution || "Rooms from OpenStreetMap contributors."),
-      h("nav", { "aria-label": "More" }, h("ul.nc-site-footer__links", { role: "list" },
-        h("li", {}, h("a", { href: "/system/#embeds" }, "Embed on your site")),
-        h("li", {}, h("a", { href: "/print/" }, "Print simulator")),
-        h("li", {}, h("a", { href: "/brand/" }, "Brand assets")),
-        h("li", {}, h("a", { href: "/3d/" }, "AR preview")),
-        h("li", {}, h("a", { href: "/system/" }, "Design system")),
-      )),
-      h("p.nc-site-footer__name", {}, `${SITE.name} · ${SITE.place}`),
+      h("nav", { "aria-label": "Information and Policy" },
+        h("ul.nc-site-footer__links", { role: "list" },
+          h("li", {}, h("a", { href: "/about/" }, "About Us")),
+          h("li", {}, h("a", { href: "/how-it-works/" }, "How It Works")),
+          h("li", {}, h("a", { href: "/terms/" }, "Terms & Conditions")),
+          h("li", {}, h("a", { href: "/privacy/" }, "Privacy")),
+          h("li", {}, h("a", { href: "/calendar/feed.ics" }, "iCal Feed")),
+          h("li", {}, h("a", { href: "/donate/" }, "Support & Donate")),
+        )
+      ),
+      h("div.nc-site-footer__meta", {},
+        h("p.nc-site-footer__ai-notice", {}, "Yes, we use AI. Site features work by Gemini, Claude, Hermes, Grok, Muse, and ChatGPT."),
+        h("p.nc-site-footer__name", {}, `${SITE.name} · ${SITE.place}`)
+      )
     ),
   );
 }
@@ -34,7 +49,7 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
 export const meta = {
   name: "site-footer",
   title: "Site footer",
-  summary: "About this data (status, closures), the required OpenStreetMap attribution, and secondary links.",
+  summary: "ShadeNet watermark, data disclosure, About/How/Terms/Privacy links, and AI attribution statement.",
   params: {},
 };
 

@@ -7,6 +7,8 @@ import { shareButton } from "../share-button/share-button.js";
 import { correctionsUI, getCorrections } from "../corrections/corrections.js";
 import { typeOf, graphScene, neighbors } from "../../js/data/graph.js";
 import { label } from "../../js/data/dates.js";
+import { button } from "../button/button.js";
+import { isStewardActive, openStewardDrawer } from "../steward-drawer/steward-drawer.js";
 
 let uid = 0;
 
@@ -60,6 +62,76 @@ export function zineReader(node, { graph, calendar, level = 2 } = {}) {
     }
   }
   if (node.type !== "missing") {
+    // Reactions and Comments section (gated by Steward)
+    let likes = 14;
+    let dislikes = 1;
+    const reactionNotice = h("div.nc-reader__reaction-notice", { style: { display: "none", fontSize: "var(--nc-font-size-sm)", color: "var(--nc-color-accent)", marginTop: "var(--nc-space-2)" } });
+
+    const likeBtn = button({
+      label: `👍 Helpful (${likes})`,
+      variant: "outline",
+      onClick: () => {
+        if (!isStewardActive()) {
+          openStewardDrawer("Reacting to or rating zine dispatches requires an active Steward and 21+ verification.");
+          return;
+        }
+        likes++;
+        likeBtn.textContent = `👍 Helpful (${likes})`;
+        reactionNotice.textContent = "Reaction recorded through your Personal Steward.";
+        reactionNotice.style.display = "block";
+      }
+    });
+
+    const dislikeBtn = button({
+      label: `👎 Disputed (${dislikes})`,
+      variant: "outline",
+      onClick: () => {
+        if (!isStewardActive()) {
+          openStewardDrawer("Reacting to or rating zine dispatches requires an active Steward and 21+ verification.");
+          return;
+        }
+        dislikes++;
+        dislikeBtn.textContent = `👎 Disputed (${dislikes})`;
+        reactionNotice.textContent = "Dispute note recorded for editorial calibration.";
+        reactionNotice.style.display = "block";
+      }
+    });
+
+    const letterBtn = button({
+      label: "✉️ Write Letter to Editor",
+      variant: "ghost",
+      onClick: () => {
+        if (!isStewardActive()) {
+          openStewardDrawer("Submitting letters to the editor requires an active Steward and 21+ verification.");
+          return;
+        }
+        const text = prompt(`Write letter to the editor regarding "${node.title}":`);
+        if (!text) return;
+        reactionNotice.textContent = "Your letter was queued for autonomous fact-checking and editor review.";
+        reactionNotice.style.display = "block";
+      }
+    });
+
+    const reactionBar = h("div.nc-stack", {
+      style: {
+        marginTop: "var(--nc-space-4)",
+        padding: "var(--nc-space-4)",
+        background: "var(--nc-color-surface)",
+        border: "1px solid var(--nc-color-border)",
+        borderRadius: "var(--nc-radius-md)",
+        gap: "var(--nc-space-2)"
+      }
+    },
+      h("p.nc-eyebrow", {}, "Dispatch Feedback & Reactions"),
+      h("div.nc-cluster", { style: { gap: "var(--nc-space-2)", flexWrap: "wrap" } },
+        likeBtn,
+        dislikeBtn,
+        letterBtn
+      ),
+      reactionNotice
+    );
+
+    root.append(reactionBar);
     root.append(correctionsUI(node.id, { level: level + 1 }));
     root.append(h("div.nc-reader__actions", {}, shareButton({ title: node.title, text: `${t.label}: ${node.title}`, url })));
   }

@@ -527,7 +527,7 @@
       "title": "A Theater for Children Presents: Winnie the Pooh",
       "startsAt": "",
       "endsAt": "",
-      "suppressed": false,
+      "suppressed": true,
       "venue": "",
       "venueId": "",
       "date": "2026-10-30",

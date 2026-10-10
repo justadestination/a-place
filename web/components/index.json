@@ -125,7 +125,7 @@
   {
     "name": "hub-inbox",
     "title": "Hub inbox slot",
-    "summary": "Inbox snapshot slot for the hub index. Independently frameable.",
+    "summary": "Inbox snapshot slot: Steward Inbox eyebrow, Boxes & Thoughts title.",
     "params": {
       "count": "number of items to mock (default 0)"
     },
@@ -255,14 +255,14 @@
   {
     "name": "site-footer",
     "title": "Site footer",
-    "summary": "About this data (status, closures), the required OpenStreetMap attribution, and secondary links.",
+    "summary": "ShadeNet watermark, data disclosure, About/How/Terms/Privacy links, and AI attribution statement.",
     "params": {},
     "readme": true
   },
   {
     "name": "site-header",
     "title": "Site header",
-    "summary": "Wordmark, Calendar and Zine links, and the Display settings disclosure. Page chrome only.",
+    "summary": "Tri-surface top nav (NightCal, Umwelt Horizons, Serendipilyst) and ShadeNet core toolbar.",
     "params": {},
     "readme": true
   },
