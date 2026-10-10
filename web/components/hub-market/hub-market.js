@@ -10,7 +10,7 @@ export function hubMarket(market = null, { level = 2 } = {}) {
   if (!market || !market.items || market.items.length === 0) {
     container.append(
       h("header.nc-hub-slot__header", {},
-        h("p.nc-eyebrow", {}, "Serendipilyst"),
+        h("p.nc-eyebrow", {}, h("img", { src: "/assets/brand/serendipilyst-accent.png", alt: "", width: "16", height: "16", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }), "Serendipilyst"),
         h(`h${level}.nc-hub-slot__title`, {}, "Community Market"),
       ),
       h("p.nc-hub-slot__empty", {}, "No active market exposures. Post an anonymous flag downtown.")

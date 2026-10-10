@@ -22,6 +22,7 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
       h("nav", { "aria-label": "More" }, h("ul.nc-site-footer__links", { role: "list" },
         h("li", {}, h("a", { href: "/system/#embeds" }, "Embed on your site")),
         h("li", {}, h("a", { href: "/print/" }, "Print simulator")),
+        h("li", {}, h("a", { href: "/brand/" }, "Brand assets")),
         h("li", {}, h("a", { href: "/3d/" }, "AR preview")),
         h("li", {}, h("a", { href: "/system/" }, "Design system")),
       )),

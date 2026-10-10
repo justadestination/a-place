@@ -55,6 +55,13 @@ def generate_marker_card(
     draw.text((40, 45), "UMWELT HORIZONS · PHYSICAL PRINT PORTAL", fill="#736E65")
     draw.text((40, 75), title, fill="#121214")
 
+    # Brand emblem
+    nc_logo_path = ROOT / "web" / "assets" / "brand" / "nightcal-dark.png"
+    if nc_logo_path.exists():
+        nc_logo = Image.open(nc_logo_path).convert("RGBA")
+        nc_logo.thumbnail((55, 55), Image.Resampling.LANCZOS)
+        card.paste(nc_logo, (width - 85, 45), nc_logo)
+
     # Corner registration marks
     reg_len = 16
     for x, y in [(40, 130), (width - 40, 130), (40, 600), (width - 40, 600)]:
@@ -89,7 +96,16 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
 
     # Masthead
     draw.rectangle([40, 40, page_w - 40, 44], fill="#121214")
-    draw.text((50, 55), "UMWELT HORIZONS", fill="#121214")
+    
+    uh_logo_path = ROOT / "web" / "assets" / "brand" / "uh-dark.png"
+    if uh_logo_path.exists():
+        uh_logo = Image.open(uh_logo_path).convert("RGBA")
+        uh_logo.thumbnail((90, 58), Image.Resampling.LANCZOS)
+        page.paste(uh_logo, (50, 50), uh_logo)
+        draw.text((155, 62), "UMWELT HORIZONS", fill="#121214")
+    else:
+        draw.text((50, 55), "UMWELT HORIZONS", fill="#121214")
+
     draw.text((page_w - 420, 65), "ISSUE NO. 42 · SANTA ROSA, CA · FALL 2026", fill="#736E65")
     draw.rectangle([40, 115, page_w - 40, 118], fill="#121214")
 
@@ -184,7 +200,16 @@ def generate_full_zine_print_sheet(out_png: Path) -> None:
 
     # Footer
     draw.rectangle([40, page_h - 70, page_w - 40, page_h - 68], fill="#121214")
-    draw.text((50, page_h - 55), "Printed by ShadeNet Autonomous Dispatcher · Downtown Santa Rosa Open Public Gazetteer", fill="#736E65")
+    
+    sn_logo_path = ROOT / "web" / "assets" / "brand" / "shadenet-dark.png"
+    if sn_logo_path.exists():
+        sn_logo = Image.open(sn_logo_path).convert("RGBA")
+        sn_logo.thumbnail((42, 42), Image.Resampling.LANCZOS)
+        page.paste(sn_logo, (50, page_h - 64), sn_logo)
+        draw.text((105, page_h - 55), "Printed by ShadeNet Autonomous Dispatcher · Downtown Santa Rosa Open Public Gazetteer", fill="#736E65")
+    else:
+        draw.text((50, page_h - 55), "Printed by ShadeNet Autonomous Dispatcher · Downtown Santa Rosa Open Public Gazetteer", fill="#736E65")
+
     draw.text((page_w - 380, page_h - 55), "ONLINE AT SHADY.example.org", fill="#121214")
 
     page.save(out_png, "PNG")

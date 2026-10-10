@@ -10,13 +10,23 @@
   padding-block: var(--nc-space-3);
 }
 .nc-wordmark {
-  display: grid;
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
   min-height: var(--nc-size-target);
-  align-content: center;
   margin-inline-end: auto;
   color: var(--nc-color-text);
   text-decoration: none;
   line-height: 1.1;
+}
+.nc-wordmark__text {
+  display: grid;
+}
+.nc-wordmark__icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .nc-wordmark__name { font-size: var(--nc-font-size-xl); font-weight: var(--nc-font-weight-heavy); letter-spacing: var(--nc-font-tracking-tight); }
 .nc-wordmark__place { font-size: var(--nc-font-size-sm); color: var(--nc-color-text-muted); font-weight: var(--nc-font-weight-medium); }

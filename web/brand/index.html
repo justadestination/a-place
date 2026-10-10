@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brand Identity & Logos — ShadeNet & NightCal</title>
+<meta name="description" content="Official vector logos and identity marks for NightCal, Serendipilyst, ShadeNet, and Umwelt Horizons.">
+<link rel="canonical" href="https://nightcal.example.org/brand/">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/components/site-header/site-header.css">
+<link rel="stylesheet" href="/components/site-footer/site-footer.css">
+<style>
+.nc-brand-page {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: var(--nc-space-6) var(--nc-space-4) var(--nc-space-8);
+}
+.nc-brand-hero {
+  border-bottom: 1px solid var(--nc-color-border);
+  padding-block-end: var(--nc-space-5);
+  margin-block-end: var(--nc-space-6);
+}
+.nc-brand-eyebrow {
+  display: block;
+  font-size: var(--nc-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nc-color-accent);
+  font-weight: 700;
+  margin-block-end: var(--nc-space-1);
+}
+.nc-brand-title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--nc-space-2);
+  color: var(--nc-color-text);
+}
+.nc-brand-subtitle {
+  font-size: var(--nc-font-size-md);
+  color: var(--nc-color-text-muted);
+  max-width: 750px;
+  line-height: 1.5;
+  margin: 0;
+}
+.nc-brand-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: var(--nc-space-6);
+}
+@media (max-width: 600px) {
+  .nc-brand-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.nc-brand-card {
+  background: var(--nc-color-surface);
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.nc-brand-preview {
+  height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nc-space-5);
+  position: relative;
+  transition: background 0.2s ease;
+}
+.nc-preview-dark {
+  background: #121214;
+}
+.nc-preview-light {
+  background: #FBFAF7;
+}
+.nc-preview-contrast {
+  background: #252422;
+}
+.nc-brand-logo-img {
+  max-height: 180px;
+  max-width: 80%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+}
+.nc-preview-light .nc-brand-logo-img {
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.08));
+}
+.nc-brand-info {
+  padding: var(--nc-space-5);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.nc-brand-name {
+  font-size: var(--nc-font-size-xl);
+  font-weight: 800;
+  margin: 0 0 var(--nc-space-1);
+  color: var(--nc-color-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nc-brand-role {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-block-end: var(--nc-space-3);
+}
+.nc-brand-desc {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--nc-space-4);
+  flex: 1;
+}
+.nc-brand-downloads {
+  display: flex;
+  gap: var(--nc-space-2);
+  flex-wrap: wrap;
+  padding-block-start: var(--nc-space-3);
+  border-top: 1px solid var(--nc-color-border);
+}
+.nc-download-btn {
+  padding: var(--nc-space-2) var(--nc-space-3);
+  border-radius: var(--nc-radius-md);
+  border: 1px solid var(--nc-color-border);
+  background: var(--nc-color-bg);
+  color: var(--nc-color-text);
+  font-size: var(--nc-font-size-xs);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nc-download-btn:hover {
+  border-color: var(--nc-color-accent);
+  background: var(--nc-color-surface);
+}
+.nc-bg-switch {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  background: rgba(0,0,0,0.4);
+  padding: 3px;
+  border-radius: 9999px;
+  backdrop-filter: blur(4px);
+}
+.nc-bg-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.3);
+  cursor: pointer;
+}
+.nc-bg-btn.btn-dark { background: #121214; }
+.nc-bg-btn.btn-light { background: #FBFAF7; }
+.nc-bg-btn.btn-accent { background: #FFC14D; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+import { h } from "/js/core/dom.js";
+import { siteHeader } from "/components/site-header/site-header.js";
+import { siteFooter } from "/components/site-footer/site-footer.js";
+
+const app = document.getElementById("app");
+
+const BRANDS = [
+  {
+    name: "NightCal",
+    role: "The Downtown Nightlife Platform",
+    accent: "#FFC14D",
+    desc: "The public nightlife calendar, spatial room graphs, and real-time listings aggregator for downtown Santa Rosa. Anchor platform connecting venues, performers, and night-owls.",
+    whitePng: "/assets/brand/nightcal-white.png",
+    darkPng: "/assets/brand/nightcal-dark.png",
+    accentPng: "/assets/brand/nightcal-accent.png",
+    origPng: "/assets/brand/NightCal.png",
+    svg: "/assets/brand/NightCal.svg",
+  },
+  {
+    name: "Serendipilyst",
+    role: "The Autonomous Exchange & Bulletin Board",
+    accent: "#68D391",
+    desc: "The serendipity discovery engine and community marketplace board. Handles anonymous classifieds, musician calls, gigs, gear exchange, and steward-paged notifications.",
+    whitePng: "/assets/brand/serendipilyst-white.png",
+    darkPng: "/assets/brand/serendipilyst-dark.png",
+    accentPng: "/assets/brand/serendipilyst-accent.png",
+    origPng: "/assets/brand/Serendipilyst.png",
+    svg: "/assets/brand/Serendipilyst.svg",
+  },
+  {
+    name: "ShadeNet",
+    role: "The Decentralized Mesh Daemon",
+    accent: "#63B3ED",
+    desc: "The autonomous dispatcher, peer-to-peer verification engine, and zero-knowledge privacy layer powering local cryptographic attendance proofs and distributed feeds.",
+    whitePng: "/assets/brand/shadenet-white.png",
+    darkPng: "/assets/brand/shadenet-dark.png",
+    accentPng: "/assets/brand/shadenet-accent.png",
+    origPng: "/assets/brand/ShadeNet.png",
+    svg: "/assets/brand/ShadeNet.svg",
+  },
+  {
+    name: "Umwelt Horizons",
+    role: "The Editorial Desk & Print Zine",
+    accent: "#F6AD55",
+    desc: "Downtown underground journalism, architectural reviews, acoustic threshold reporting, and the physical print-to-screen AR zine distributed to cafes and bars.",
+    whitePng: "/assets/brand/uh-white.png",
+    darkPng: "/assets/brand/uh-dark.png",
+    accentPng: "/assets/brand/uh-accent.png",
+    origPng: "/assets/brand/UH.png",
+    svg: "/assets/brand/UH.svg",
+  }
+];
+
+function renderPage() {
+  const container = h("main.nc-brand-page", { id: "main" });
+
+  const hero = h("section.nc-brand-hero", {},
+    h("span.nc-brand-eyebrow", {}, "Visual Identity & Design System"),
+    h("h1.nc-brand-title", {}, "Official Brand Assets"),
+    h("p.nc-brand-subtitle", {},
+      "High-resolution vector marks, alpha masks, and identity emblems for the four core entities of the ShadeNet ecosystem: NightCal, Serendipilyst, ShadeNet, and Umwelt Horizons."
+    )
+  );
+
+  const grid = h("section.nc-brand-grid", {},
+    ...BRANDS.map(brand => {
+      let currentMode = "dark"; // dark, light, accent
+
+      const img = h("img.nc-brand-logo-img", {
+        src: brand.whitePng,
+        alt: `${brand.name} official emblem`,
+      });
+
+      const preview = h("div.nc-brand-preview.nc-preview-dark", {},
+        img,
+        h("div.nc-bg-switch", {},
+          h("button.nc-bg-btn.btn-dark", {
+            type: "button",
+            title: "Dark Background (White Logo)",
+            onclick: () => {
+              preview.className = "nc-brand-preview nc-preview-dark";
+              img.src = brand.whitePng;
+            }
+          }),
+          h("button.nc-bg-btn.btn-light", {
+            type: "button",
+            title: "Light Background (Dark Logo)",
+            onclick: () => {
+              preview.className = "nc-brand-preview nc-preview-light";
+              img.src = brand.darkPng;
+            }
+          }),
+          h("button.nc-bg-btn.btn-accent", {
+            type: "button",
+            title: "Dark Background (Accent Logo)",
+            onclick: () => {
+              preview.className = "nc-brand-preview nc-preview-dark";
+              img.src = brand.accentPng;
+            }
+          })
+        )
+      );
+
+      const downloads = h("div.nc-brand-downloads", {},
+        h("a.nc-download-btn", { href: brand.svg, download: `${brand.name}.svg` }, "Vector SVG ↓"),
+        h("a.nc-download-btn", { href: brand.origPng, download: `${brand.name}-2048px.png` }, "High-Res PNG (2048px) ↓"),
+        h("a.nc-download-btn", { href: brand.whitePng, download: `${brand.name}-white.png` }, "White Mask ↓"),
+        h("a.nc-download-btn", { href: brand.darkPng, download: `${brand.name}-dark.png` }, "Dark Ink ↓")
+      );
+
+      const info = h("div.nc-brand-info", {},
+        h("div.nc-brand-name", {}, brand.name),
+        h("div.nc-brand-role", {}, brand.role),
+        h("p.nc-brand-desc", {}, brand.desc),
+        downloads
+      );
+
+      return h("article.nc-brand-card", {}, preview, info);
+    })
+  );
+
+  container.replaceChildren(hero, grid);
+  app.replaceChildren(siteHeader(), container, siteFooter());
+}
+
+renderPage();
+</script>
+</body>
+</html>
