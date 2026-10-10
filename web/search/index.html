@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Search — NightCal Santa Rosa</title>
+<meta name="description" content="Search downtown Santa Rosa events, venues, performers, and zine articles.">
+<link rel="canonical" href="https://nightcal.example.org/search/">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/components/site-header/site-header.css">
+<link rel="stylesheet" href="/components/site-footer/site-footer.css">
+<link rel="stylesheet" href="/components/search-dialog/search-dialog.css">
+<style>
+.nc-search-page {
+  padding-block: var(--nc-space-6);
+  max-width: 800px;
+  margin-inline: auto;
+}
+.nc-search-bar {
+  display: flex;
+  gap: var(--nc-space-2);
+  margin-block-end: var(--nc-space-4);
+}
+.nc-search-input {
+  flex: 1;
+  min-height: 48px;
+  padding: 0 var(--nc-space-4);
+  font-size: var(--nc-font-size-lg);
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  background: var(--nc-color-surface);
+  color: var(--nc-color-text);
+}
+.nc-search-pills {
+  display: flex;
+  gap: var(--nc-space-2);
+  flex-wrap: wrap;
+  margin-block-end: var(--nc-space-5);
+}
+.nc-filter-pill {
+  padding: var(--nc-space-1) var(--nc-space-3);
+  border-radius: var(--nc-radius-full, 9999px);
+  border: 1px solid var(--nc-color-border);
+  background: transparent;
+  color: var(--nc-color-text-muted);
+  cursor: pointer;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+.nc-filter-pill.is-active {
+  background: var(--nc-color-text);
+  color: var(--nc-color-bg);
+  border-color: var(--nc-color-text);
+}
+.nc-search-card {
+  padding: var(--nc-space-4);
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  margin-block-end: var(--nc-space-3);
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  background: var(--nc-color-surface);
+}
+.nc-search-card:hover {
+  border-color: var(--nc-color-accent);
+}
+.nc-search-badge {
+  font-size: var(--nc-font-size-xs);
+  text-transform: uppercase;
+  color: var(--nc-color-accent);
+  font-weight: 600;
+  margin-block-end: var(--nc-space-1);
+}
+.nc-search-card-title {
+  font-size: var(--nc-font-size-md);
+  font-weight: 600;
+  color: var(--nc-color-text);
+  margin: 0 0 var(--nc-space-1);
+}
+.nc-search-card-sub {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import { h } from "/js/core/dom.js";
+import { siteHeader } from "/components/site-header/site-header.js";
+import { siteFooter } from "/components/site-footer/site-footer.js";
+
+const app = document.getElementById("app");
+const qParam = new URLSearchParams(location.search).get("q") || "";
+
+const input = h("input.nc-search-input", {
+  type: "search",
+  placeholder: "Search downtown shows, spaces, artists...",
+  value: qParam,
+  "aria-label": "Search query",
+});
+
+const resultsContainer = h("div", { id: "search-results" });
+let currentKind = "all";
+
+const pills = [
+  { id: "all", label: "All" },
+  { id: "spot", label: "Shows" },
+  { id: "space", label: "Venues" },
+  { id: "listed", label: "Artists" },
+  { id: "expression", label: "Zine" },
+].map(p => {
+  const btn = h("button.nc-filter-pill", {
+    type: "button",
+    class: p.id === currentKind ? "is-active" : "",
+  }, p.label);
+  btn.onclick = () => {
+    document.querySelectorAll(".nc-filter-pill").forEach(el => el.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    currentKind = p.id;
+    executeSearch(input.value);
+  };
+  return btn;
+});
+
+async function executeSearch(query) {
+  if (!query.trim()) {
+    resultsContainer.replaceChildren(h("p", { style: "color: var(--nc-color-text-muted);" }, "Enter a search term above."));
+    return;
+  }
+  resultsContainer.replaceChildren(h("p", {}, "Searching..."));
+  try {
+    const kindQuery = currentKind === "all" ? "" : `&kind=${currentKind}`;
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query.trim())}${kindQuery}`);
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    resultsContainer.replaceChildren(h("p", { style: "color: red;" }, "Search failed."));
+  }
+}
+
+function render(data) {
+  const cards = [];
+  const addCategory = (badge, items) => {
+    for (const item of (items || [])) {
+      cards.push(
+        h("a.nc-search-card", { href: item.url },
+          h("div.nc-search-badge", {}, badge),
+          h("h3.nc-search-card-title", {}, item.title),
+          h("div.nc-search-card-sub", {}, item.subtitle || item.snippet || ""),
+        )
+      );
+    }
+  };
+
+  addCategory("Show / Event", data.results.spots);
+  addCategory("Venue / Space", data.results.spaces);
+  addCategory("Performer / Act", data.results.listed);
+  addCategory("Zine / Article", data.results.expressions);
+
+  if (cards.length === 0) {
+    resultsContainer.replaceChildren(h("p", { style: "color: var(--nc-color-text-muted);" }, `No results for "${data.query}".`));
+  } else {
+    resultsContainer.replaceChildren(
+      h("p", { style: "font-size: var(--nc-font-size-sm); color: var(--nc-color-text-muted); margin-bottom: var(--nc-space-4);" },
+        `Found ${data.total} result${data.total === 1 ? "" : "s"} in ${data.duration_ms}ms`),
+      ...cards
+    );
+  }
+}
+
+let debounce = null;
+input.oninput = () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(() => executeSearch(input.value), 250);
+};
+
+const main = h("main.nc-container.nc-search-page", {},
+  h("h1", { style: "margin-bottom: var(--nc-space-4);" }, "Search NightCal"),
+  h("div.nc-search-bar", {}, input),
+  h("div.nc-search-pills", {}, ...pills),
+  resultsContainer
+);
+
+app.replaceChildren(
+  siteHeader({ path: "/search/" }),
+  main,
+  siteFooter()
+);
+
+if (qParam) {
+  executeSearch(qParam);
+} else {
+  input.focus();
+}
+</script>
+</body>
+</html>

@@ -366,6 +366,18 @@ class Handler(BaseHTTPRequestHandler):
             with _lock:
                 message = update_data_message(_model())
             self._send(200, json.dumps(message).encode(), "application/json; charset=utf-8")
+        if path == "/api/search":
+            qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+            q = qs.get("q", [""])[0]
+            limit = int(qs.get("limit", [20])[0])
+            kind = qs.get("kind", [None])[0]
+            store = open_store(_db_path())
+            try:
+                from shadenet.search import search as fts_search
+                res = fts_search(store, q, limit=limit, kind=kind)
+                self._json(200, res)
+            finally:
+                store.close()
             return
 
         if path.startswith("/api/"):

@@ -154,6 +154,10 @@ export function applyStewardPersonalization(model, payload, { enabled = true } =
  */
 export async function loadStewardStub() {
   try {
+    const local = localStorage.getItem("shadenet_steward_payload");
+    if (local) {
+      try { return JSON.parse(local); } catch {}
+    }
     const res = await fetch("/data/steward-stub.json");
     if (res.ok) return await res.json();
   } catch {

@@ -382,7 +382,14 @@ class Store:
         lon: float | None = None,
         website: str | None = None,
     ) -> str:
-        venue_id = stable_id("ven", name, address or "")
+        existing = self.one("SELECT id, address FROM venues WHERE LOWER(name) = LOWER(?)", (name,))
+        if existing:
+            venue_id = existing["id"]
+            if not address and existing["address"]:
+                address = existing["address"]
+        else:
+            venue_id = stable_id("ven", name, address or "")
+
         self._conn.execute(
             """
             INSERT INTO venues (id, name, address, city, state, lat, lon, website)

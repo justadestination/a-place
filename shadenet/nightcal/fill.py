@@ -417,12 +417,22 @@ def fill(db_path: Path = DB_PATH, page: str | None = None) -> dict:
             gone=show_summary["gone"],
             duration_ms=int((time.time() - started) * 1000),
         )
+        venue_summary = {}
+        try:
+            from shadenet.nightcal.venue_scrapers import ingest_venue_events
+            print("collecting feeds and schedules from downtown venues...", flush=True)
+            venue_summary = ingest_venue_events(store)
+            print(f"venue feeds: {venue_summary.get('scraped', 0)} events scraped", flush=True)
+        except Exception as exc:
+            print(f"venue feeds notice: {exc}", flush=True)
+
         return {
             "db": str(db_path),
             "rooms": rooms,
             "room_failures": failures,
             "room_error": room_error,
             "shows": show_summary,
+            "venue_feeds": venue_summary,
             "contact": contact_summary,
             "social": social_summary,
             "filled_at": datetime.now(UTC).replace(microsecond=0).isoformat(),

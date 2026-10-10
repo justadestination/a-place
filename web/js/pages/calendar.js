@@ -17,7 +17,7 @@ import { applyStewardPersonalization, loadStewardStub } from "../data/steward.js
 const app = document.getElementById("app");
 const rawModel = await loadCalendar();
 const q = params();
-const stewardEnabled = q.get("steward") === "1" || window.__STEWARD_ENABLED__ === true;
+const stewardEnabled = q.get("steward") === "1" || window.__STEWARD_ENABLED__ === true || localStorage.getItem("shadenet_steward_enabled") === "1";
 let stewardPayload = null;
 if (stewardEnabled) {
   stewardPayload = window.__STEWARD_PAYLOAD__ || await loadStewardStub();

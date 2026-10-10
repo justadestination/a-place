@@ -1,0 +1,194 @@
+/* Search Dialog component styles */
+
+.nc-search-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: start center;
+  padding: var(--space-4, 1rem);
+  padding-top: min(12vh, 6rem);
+}
+
+.nc-search-dialog[hidden] {
+  display: none !important;
+}
+
+.nc-search-dialog__scrim {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.nc-search-dialog__panel {
+  position: relative;
+  z-index: 1001;
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--nc-color-surface, #121214);
+  color: var(--nc-color-ink, #f0f0f2);
+  border: 1px solid var(--nc-color-border, #2a2a30);
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 80vh;
+}
+
+.nc-search-dialog__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border-bottom: 1px solid var(--nc-color-border, #2a2a30);
+}
+
+.nc-search-dialog__header svg {
+  width: 22px;
+  height: 22px;
+  color: var(--nc-color-muted, #8a8a96);
+  flex-shrink: 0;
+}
+
+.nc-search-dialog__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: var(--text-lg, 1.125rem);
+  line-height: 1.5;
+  outline: none;
+  min-height: 44px;
+}
+
+.nc-search-dialog__close {
+  background: var(--nc-color-surface-hover, #202026);
+  color: var(--nc-color-muted, #8a8a96);
+  border: 1px solid var(--nc-color-border, #2a2a30);
+  border-radius: var(--radius-sm, 0.25rem);
+  padding: 0.2rem 0.5rem;
+  font-size: var(--text-xs, 0.75rem);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.nc-search-dialog__close:hover,
+.nc-search-dialog__close:focus-visible {
+  color: var(--nc-color-ink, #fff);
+  border-color: var(--nc-color-accent, #3ee0ff);
+}
+
+.nc-search-dialog__results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3, 0.75rem) 0;
+  min-height: 140px;
+}
+
+.nc-search-dialog__empty,
+.nc-search-dialog__loading,
+.nc-search-dialog__error {
+  padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+  text-align: center;
+  color: var(--nc-color-muted, #8a8a96);
+  font-size: var(--text-sm, 0.875rem);
+}
+
+.nc-search-dialog__group {
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+.nc-search-dialog__group-title {
+  padding: var(--space-1, 0.25rem) var(--space-4, 1rem);
+  font-size: var(--text-xs, 0.75rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nc-color-muted, #8a8a96);
+  font-weight: 600;
+}
+
+.nc-search-dialog__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nc-search-dialog__link {
+  display: flex;
+  align-items: center;
+  padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+  color: inherit;
+  text-decoration: none;
+  min-height: 44px;
+  transition: background-color 0.15s ease;
+}
+
+.nc-search-dialog__link:hover,
+.nc-search-dialog__link:focus {
+  background-color: var(--nc-color-surface-hover, #1e1e24);
+  outline: none;
+}
+
+.nc-search-dialog__item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.nc-search-dialog__item-title {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--nc-color-ink, #ffffff);
+}
+
+.nc-search-dialog__item-sub {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--nc-color-muted, #8a8a96);
+}
+
+.nc-search-dialog__meta {
+  padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--nc-color-muted, #666675);
+  border-top: 1px solid var(--nc-color-border, #2a2a30);
+  margin-top: var(--space-2, 0.5rem);
+}
+
+.nc-search-dialog__footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 0.25rem);
+  padding: var(--space-2, 0.5rem) var(--space-4, 1rem);
+  background: var(--nc-color-surface-dim, #0c0c0e);
+  border-top: 1px solid var(--nc-color-border, #2a2a30);
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--nc-color-muted, #666675);
+}
+
+.nc-search-dialog__footer kbd {
+  background: var(--nc-color-surface, #1e1e24);
+  border: 1px solid var(--nc-color-border, #3a3a44);
+  border-radius: var(--radius-sm, 0.2rem);
+  padding: 0.1rem 0.35rem;
+  font-family: inherit;
+  font-size: 0.7rem;
+  color: var(--nc-color-ink, #e0e0e6);
+}
+
+.nc-search-trigger {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.nc-search-trigger svg {
+  width: 20px;
+  height: 20px;
+}
