@@ -4,33 +4,57 @@ import { siteHeader } from "../../components/site-header/site-header.js";
 import { siteFooter } from "../../components/site-footer/site-footer.js";
 import { button } from "../../components/button/button.js";
 
+// Configurable Stripe Payment Link (can be overridden globally via window.STRIPE_DONATION_URL)
+const STRIPE_URL = window.STRIPE_DONATION_URL || "https://buy.stripe.com/nightcal";
+
+// Monero address (Zero-tracking anonymous contribution)
+const FLEET_XMR_ADDRESS = "888tNkZrPN6JsEgekjMnABU4TBmb2Dt29UWVazRtZ625HRNVozPXDeGXAicP9neuCX2cegwLiohL68qU1N1W9wys1V7quC6";
+
 export function donatePage() {
   const root = h("main.nc-container.nc-page", { id: "main", tabindex: "-1" });
 
   const hero = h("section.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-3)" } },
-    h("p.nc-eyebrow", {}, "Community Backing"),
-    h("h1.nc-h1", {}, "Support & Donate"),
-    h("p.nc-lede", {}, "Keep NightCal independent, ad-free, and community-driven. Support open source development and local venue journalism.")
+    h("p.nc-eyebrow", {}, "Fleet & Infrastructure"),
+    h("h1.nc-h1", {}, "Support the Fleet"),
+    h("p.nc-lede", {}, "NightCal and ShadeNet operate an independent, ad-free privacy nodes, local zine broadsides, and downtown venue scrapers."),
+    h("div", {
+      style: {
+        padding: "var(--nc-space-4)",
+        borderRadius: "var(--nc-radius-md)",
+        background: "rgba(245, 158, 11, 0.1)",
+        border: "1px solid rgba(245, 158, 11, 0.3)",
+        marginBlock: "var(--nc-space-2)"
+      }
+    },
+      h("p", {
+        style: {
+          fontSize: "1.1rem",
+          fontWeight: "700",
+          color: "var(--nc-color-accent)",
+          margin: 0
+        }
+      }, "Any contributions to fleet costs are very appreciated.")
+    )
   );
 
   const tiers = [
     {
-      title: "Night Patron",
-      amount: "$5 / mo",
-      desc: "Covers hosting, scraper compute, and keeps NightCal free of advertising and corporate trackers.",
-      action: "Become a Patron"
+      title: "Fuel a Node",
+      amount: "$5",
+      desc: "One-time contribution toward monthly VPS compute, Unbound DNS, and privacy routing for our downtown edge nodes.",
+      action: "Contribute $5 with Stripe"
     },
     {
-      title: "Zine Supporter",
-      amount: "$15 / mo",
-      desc: "Funds investigative dispatches, AI model compute (Gemini, Claude, Hermes), and print broadside runs.",
-      action: "Support the Zine"
+      title: "Network Supporter",
+      amount: "$20",
+      desc: "One-time contribution helping cover pruned Monero blockchain validation, automated supervisor scrapers, and encrypted backups.",
+      action: "Contribute $20 with Stripe"
     },
     {
-      title: "Venue & Cultural Sponsor",
-      amount: "$50 / mo",
-      desc: "Helps downtown independent venues operate local nodes, custom merchandise tables, and live event streams.",
-      action: "Sponsor a Venue"
+      title: "Patron of the Shade",
+      amount: "$50",
+      desc: "One-time contribution funding print broadside runs, autonomous Steward agent development, and independent local venue journalism.",
+      action: "Contribute $50 with Stripe"
     }
   ];
 
@@ -61,24 +85,46 @@ export function donatePage() {
         label: tier.action,
         variant: "primary",
         onClick: () => {
-          alert(`Thank you for supporting NightCal! Redirecting to community contribution portal.`);
+          if (STRIPE_URL.startsWith("http")) {
+            window.open(STRIPE_URL, "_blank", "noopener,noreferrer");
+          } else {
+            alert(`Redirecting to Stripe contribution portal: ${STRIPE_URL}`);
+          }
         }
       })
     );
     tierGrid.append(card);
   });
 
-  const merchSection = h("section.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-4)", marginTop: "var(--nc-space-6)" } },
-    h("h2.nc-h2", {}, "Merch & Venue Shop Integration"),
-    h("p", {}, "We are building direct store integrations into venue pages so patrons can purchase merchandise, band vinyl, and tickets directly without high middleman fees:"),
-    h("ul.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-2)", paddingLeft: "1.25rem" } },
-      h("li", {}, h("strong", {}, "Umwelt Horizons Print Editions: "), "Limited risograph-printed broadsides and archival copies."),
-      h("li", {}, h("strong", {}, "Downtown Venue Merch: "), "Direct integration with Shopify and local venue point-of-sale systems for t-shirts, pins, and drink coins."),
-      h("li", {}, h("strong", {}, "Artist Direct: "), "100% of band merchandise revenue flows directly to the performing artists.")
-    )
+  // Crypto / Monero Privacy Contribution section
+  const privacySection = h("section.nc-card-panel", {
+    style: {
+      padding: "var(--nc-space-5)",
+      border: "var(--nc-size-border) solid var(--nc-color-border)",
+      borderRadius: "var(--nc-radius-lg)",
+      background: "var(--nc-color-surface)",
+      marginTop: "var(--nc-space-4)",
+      display: "grid",
+      gap: "var(--nc-space-3)"
+    }
+  },
+    h("h2.nc-h2", {}, "🔒 Anonymous Contribution (Monero / XMR)"),
+    h("p.nc-muted", {}, "Prefer zero financial surveillance? Support the hosting without credit card logs or corporate tracking:"),
+    h("div", {
+      style: {
+        background: "var(--nc-color-bg)",
+        padding: "var(--nc-space-3)",
+        borderRadius: "var(--nc-radius-md)",
+        fontFamily: "monospace",
+        fontSize: "0.85rem",
+        wordBreak: "break-all",
+        border: "1px solid var(--nc-color-border)"
+      }
+    }, FLEET_XMR_ADDRESS),
+    h("p.nc-muted", { style: { fontSize: "0.85rem" } }, "All Monero contributions go directly to the host and privacy infrastructure expenses.")
   );
 
-  root.append(hero, tierGrid, merchSection);
+  root.append(hero, tierGrid, privacySection);
   return root;
 }
 

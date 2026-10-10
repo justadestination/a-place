@@ -128,8 +128,8 @@
     },
     {
       "path": "/donate/",
-      "title": "Support & Donate — NightCal",
-      "description": "Support independent, decentralized nightlife journalism, open-source development, and local venue operations.",
+      "title": "Support Fleet Costs — NightCal",
+      "description": "Any contributions to fleet costs are very appreciated. Support independent, ad-free nightlife journalism and privacy infrastructure.",
       "module": "js/pages/donate.js",
       "og": "system"
     }
