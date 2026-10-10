@@ -21,7 +21,7 @@ from typing import Any
 
 from shadenet.health import check_subsystems
 from shadenet.operator import get_operator_status, rotate_active_key
-from shadenet.automations import run_scraper_supervision
+from shadenet.automations import run_scraper_supervision, AutomationFailure
 
 MATRIX_SERVER_URL = "https://matrix.example.org"
 OPERATOR_ROOM_ALIAS = "#shadenet-ops:shady.example.org"
@@ -59,12 +59,19 @@ class OperatorSteward:
 
         elif cmd == "!scrape":
             # Simulate or trigger scraper run
-            res = run_scraper_supervision()
-            return {
-                "status": "success",
-                "message": f"Scraper supervision executed: {res.get('status', 'ok')}. Error count: {res.get('error_count', 0)}.",
-                "data": res
-            }
+            try:
+                res = run_scraper_supervision()
+                return {
+                    "status": "success",
+                    "message": f"Scraper supervision executed: {res.get('status', 'ok')}. Error count: {res.get('error_count', 0)}.",
+                    "data": res
+                }
+            except AutomationFailure as e:
+                return {
+                    "status": "warning" if e.severity == "warning" else "error",
+                    "message": f"Scraper supervision alert ({e.severity}): {e.message}",
+                    "data": {"alert": e.message, "severity": e.severity, "details": e.details}
+                }
 
         elif cmd == "!rotate-keys":
             rot = rotate_active_key(operator_identity=f"steward:{user}")

@@ -224,4 +224,5 @@ print("-" * 70)
 print(f"{PASS} passed, {FAIL} failed")
 print("=" * 70)
 
-sys.exit(1 if FAIL else 0)
+if __name__ == "__main__":
+    sys.exit(1 if FAIL else 0)

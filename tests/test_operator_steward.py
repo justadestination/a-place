@@ -26,8 +26,8 @@ def test_command_status(steward):
 
 def test_command_scrape_drill(steward):
     res = steward.process_command("!scrape")
-    assert res["status"] == "success"
-    assert "Scraper supervision executed" in res["message"]
+    assert res["status"] in ("success", "warning")
+    assert "Scraper supervision" in res["message"]
 
 
 def test_command_rotate_keys(steward):

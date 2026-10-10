@@ -52,7 +52,13 @@ from shadenet.operator import (
 from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
-from shadenet.zkp import create_age_challenge, verify_age_proof, validate_age_token, require_zkp_gate
+from shadenet.zkp import (
+    create_age_challenge,
+    verify_age_proof,
+    verify_door_presentation,
+    validate_age_token,
+    require_zkp_gate,
+)
 from shadenet.nightcal.ical import build_ical, feed_etags
 from shadenet.nightcal.venue_edits import add_blurb, add_event, claim, get_overlay, update_info
 from shadenet.chat import (
@@ -617,7 +623,7 @@ class Handler(BaseHTTPRequestHandler):
                 except Exception as e:
                     self._json(400, {"error": str(e)})
                 return
-            if path == "/api/auth/zkp/verify":
+            if path in ("/api/auth/zkp/verify", "/api/zkp/verify"):
                 res = verify_age_proof(body)
                 status_code = 200 if res.get("verified") else 400
                 self._json(status_code, res)
@@ -758,6 +764,12 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/operator/keys/rotate":
             op_id = str(body.get("operator") or "operator-console")
             res = rotate_active_key(op_id)
+            self._json(200, res)
+            return
+
+        if path in ("/api/operator/door-verify", "/api/door/verify"):
+            res = verify_door_presentation(body)
+            # Door scanner always returns 200 JSON with status: "admitted" or "rejected"
             self._json(200, res)
             return
 
