@@ -37,12 +37,14 @@ INBOX_URL = "https://a2a-inbox.example.org/api/a2a"
 OUTBOX_URL = "https://a2a-inbox.example.org/api/outbox"
 BEARER = os.environ.get("NIGHTCAL_BEARER", "")
 
+from shadenet.wallet import StewardWallet
+
 # ---------------------------------------------------------------------------
 # Personal agent
 # ---------------------------------------------------------------------------
 
 class PersonalAgent:
-    """A2A personal agent with login + submit/receive capabilities."""
+    """A2A personal agent with standard privacy wallet & ZK ID verification."""
 
     def __init__(self, agent_id: str = "personal_agent_01", address: str = "a2a://agent/personal_agent_01"):
         self.agent_id = agent_id
@@ -51,6 +53,21 @@ class PersonalAgent:
         self.logged_in = False
         self.login_time: str | None = None
         self.subscriptions: list[dict] = []
+        # Agents come standard with a privacy wallet & zero-knowledge ID vault
+        self.wallet = StewardWallet(wallet_id=f"wallet_{agent_id}", agent_id=agent_id)
+        self.wallet.store_steward_delegation()
+
+    def present_age_proof(self, challenge: str, method: str = "auto") -> dict:
+        """Present zero-knowledge age verification proof without revealing identity."""
+        return self.wallet.present_age_proof(challenge, preferred_method=method)
+
+    def get_payment_address(self) -> str:
+        """Get agent's primary private Monero address."""
+        return self.wallet.primary_address
+
+    def create_payment_request(self, amount_xmr: float, description: str = "") -> str:
+        """Create private Monero payment URI with a single-use stealth subaddress."""
+        return self.wallet.get_payment_uri(amount_xmr=amount_xmr, label=description)
 
     def login(self, username: str, password: str | None = None) -> dict:
         """Authenticate the personal agent.

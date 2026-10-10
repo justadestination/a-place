@@ -22,6 +22,7 @@ from typing import Any
 from shadenet.health import check_subsystems
 from shadenet.operator import get_operator_status, rotate_active_key
 from shadenet.automations import run_scraper_supervision, AutomationFailure
+from shadenet.wallet import StewardWallet
 
 MATRIX_SERVER_URL = "https://matrix.example.org"
 OPERATOR_ROOM_ALIAS = "#shadenet-ops:shady.example.org"
@@ -33,6 +34,9 @@ class OperatorSteward:
     def __init__(self, steward_id: str = "steward-operator-main"):
         self.steward_id = steward_id
         self.role = "Site Operator & Node Guardian"
+        # Agents come standard with a privacy wallet & zero-knowledge ID vault
+        self.wallet = StewardWallet(wallet_id=f"wallet_{steward_id}", agent_id=steward_id)
+        self.wallet.store_steward_delegation()
 
     def process_command(self, cmd_text: str, user: str = "operator") -> dict[str, Any]:
         """Process an operator bot command and return structured response."""
@@ -94,12 +98,29 @@ class OperatorSteward:
                 "data": {"queue_count": len(q), "items": q}
             }
 
+        elif cmd == "!wallet":
+            summary = self.wallet.export_summary()
+            xmr = summary["monero"]
+            id_v = summary["id_vault"]
+            return {
+                "status": "success",
+                "message": (
+                    f"💳 Steward Agent Wallet ({self.wallet.wallet_id}):\n"
+                    f"Monero Stealth Address: `{xmr['primary_address'][:12]}...{xmr['primary_address'][-10:]}`\n"
+                    f"Balance: {xmr['balance_xmr']:.4f} XMR (Unlocked: {xmr['unlocked_balance_xmr']:.4f} XMR)\n"
+                    f"ZK ID Vault: {'🟢 Active (ID without ID)' if id_v['has_age_credential'] else '⚪ Ready'}\n"
+                    f"Privacy Guarantee: {id_v['privacy_guarantee']}"
+                ),
+                "data": summary
+            }
+
         elif cmd == "!help":
             return {
                 "status": "success",
                 "message": (
                     "Available Operator Commands:\n"
                     "  !status       - Inspect node health, scraper, and peers\n"
+                    "  !wallet       - View Monero stealth address, balance, and ZK ID vault\n"
                     "  !scrape       - Run supervisor and venue scraper drill\n"
                     "  !rotate-keys  - Rotate active Ed25519 signing key\n"
                     "  !moderation   - Review flagged classifieds & dispatches\n"
