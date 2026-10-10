@@ -105,3 +105,25 @@
   gap: var(--nc-space-2);
   margin-top: var(--nc-space-3);
 }
+
+.nc-portal__stage {
+  height: 380px;
+  width: 100%;
+  border-radius: var(--nc-radius-md);
+  overflow: hidden;
+  background: #121214;
+  position: relative;
+  margin-block: var(--nc-space-3);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.nc-portal__status {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-accent);
+  font-weight: var(--nc-font-weight-medium);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  background: var(--nc-color-surface-sunken);
+  border-radius: var(--nc-radius-sm);
+  border-left: 3px solid var(--nc-color-accent);
+  margin: var(--nc-space-2) 0;
+}

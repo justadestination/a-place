@@ -10,7 +10,7 @@ export function hubZine(article = null, { level = 2 } = {}) {
   if (!article) {
     container.append(
       h("header.nc-hub-slot__header", {},
-        h("p.nc-eyebrow", {}, h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }), "Umwelt Horizons"),
+        h("p.nc-eyebrow", {}, h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }), "Umwelt (Zine)"),
         h(`h${level}.nc-hub-slot__title`, {}, "Latest Dispatch"),
       ),
       h("p.nc-hub-slot__empty", {}, "No zine dispatch scheduled today.")
