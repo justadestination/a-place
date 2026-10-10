@@ -36,6 +36,7 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
           h("li", {}, h("a", { href: "/privacy/" }, "Privacy")),
           h("li", {}, h("a", { href: "/calendar/feed.ics" }, "iCal Feed")),
           h("li", {}, h("a", { href: "/donate/" }, "Support & Donate")),
+          h("li", {}, h("a", { href: "/changelog/" }, "Alpha v1 · Changelog")),
         )
       ),
       h("div.nc-site-footer__meta", {},

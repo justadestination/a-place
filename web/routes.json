@@ -139,6 +139,13 @@
       "description": "ISO 18013-5 California DMV mDL and ZK age verification camera scanner for bar door staff and bouncers.",
       "module": "door-scanner/index.html",
       "og": "system"
+    },
+    {
+      "path": "/changelog/",
+      "title": "Alpha v1 · Capabilities, Roadmap & Changelog — NightCal",
+      "description": "Alpha v1 release overview: What ShadeNet and NightCal can do right now, the upcoming venue roadmap, and the complete release changelog.",
+      "module": "js/pages/changelog.js",
+      "og": "system"
     }
   ]
 }
