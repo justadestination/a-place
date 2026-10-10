@@ -132,6 +132,13 @@
       "description": "Any contributions to network costs are very appreciated. Support independent, ad-free nightlife journalism and privacy infrastructure.",
       "module": "js/pages/donate.js",
       "og": "system"
+    },
+    {
+      "path": "/door-scanner/",
+      "title": "Bar Door Scanner — ShadeNet 21+ Fast Camera Admission",
+      "description": "ISO 18013-5 California DMV mDL and ZK age verification camera scanner for bar door staff and bouncers.",
+      "module": "door-scanner/index.html",
+      "og": "system"
     }
   ]
 }
