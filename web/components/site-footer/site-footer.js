@@ -21,6 +21,7 @@ export function siteFooter({ notes = {}, source = "live" } = {}) {
       h("p.nc-site-footer__attribution", {}, notes.attribution || "Rooms from OpenStreetMap contributors."),
       h("nav", { "aria-label": "More" }, h("ul.nc-site-footer__links", { role: "list" },
         h("li", {}, h("a", { href: "/system/#embeds" }, "Embed on your site")),
+        h("li", {}, h("a", { href: "/print/" }, "Print simulator")),
         h("li", {}, h("a", { href: "/3d/" }, "AR preview")),
         h("li", {}, h("a", { href: "/system/" }, "Design system")),
       )),

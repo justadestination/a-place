@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Print Simulation & AR Markers — NightCal</title>
+<meta name="description" content="Display scannable zine sheets and portal marker cards on screen in lieu of a physical printer.">
+<link rel="canonical" href="https://nightcal.example.org/print/">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/components/site-header/site-header.css">
+<link rel="stylesheet" href="/components/site-footer/site-footer.css">
+<style>
+.nc-print-sim {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: var(--nc-space-5) var(--nc-space-4) var(--nc-space-8);
+}
+.nc-print-hero {
+  margin-block-end: var(--nc-space-6);
+  border-bottom: 1px solid var(--nc-color-border);
+  padding-block-end: var(--nc-space-5);
+}
+.nc-print-eyebrow {
+  display: block;
+  font-size: var(--nc-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--nc-color-accent);
+  font-weight: 700;
+  margin-block-end: var(--nc-space-1);
+}
+.nc-print-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--nc-space-2);
+  color: var(--nc-color-text);
+}
+.nc-print-subtitle {
+  font-size: var(--nc-font-size-md);
+  color: var(--nc-color-text-muted);
+  max-width: 750px;
+  line-height: 1.5;
+  margin: 0;
+}
+.nc-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-3);
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: var(--nc-space-5);
+  background: var(--nc-color-surface);
+  border: 1px solid var(--nc-color-border);
+  padding: var(--nc-space-3) var(--nc-space-4);
+  border-radius: var(--nc-radius-md);
+}
+.nc-pill-group {
+  display: flex;
+  gap: var(--nc-space-2);
+  flex-wrap: wrap;
+}
+.nc-pill-btn {
+  padding: var(--nc-space-2) var(--nc-space-3);
+  border-radius: var(--nc-radius-full, 9999px);
+  border: 1px solid var(--nc-color-border);
+  background: transparent;
+  color: var(--nc-color-text);
+  font-size: var(--nc-font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-1);
+}
+.nc-pill-btn:hover {
+  border-color: var(--nc-color-accent);
+}
+.nc-pill-btn.is-active {
+  background: var(--nc-color-text);
+  color: var(--nc-color-bg);
+  border-color: var(--nc-color-text);
+}
+.nc-view-pane {
+  background: #EAE8E2;
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-lg);
+  padding: var(--nc-space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 550px;
+  position: relative;
+  overflow: auto;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
+}
+.nc-view-pane.mode-contrast {
+  background: #FFFFFF;
+}
+.nc-view-pane.mode-dark {
+  background: #121214;
+}
+.nc-display-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.22);
+  transition: transform 0.2s ease, filter 0.2s ease;
+  cursor: zoom-in;
+}
+.nc-display-image.is-fit {
+  max-height: 75vh;
+  object-fit: contain;
+}
+.nc-display-image.is-actual {
+  max-width: none;
+  width: auto;
+}
+.nc-display-image.is-zoomed {
+  transform: scale(1.45);
+  transform-origin: center;
+}
+.nc-guide-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--nc-space-4);
+  margin-block-start: var(--nc-space-6);
+}
+.nc-guide-card {
+  background: var(--nc-color-surface);
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  padding: var(--nc-space-4);
+}
+.nc-guide-card-title {
+  font-size: var(--nc-font-size-md);
+  font-weight: 700;
+  margin: 0 0 var(--nc-space-2);
+  color: var(--nc-color-text);
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+}
+.nc-guide-card-text {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-text-muted);
+  line-height: 1.5;
+  margin: 0 0 var(--nc-space-3);
+}
+.nc-guide-link {
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-accent);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nc-guide-link:hover {
+  text-decoration: underline;
+}
+.nc-scan-status {
+  margin-block-start: var(--nc-space-3);
+  font-family: monospace;
+  font-size: var(--nc-font-size-xs);
+  background: var(--nc-color-bg);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  border-radius: var(--nc-radius-sm);
+  border: 1px solid var(--nc-color-border);
+  word-break: break-all;
+  color: var(--nc-color-text);
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+import { h } from "/js/core/dom.js";
+import { siteHeader } from "/components/site-header/site-header.js";
+import { siteFooter } from "/components/site-footer/site-footer.js";
+
+const app = document.getElementById("app");
+
+const ITEMS = [
+  {
+    id: "sheet",
+    label: "📰 Full Newspaper Zine Sheet",
+    src: "/print/zine-print-sheet.png",
+    alt: "Full simulated printed zine sheet with lead editorial and dual scannable portal markers",
+    title: "Umwelt Horizons · Issue No. 42 (Simulated Print Sheet)",
+    url: "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
+    portalLink: "/portal/?target=note:the-room-after-midnight&ar=1",
+    targetLabel: "note:the-room-after-midnight & venue:arlene-francis",
+    desc: "Simulates an authentic A4/broadsheet print page. Features 'The Room After Midnight' dispatch, tonight's 18 downtown listings, and two high-contrast Level H scannable portal markers."
+  },
+  {
+    id: "card-editorial",
+    label: "🎴 The Room After Midnight (Card)",
+    src: "/data/markers/the-room-after-midnight.png",
+    alt: "Editorial marker card for The Room After Midnight",
+    title: "The Room After Midnight · Editorial Marker Card",
+    url: "https://shady.example.org/portal/?target=note:the-room-after-midnight&ar=1",
+    portalLink: "/portal/?target=note:the-room-after-midnight&ar=1",
+    targetLabel: "note:the-room-after-midnight",
+    desc: "Standard high-contrast editorial marker card with corner registration reticles and high optical tolerance for screen scanning."
+  },
+  {
+    id: "card-venue",
+    label: "🏛️ Arlene Francis Center (Card)",
+    src: "/data/markers/venue-arlene-francis.png",
+    alt: "Venue portal marker card for Arlene Francis Center",
+    title: "Arlene Francis Center · Venue Portal Marker Card",
+    url: "https://shady.example.org/portal/?target=venue:arlene-francis&ar=1",
+    portalLink: "/portal/?target=venue:arlene-francis&ar=1",
+    targetLabel: "venue:arlene-francis",
+    desc: "Spatial venue gateway marker with direct binding to the Arlene Francis Center stage profile, upcoming noise gigs, and real-time room notes."
+  }
+];
+
+let activeItem = ITEMS[0];
+let currentBg = "paper"; // paper, contrast, dark
+let currentZoom = "fit"; // fit, actual, zoom
+
+function renderPage() {
+  const container = h("main.nc-print-sim", { id: "main" });
+
+  // Hero
+  const hero = h("section.nc-print-hero", {},
+    h("span.nc-print-eyebrow", {}, "Paper-to-Screen AR Gateway"),
+    h("h1.nc-print-title", {}, "On-Screen Print Simulator"),
+    h("p.nc-print-subtitle", {},
+      "No physical printer available? Display this simulated print sheet on your desktop or laptop screen, then point your phone camera (iOS Camera or Android Google Lens) directly at the marker to enter the live WebXR AR portal."
+    )
+  );
+
+  // Item selector pills
+  const itemPills = h("div.nc-pill-group", {},
+    ...ITEMS.map(item => {
+      const btn = h("button.nc-pill-btn", {
+        type: "button",
+        class: item.id === activeItem.id ? "is-active" : "",
+        onclick: () => {
+          activeItem = item;
+          updateView();
+        }
+      }, item.label);
+      return btn;
+    })
+  );
+
+  // Zoom / View toggles
+  const zoomPills = h("div.nc-pill-group", {},
+    ...[
+      { id: "fit", label: "Fit Screen" },
+      { id: "actual", label: "100% Actual" },
+      { id: "zoom", label: "🔍 Zoom In" },
+    ].map(z => {
+      const btn = h("button.nc-pill-btn", {
+        type: "button",
+        class: z.id === currentZoom ? "is-active" : "",
+        onclick: () => {
+          currentZoom = z.id;
+          updateView();
+        }
+      }, z.label);
+      return btn;
+    })
+  );
+
+  // Background / Glare toggles
+  const bgPills = h("div.nc-pill-group", {},
+    ...[
+      { id: "paper", label: "📄 Natural Newsprint" },
+      { id: "contrast", label: "☀️ High Contrast Anti-Glare" },
+      { id: "dark", label: "🌙 Low-Light Dark" },
+    ].map(b => {
+      const btn = h("button.nc-pill-btn", {
+        type: "button",
+        class: b.id === currentBg ? "is-active" : "",
+        onclick: () => {
+          currentBg = b.id;
+          updateView();
+        }
+      }, b.label);
+      return btn;
+    })
+  );
+
+  const toolbar = h("nav.nc-toolbar", { "aria-label": "Display controls" },
+    itemPills,
+    h("div", { style: "display: flex; gap: var(--nc-space-3); flex-wrap: wrap;" },
+      zoomPills,
+      bgPills
+    )
+  );
+
+  // Image display container
+  const pane = h("div.nc-view-pane", { id: "view-pane" });
+  const img = h("img.nc-display-image", {
+    id: "display-img",
+    src: activeItem.src,
+    alt: activeItem.alt,
+    onclick: () => {
+      currentZoom = currentZoom === "fit" ? "zoom" : "fit";
+      updateView();
+    }
+  });
+  pane.appendChild(img);
+
+  // Detail & Guidance Grid
+  const guides = h("section.nc-guide-cards", {},
+    h("article.nc-guide-card", {},
+      h("h3.nc-guide-card-title", {}, "📱 How to Scan Off Screen"),
+      h("p.nc-guide-card-text", {},
+        "1. Open your phone's native camera (iOS Camera or Android Google Lens).\n2. Hold your phone 10–18 inches away from your computer screen.\n3. Tap the yellow/blue banner that appears over the marker to open the portal."
+      ),
+      h("div.nc-scan-status", {}, `Target: ${activeItem.targetLabel}`)
+    ),
+    h("article.nc-guide-card", {},
+      h("h3.nc-guide-card-title", {}, "⚡ Direct In-Browser Test"),
+      h("p.nc-guide-card-text", {},
+        "Want to test the portal experience directly on this device without scanning?"
+      ),
+      h("a.nc-guide-link", {
+        id: "direct-portal-link",
+        href: activeItem.portalLink,
+        target: "_blank",
+        rel: "noopener"
+      }, "Launch Portal in New Tab →"),
+      h("div.nc-scan-status", { id: "url-display" }, activeItem.url)
+    ),
+    h("article.nc-guide-card", {},
+      h("h3.nc-guide-card-title", {}, "🖨️ Optical Specs"),
+      h("p.nc-guide-card-text", {},
+        "Level H Error Correction (30% optical redundancy). Designed to scan reliably through monitor glare, moiré patterns, and angled viewing."
+      ),
+      h("a.nc-guide-link", {
+        id: "download-link",
+        href: activeItem.src,
+        download: activeItem.src.split("/").pop()
+      }, "Download Raw PNG Image ↓")
+    )
+  );
+
+  container.replaceChildren(hero, toolbar, pane, guides);
+  app.replaceChildren(siteHeader(), container, siteFooter());
+
+  function updateView() {
+    img.src = activeItem.src;
+    img.alt = activeItem.alt;
+
+    // Apply zoom class
+    img.classList.remove("is-fit", "is-actual", "is-zoomed");
+    if (currentZoom === "fit") img.classList.add("is-fit");
+    else if (currentZoom === "actual") img.classList.add("is-actual");
+    else if (currentZoom === "zoom") img.classList.add("is-zoomed");
+
+    // Apply bg class
+    pane.classList.remove("mode-contrast", "mode-dark");
+    if (currentBg === "contrast") pane.classList.add("mode-contrast");
+    else if (currentBg === "dark") pane.classList.add("mode-dark");
+
+    // Update buttons
+    itemPills.querySelectorAll(".nc-pill-btn").forEach((btn, idx) => {
+      btn.classList.toggle("is-active", ITEMS[idx].id === activeItem.id);
+    });
+    zoomPills.querySelectorAll(".nc-pill-btn").forEach((btn, idx) => {
+      const zTypes = ["fit", "actual", "zoom"];
+      btn.classList.toggle("is-active", zTypes[idx] === currentZoom);
+    });
+    bgPills.querySelectorAll(".nc-pill-btn").forEach((btn, idx) => {
+      const bTypes = ["paper", "contrast", "dark"];
+      btn.classList.toggle("is-active", bTypes[idx] === currentBg);
+    });
+
+    // Update links
+    const directLink = document.getElementById("direct-portal-link");
+    if (directLink) directLink.href = activeItem.portalLink;
+
+    const urlDisplay = document.getElementById("url-display");
+    if (urlDisplay) urlDisplay.textContent = activeItem.url;
+
+    const downloadLink = document.getElementById("download-link");
+    if (downloadLink) {
+      downloadLink.href = activeItem.src;
+      downloadLink.download = activeItem.src.split("/").pop();
+    }
+  }
+
+  // Initial setup
+  updateView();
+}
+
+renderPage();
+</script>
+</body>
+</html>
