@@ -53,3 +53,34 @@ export function neighbors(graph, id) {
   }
   return out;
 }
+
+export function getBacklinks(graph, id) {
+  const out = [];
+  for (const e of graph.edges) {
+    if (e.target === id) {
+      const src = graph.byId.get(e.source);
+      if (src && !out.some(x => x.id === src.id)) out.push({ ...src, edgeKind: e.kind });
+    }
+  }
+  return out;
+}
+
+export function getOutgoingLinks(graph, id) {
+  const out = [];
+  for (const e of graph.edges) {
+    if (e.source === id) {
+      const tgt = graph.byId.get(e.target);
+      if (tgt && !out.some(x => x.id === tgt.id)) out.push({ ...tgt, edgeKind: e.kind });
+    }
+  }
+  return out;
+}
+
+export function getConnectedNodes(graph, id) {
+  const out = new Set();
+  for (const e of graph.edges) {
+    if (e.source === id) out.add(e.target);
+    if (e.target === id) out.add(e.source);
+  }
+  return [...out].map(nid => graph.byId.get(nid)).filter(Boolean);
+}

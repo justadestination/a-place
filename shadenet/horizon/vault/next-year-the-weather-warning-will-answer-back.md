@@ -90,6 +90,11 @@ The forecast is on the screen. The stairs are still there.
 
 Next year, I think more of us will be able to ask about both.
 
+## Connected Dispatches
+- [[The Hottest Year of Your Life Hasn't Happened Yet]] — Full scorecard & climate analysis
+- [[The Pacific Is Already Telling You Next Year]] — ENSO diagnostics discussion & thermocline
+- [[A Machine with No Thoughts Would Like a Word]] — Conversational interfaces vs punch-card automations
+
 ---
 
 **Sources**

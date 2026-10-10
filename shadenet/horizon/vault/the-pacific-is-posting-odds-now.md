@@ -46,6 +46,11 @@ The kid in Atlanta gets it. He didn't vote for the last president; he just liste
 
 The first quote is +4.0°C.
 
+## Connected Dispatches
+- [[The Pacific Is Already Telling You Next Year]] — Subsurface thermocline dynamics & model plumes
+- [[The Hottest Year of Your Life Hasn't Happened Yet]] — Agricultural commodities & 2027 scorecard
+- [[Next Year, the Weather Warning Will Answer Back]] — Conversational weather interfaces & risk calibration
+
 ---
 
 *Fact-checked against the NOAA/CPC ENSO Diagnostic Discussion and the CCSR/IRI September 2026 forecast plume, the WMO Global Annual to Decadal Climate Update, and NPR's January 2026 reporting on the prediction-market boom.*

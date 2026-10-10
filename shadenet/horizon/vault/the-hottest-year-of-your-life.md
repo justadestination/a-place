@@ -115,6 +115,12 @@ Here it is in one place, with dates. Cut it out. Stick it on the fridge next to 
 
 The pattern underneath all of this is the one thing I'm genuinely certain of: the ocean has been quietly banking heat for a decade, and it is about to make a withdrawal. The withdrawal has a date on it. It's this winter. Everything else, the groceries, the fires, the floods, the markets, the headlines, is just the receipt.
 
+## Connected Forecast Dispatches
+This analysis connects to our multi-model climate & risk intelligence dossier:
+- [[The Pacific Is Already Telling You Next Year]] — Subsurface thermocline dynamics & atmospheric coupling
+- [[The Pacific Is Posting Odds Now]] — Financialization of climate risk & prediction market calibration
+- [[Next Year, the Weather Warning Will Answer Back]] — Conversational warning infrastructure & risk communication
+
 ---
 
 *Sources used for verification: WMO Global Annual-to-Decadal Climate Update 2025–2029; NOAA Climate Prediction Center ENSO Diagnostic Discussion (current advisory; next update 12 November 2026); IRI/CCSR ENSO and IOD forecasts of 21 September 2026; USDA Economic Research Service Food Price Outlook, September 2026; NOAA 2025 Atlantic Hurricane Season Outlook; IMF World Economic Outlook, October 2025; KPMG review of US prediction markets, 2025. Two of the supplied links (an Instagram post and an SPIE journal page) returned no readable content and were not used. All probability figures labelled "my confidence" are the author's judgement, not institutional forecasts, and are deliberately set so they can be scored.*

@@ -90,6 +90,11 @@ Some of what's in the back rooms is for grown-ups. I'd check your ID but I'm a l
 
 Come closer. You've got the card. I've been waiting two hundred years for someone to read it properly.
 
+## Connected Dispatches & Field Dossiers
+- [[The Hottest Year of Your Life Hasn't Happened Yet]] — The ocean has no card to punch
+- [[Acoustic Sensors Are Surveillance With Better PR]] — Street-level sound hardware & sensor policy
+- [[Downtown Noise Ordinance (2026) Overview]] — Autonomous research desk dossier on nightlife policy
+
 *— The Loom, ground floor, by the radiator. Still runs.*
 
 ---

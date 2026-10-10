@@ -314,6 +314,29 @@ def main() -> int:
         if e.get("kind") in NIGHT_KINDS:
             event_node(eid)
 
+    # Pass 3: compile bidirectional links and backlinks into every node
+    for nid, node in nodes.items():
+        node["links"] = []
+        node["backlinks"] = []
+
+    for e in edges:
+        s, t, k = e["source"], e["target"], e.get("kind", "link")
+        if s in nodes and t in nodes:
+            if not any(x["id"] == t for x in nodes[s]["links"]):
+                nodes[s]["links"].append({
+                    "id": t,
+                    "title": nodes[t].get("title", t),
+                    "type": nodes[t].get("type", "entity"),
+                    "kind": k,
+                })
+            if not any(x["id"] == s for x in nodes[t]["backlinks"]):
+                nodes[t]["backlinks"].append({
+                    "id": s,
+                    "title": nodes[s].get("title", s),
+                    "type": nodes[s].get("type", "entity"),
+                    "kind": k,
+                })
+
     out = {
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "vault": str(Path(args.vault).resolve().relative_to(ROOT)) if Path(args.vault).resolve().is_relative_to(ROOT) else args.vault,

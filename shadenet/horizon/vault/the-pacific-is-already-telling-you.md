@@ -29,3 +29,8 @@ Then the fade. Every model in the plume keeps El Niño alive into spring 2027; t
 A note on what this is not. It is not a bet that every El Niño impact arrives on schedule. CPC’s own language is the right one: with an event of this magnitude the chances of the usual impacts are larger, not certain. It is not a claim that a single year above 1.5°C rewrites the Paris Agreement, which is scored on a long average; the WMO was plain that temporary breaches get more common as the baseline climbs, and the central estimate for the 2015–2034 twenty-year mean is already 1.44°C. It is not investment advice for the man in Atlanta. The wallets that “miraculously” nail every OpenAI release date are a different kind of informed money. The Pacific does not trade under a pseudonym.
 
 What the Pacific does is leave a receipt. Subsurface heat above +8°C is not a headline. It is next year’s surface, still underwater, already on its way east. The looms and the language models can argue about what a mind is. This one is simpler. Twenty-two models, one ocean, no card to punch. If you want a number to check me against, write this down: Niño-3.4 at or above +2.5°C for a three-month season sometime between now and January, and 2026 in the top slot of the temperature record when the year is closed. If both miss, the article failed. If only the poetry misses, the ocean didn’t.
+
+## Connected Dispatches
+- [[The Hottest Year of Your Life Hasn't Happened Yet]] — Comprehensive scorecard & commodity volatility breakdown
+- [[The Pacific Is Posting Odds Now]] — Pricing El Niño anomalies on Kalshi & Polymarket
+- [[A Machine with No Thoughts Would Like a Word]] — Deterministic automations versus ocean heat tensions

@@ -5,7 +5,7 @@ import { eventCard } from "../event-card/event-card.js";
 import { eventRow } from "../event-row/event-row.js";
 import { shareButton } from "../share-button/share-button.js";
 import { correctionsUI, getCorrections } from "../corrections/corrections.js";
-import { typeOf, graphScene, neighbors } from "../../js/data/graph.js";
+import { typeOf, graphScene, neighbors, getBacklinks, getOutgoingLinks } from "../../js/data/graph.js";
 import { label } from "../../js/data/dates.js";
 import { button } from "../button/button.js";
 import { isStewardActive, openStewardDrawer } from "../steward-drawer/steward-drawer.js";
@@ -52,13 +52,51 @@ export function zineReader(node, { graph, calendar, level = 2 } = {}) {
   }
 
   if (graph) {
-    const near = [...neighbors(graph, node.id)].map(n => graph.byId.get(n)).filter(Boolean)
-      .sort((a, b) => (a.type === "missing") - (b.type === "missing") || a.title.localeCompare(b.title));
-    if (near.length) {
-      root.append(h("section.nc-reader__links", { "aria-labelledby": `${id}-links` },
-        h(`h${level + 1}.nc-reader__sub`, { id: `${id}-links` }, `Linked from here (${near.length})`),
-        h("ul.nc-reader__grid", { role: "list" }, near.map(n => h("li", {}, zineCard(n, { level: level + 2 })))),
-      ));
+    const incoming = getBacklinks(graph, node.id).filter(n => n.type !== "missing");
+    const outgoing = getOutgoingLinks(graph, node.id).filter(n => n.type !== "missing");
+
+    const connectionsSec = h("section.nc-reader__backlinks-dock", { "aria-labelledby": `${id}-conns` },
+      h(`h${level + 1}.nc-reader__sub`, { id: `${id}-conns` }, `Bidirectional Backlinks & Relational Scape`)
+    );
+
+    let hasConns = false;
+    if (incoming.length > 0) {
+      hasConns = true;
+      connectionsSec.append(
+        h("div.nc-reader__conn-block", {},
+          h(`h${level + 2}.nc-eyebrow`, {}, `↩ Referenced By (${incoming.length} incoming backlinks)`),
+          h("p.nc-reader__conn-desc", {}, "Other dispatches and dossiers that cite and link into this piece:"),
+          h("ul.nc-reader__grid", { role: "list" }, incoming.map(n => h("li", {}, zineCard(n, { level: level + 3, graph, spatial: false }))))
+        )
+      );
+    }
+
+    const venues = outgoing.filter(n => n.type === "venue");
+    if (venues.length > 0) {
+      hasConns = true;
+      connectionsSec.append(
+        h("div.nc-reader__conn-block", {},
+          h(`h${level + 2}.nc-eyebrow`, {}, `🏛️ Downtown Venues & Rooms Cited (${venues.length})`),
+          h("p.nc-reader__conn-desc", {}, "Physical rooms and stages referenced directly in this piece:"),
+          h("ul.nc-reader__grid", { role: "list" }, venues.map(n => h("li", {}, zineCard(n, { level: level + 3, graph, spatial: false }))))
+        )
+      );
+    }
+
+    const outgoingNotes = outgoing.filter(n => n.type !== "venue");
+    if (outgoingNotes.length > 0) {
+      hasConns = true;
+      connectionsSec.append(
+        h("div.nc-reader__conn-block", {},
+          h(`h${level + 2}.nc-eyebrow`, {}, `↪ Referenced Dispatches & Topics (${outgoingNotes.length})`),
+          h("p.nc-reader__conn-desc", {}, "Connected dispatches, stances, and research reports:"),
+          h("ul.nc-reader__grid", { role: "list" }, outgoingNotes.map(n => h("li", {}, zineCard(n, { level: level + 3, graph, spatial: false }))))
+        )
+      );
+    }
+
+    if (hasConns) {
+      root.append(connectionsSec);
     }
   }
   if (node.type !== "missing") {
