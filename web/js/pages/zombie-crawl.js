@@ -73,43 +73,37 @@ export function zombieCrawlPage() {
       step: "Stop 1 · 6:00 PM – 7:30 PM",
       venue: "Shady Oak Barrel House",
       address: "420 1st Street",
-      highlights: "Kickoff HQ & Makeup Station. Fresh sour ale drafts, outdoor patio gathering, and fake blood touchups.",
-      special: "🧪 The Reanimator Sour Ale"
+      highlights: "Kickoff HQ & Gathering Station. Barrel-aged sours, fresh drafts, outdoor patio, and undead makeup meetup."
     },
     {
       step: "Stop 2 · 7:30 PM – 9:00 PM",
       venue: "Barrel Proof Lounge",
       address: "501 Mendocino Avenue",
-      highlights: "Live horror rock DJ, cocktail lounge vibes, and preliminary costume contest heats.",
-      special: "🍸 Brain Haemorrhage Shots & Smoked Bourbon"
+      highlights: "Live horror rock DJ, cocktail lounge atmosphere, and preliminary costume contest heats."
     },
     {
       step: "Stop 3 · 9:00 PM – 10:15 PM",
       venue: "Beer Baron Bar & Kitchen",
       address: "614 4th Street",
-      highlights: "Fourth Street midway takeover. Huge craft tap wall, whiskey flights, and zombie photos.",
-      special: "🥃 Witches Brew Whiskey Flight"
+      highlights: "Fourth Street midway takeover. Craft tap wall, whiskey flights, and group photo stop."
     },
     {
       step: "Stop 4 · 10:15 PM – 11:30 PM",
       venue: "Stout Brothers Irish Pub",
       address: "523 4th Street",
-      highlights: "Classic dark wood pub chaos, full undead chorus singing, and costume showdown.",
-      special: "🍺 Black & Tan 'Nightfall' Pints"
+      highlights: "Classic dark wood pub chaos, full undead chorus singing, and costume showdown."
     },
     {
       step: "Stop 5 · 11:30 PM – 1:00 AM",
       venue: "The California Theatre",
       address: "528 7th Street",
-      highlights: "Midnight Monster Mash! Horror movie projections on the big stage and live dance floor.",
-      special: "🩸 Vampire's Kiss Cocktail"
+      highlights: "Midnight Monster Mash! Horror visuals on the big stage, live music, and full dance floor."
     },
     {
       step: "Stop 6 · 1:00 AM – 2:00 AM",
       venue: "The Goose & Fern",
       address: "Historic Railroad Square",
-      highlights: "The Graveyard Shift. Late night nightcaps and survivor photo for those who made the full trek.",
-      special: "🦇 Final Survivor Boilermaker"
+      highlights: "The Graveyard Shift. Late-night Railroad Square nightcaps and survivor group photo."
     }
   ];
 
@@ -138,20 +132,7 @@ export function zombieCrawlPage() {
             h("span.nc-muted", { style: "font-size: 0.85rem;" }, stop.address)
           ),
           h("h3.nc-h3", { style: "font-size: 1.3rem; font-weight: 800;" }, stop.venue),
-          h("p.nc-muted", { style: "line-height: 1.5;" }, stop.highlights),
-          h("div", {
-            style: {
-              background: "rgba(239, 68, 68, 0.1)",
-              border: "1px solid rgba(239, 68, 68, 0.3)",
-              padding: "0.4rem 0.75rem",
-              borderRadius: "6px",
-              fontSize: "0.88rem",
-              fontWeight: "600",
-              color: "#f87171",
-              width: "fit-content",
-              marginTop: "0.25rem"
-            }
-          }, `Drink Special: ${stop.special}`)
+          h("p.nc-muted", { style: "line-height: 1.5; margin: 0;" }, stop.highlights)
         )
       )
     )

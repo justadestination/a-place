@@ -150,7 +150,7 @@
     {
       "path": "/zombie-crawl/",
       "title": "Downtown Santa Rosa Zombie Crawl 2026 — Official Event Guide & Route",
-      "description": "Official schedule, stop-by-stop bar route, drink specials, and 21+ fast door camera verification for the Downtown Santa Rosa Zombie Crawl 2026.",
+      "description": "Official schedule, stop-by-stop bar route, and 21+ fast door camera verification for the Downtown Santa Rosa Zombie Crawl 2026.",
       "module": "js/pages/zombie-crawl.js",
       "og": "event"
     }
