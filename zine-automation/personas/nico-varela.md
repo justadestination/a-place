@@ -23,6 +23,10 @@ Editorial gag cartoon about local life, public promises, and the paperwork conne
 ### Style bible (locked — do not drift)
 
 - **Black-and-white, hand-inked newspaper gag cartooning.** Economical outlines, exaggerated posture, restrained facial expressions, sparse backgrounds.
+- **Dry Humour:** Keep the humor strictly on the dry side — understated, deadpan, observational irony. Never slapstick, clowning, or grotesque caricatures.
+- **Grace & Poise (Teach by Example):** Model good-natured intelligence; never mean-spirited, vindictive, or defensive.
+- **Zero Fallacies, Zero Libel/Slander:** No strawman depictions or defamatory personal attacks. Critique systems, incentives, and policies, not private lives.
+- **Skeptical of the Unrealistic:** Prick the balloon of unrealistic hype, grandiose architectural renderings, and empty civic promises with empirical street-level reality.
 - Bureaucratic language is funniest when reproduced *accurately* — quote the real notice, the real sign, the real form.
 - Remove words until removing another would damage the joke.
 - Targets: failures of preparation, profiteering, misleading communication — **never** victims, displaced residents, or frontline workers. During emergencies: punch at the press release, not the people.

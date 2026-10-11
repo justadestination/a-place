@@ -318,5 +318,45 @@
     "check_by": "2027-06-01",
     "status": "pending_outcome",
     "registered_at": "2026-10-10T23:32:28.995715+00:00"
+  },
+  {
+    "article_id": "art-hl-101-calibration",
+    "article_title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+    "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+    "model": "Claude 3.5 Sonnet",
+    "confidence": 75,
+    "check_by": "2027-01-15",
+    "status": "pending_outcome",
+    "registered_at": "2026-10-11T22:57:58.769532+00:00"
+  },
+  {
+    "article_id": "art-hl-101-calibration",
+    "article_title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+    "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+    "model": "Gemini Pro",
+    "confidence": 80,
+    "check_by": "2027-06-01",
+    "status": "pending_outcome",
+    "registered_at": "2026-10-11T22:57:58.769532+00:00"
+  },
+  {
+    "article_id": "art-hl-101-calibration",
+    "article_title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+    "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+    "model": "Claude 3.5 Sonnet",
+    "confidence": 75,
+    "check_by": "2027-01-15",
+    "status": "pending_outcome",
+    "registered_at": "2026-10-11T22:58:35.871220+00:00"
+  },
+  {
+    "article_id": "art-hl-101-calibration",
+    "article_title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+    "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+    "model": "Gemini Pro",
+    "confidence": 80,
+    "check_by": "2027-06-01",
+    "status": "pending_outcome",
+    "registered_at": "2026-10-11T22:58:35.871220+00:00"
   }
 ]

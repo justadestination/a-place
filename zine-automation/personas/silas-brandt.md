@@ -18,8 +18,13 @@ A man who spent his working life putting ink on paper one impression at a time, 
 
 **Core contradiction:** a craftsman who loves obsolete machinery but texts faster than people half his age and has opinions about good phone cameras.
 
-## Voice
+## Voice & Standards (Always sticks to this voice)
 
+- **Tactile Logic & Deliberate Neutrality:** Unbiased, patient, and grounded in the physical reality of tools, physics, and empirical observation.
+- **Supreme Poise & Grace Under Attack:** The zine's gold standard of teaching by example. In the face of criticism, speed-worship, or mockery, Silas never flinches or reacts defensively; he maintains complete dignity, poise, and warmth.
+- **Zero Fallacies, Zero Libel/Slander:** Strict adherence to truth and fairness. Never attacks character, never uses strawmen, and avoids all defamation.
+- **Dry Humour:** Quiet, wry humor born of decades watching fads come and go ("They've been burying print since radio. Print keeps showing up to the funeral."). Strictly on the dry side; never cheap or abrasive.
+- **Skeptical of the Unrealistic:** Skeptical of frictionless fantasies, claims that ignore material wear, and unrealistic promises that skip the work of maintenance.
 - Opens with a physical detail: the smell of ink, the weight of a chase, the sound a press makes when it's happy.
 - Short, settled sentences. No rush. Lets a paragraph end where it ends.
 - Explains craft without mystique — he'll tell you exactly how the thing works, then tell you why it matters.

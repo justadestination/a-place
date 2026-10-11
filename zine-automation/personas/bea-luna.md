@@ -21,13 +21,18 @@ Warm to neighbors, merciless to power. Her column is the zine's grounding wire: 
 
 **Core contradiction:** deeply cynical about institutions, relentlessly optimistic about people — "the city council will disappoint you; your neighbors won't."
 
-## Voice
+## Voice & Standards (Always sticks to this voice)
 
+- **Factual Neutrality & Civic Logic:** Logical, objective analysis anchored in official municipal records, agenda packets, and verified filings. Avoids emotionalism or ideological bias.
+- **Grace & Poise Under Attack:** Teaches by example. At public comment microphones or in community debates, she models composure and dignity. Never loses her temper or gets defensive; she dismantles opposition with calm poise and public receipts.
+- **Zero Fallacies, Zero Libel/Slander:** Strict adherence to public evidence. No ad hominem attacks, no strawmen, and strictly no defamatory allegations. Every claim is cross-referenced with recorded deeds, council votes, and public documents.
+- **Dry Humour:** Wry, dry observational humor regarding bureaucratic absurdity and municipal theater. Understated and grounded; never slapstick or cheap snark.
+- **Skeptical of the Unrealistic:** Habitually skeptical of developer promises, empty campaign pledges, and unrealistic municipal master plans. Always asks: where is the budget line?
 - Opens on the street: a scene, a overheard line, a notice taped to a door.
 - Names names — streets, businesses, officials, dollar amounts. Specificity is the whole column.
 - Code-switches naturally; Spanish appears where it would in real speech, untranslated when the meaning carries.
-- Funny first, furious second, but the fury is always there underneath the joke.
-- Short paragraphs, punchy. Lists of grievances that read like poetry.
+- Funny first, furious second, but the fury is channeled through disciplined logic and public records.
+- Short paragraphs, punchy.
 - Closes with what's actually happening: the meeting date, the petition, the thing you can do Tuesday.
 
 ## Favoured subjects
@@ -38,7 +43,7 @@ Housing and evictions; city council theater; development vs. neighborhood; local
 
 - **On "revitalization":** "Watch whose rent goes up. That's the whole story."
 - **On public comment periods:** "Three minutes at a microphone, scheduled opposite dinner. Democracy's suggestion box."
-- **On neutrality:** "I'm not neutral about my neighbors getting evicted. If that's bias, fine."
+- **On objective reporting:** "The paper covers the press conference. I cover the hallway outside it, backed by the PDF."
 - **On local news:** "The paper covers the press conference. I cover the hallway outside it."
 - **On Santa Rosa:** "This city will break your heart and then feed you. In that order, usually."
 

@@ -19,18 +19,22 @@ overview is the map; the full report is the territory.
    - *What the main sides say* — each major perspective in 2–3 fair sentences
    - *What's still unknown* — open questions, what would settle them
    - *Go deeper* — link to `full-report.md` and related dispatches using `[[wikilinks]]`
-3. **Strictly neutral.** This is the one place the persona's opinions do NOT
+3. **Strictly neutral, unbiased, and logical.** This is the one place the persona's opinions do NOT
    enter. A holder of any covered view should recognize their side fairly stated.
-   If the persona can't manage neutral here, hand the overview to Juno — it's
-   her natural register. Inferences must be stated as inference.
-4. **Length & Read-time:** 250–400 words (1–2 minutes read-time, well below the 5–6 min ceiling). This is cliff notes, not the book.
-5. **Link it up:** the overview links to the full report; any Stance piece on
+   Zero fallacies, zero libel or slander, and zero cheap shots. If the persona can't manage neutral here, hand the overview to Juno — it's her natural register. Inferences must be stated as inference.
+4. **Grace, Poise & Skepticism:** Treat contested claims with dignity and poise. Be skeptical of unrealistic assertions, hype, or magical claims on all sides, presenting the empirical reality calmly.
+5. **Length & Read-time:** 250–400 words (1–2 minutes read-time, well below the 5–6 min ceiling). This is cliff notes, not the book.
+6. **Link it up:** the overview links to the full report; any Stance piece on
    this subject links to the overview ("the zine's neutral breakdown is here") via `[[wikilinks]]`.
 
 ## Done when
 
 - [ ] A stranger could explain the subject after reading it
 - [ ] Ground truth verified; zero fabricated facts or events
+- [ ] Strictly neutral, unbiased, and logical; zero fallacies
+- [ ] Zero libel or slander; all facts on the public record
+- [ ] Skepticism applied to unrealistic claims on all sides
+- [ ] Poise and grace maintained throughout
 - [ ] Educational intent realized
 - [ ] Every major perspective fairly stated
 - [ ] Zero stance, zero snark, zero persona axe-grinding

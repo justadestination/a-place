@@ -28,9 +28,12 @@ it looks. Prefer the overlooked one when it's genuinely substantive.
    a timeline if the story has one, a glossary if the jargon needs it.
 6. **Read-Time & Word Count Gate:** Keep between 800 and 1,300 words (5–6 min read). Hard ceiling: 1,400 words.
 7. **Backlink Chaining:** If the topic is vast, do NOT bloat into a single long wall of text. Decompose into modular sibling dispatches and chain them together using `[[wikilinks]]`.
-8. The persona's voice colors the *prose*, not the *conclusions*. Juno's
-   archival dryness, Priya's systems thinking, Mags's eye for the telling
-   detail — but the facts stay neutral.
+8. **Neutrality & Logical Rigor:** The dossier is strictly unbiased and analytical. Never use logical fallacies or take cheap rhetorical shots.
+9. **Zero Libel or Slander:** Never include defamatory, unsubstantiated, or reckless claims about individuals or businesses.
+10. **Skepticism of the Unrealistic:** Interrogate extraordinary claims, PR claims, and hype from all sides against empirical records.
+11. The persona's voice colors the *prose*, not the *conclusions*. Juno's
+    archival dryness, Priya's systems thinking, Mags's eye for the telling
+    detail — dry humour in footnotes or quiet observations is welcome, but the facts stay neutral and poised.
 
 ## Output
 
@@ -42,8 +45,13 @@ it looks. Prefer the overlooked one when it's genuinely substantive.
 
 - [ ] 8+ distinct, verified sources with working URLs
 - [ ] Ground truth only: zero fabricated records, dockets, or claims
+- [ ] Strictly unbiased, neutral, and logically sound; zero fallacies
+- [ ] Zero libel or slander; all claims documented on the record
+- [ ] Skepticism applied to unrealistic claims and hype
 - [ ] Four layers separated: facts, claims, inferences (explicitly stated), and unknowns
 - [ ] Every perspective fairly stated (a holder of that view would recognize it)
+- [ ] Specific persona voice maintained with dry humour where appropriate
+- [ ] Grace and poise maintained throughout; teaches by example
 - [ ] Word count within 800–1,300 words (≤ 1,400 word / 5–6 min read limit)
 - [ ] Modular backlinks established via `[[wikilinks]]`
 - [ ] Educational intent realized

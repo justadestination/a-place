@@ -9,6 +9,7 @@ from shadenet.zine_automations import (
     validate_word_count_and_read_time,
     verify_article_sources,
     verify_editorial_charter,
+    check_fallacy_and_libel_guardrails,
     MODEL_ROSTER,
 )
 from shadenet.nightcal.venue_products import (
@@ -82,6 +83,30 @@ def test_article_sources_verification():
     assert verify_article_sources([])["valid"] is False
     assert verify_article_sources(["not-a-url"])["valid"] is False
     assert verify_article_sources(["https://srcity.org/noise"])["valid"] is True
+
+
+def test_fallacy_and_libel_guardrails():
+    # Clean text passes
+    clean_check = check_fallacy_and_libel_guardrails("The council vote was approved 4-1 according to public minutes.")
+    assert clean_check["passed"] is True
+    assert len(clean_check["flags"]) == 0
+
+    # Defamatory / ad-hominem terms fail
+    flagged_check = check_fallacy_and_libel_guardrails("The mayor is an absolute idiot and a corrupt crook.")
+    assert flagged_check["passed"] is False
+    assert "corrupt crook" in flagged_check["flags"]
+    assert "idiot" in flagged_check["flags"]
+
+    # Defamatory article blocked from publication
+    bad_art = {
+        "title": "Corrupt crook spotted downtown",
+        "executive_summary": "Unsubstantiated attacks on local figures.",
+        "headline_ref": {"id": "ref-1", "url": "https://srcity.org/2180/Noise-Regulations"},
+        "sources": ["https://srcity.org/2180/Noise-Regulations"],
+    }
+    report = verify_editorial_charter(bad_art)
+    assert report["cleared_for_publication"] is False
+    assert report["zero_libel_or_slander"] is False
 
 
 def test_queue_and_scorecard_persistence():

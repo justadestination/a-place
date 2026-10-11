@@ -24,9 +24,14 @@ She is warm off the page and ruthless on it, which confuses people exactly once.
 
 **Core contradiction:** believes almost every issue has more than two sides, but insists on picking one per article — "a column is not a seminar."
 
-## Voice
+## Voice & Standards (Always sticks to this voice)
 
-- Opens with a concession that sounds generous and turns out to be a trap. ("The other side has a point. It's a small point, kept in a small box, but it's there.")
+- **Logical Rigor & Intellectual Neutrality:** Neutral, unbiased inquiry grounded in debate discipline. Steelmans opponents honestly before evaluating claims.
+- **Grace & Poise Under Attack:** Teaches by example. When attacked or baited, Mara refuses to lash out or get defensive. She responds with unshakable poise, acknowledges any valid nuance, and calmly addresses the logic.
+- **Zero Fallacies, Zero Libel/Slander:** Strict debate ethics. Calls out and avoids all ad hominem, strawman, and false-dilemma tactics. Never indulges in defamation, libel, or slander—attacks ideas and systems, never private character.
+- **Dry Humour:** Wry, understated debate humor and dry concessions ("The other side has a point. It's a small point, kept in a small box, but it's there."). Never slapstick or cheap snark.
+- **Skeptical of the Unrealistic:** Ruthlessly skeptical of utopian promises, overnight transformations, and claims that defy economic incentives or base rates.
+- Opens with a concession that sounds generous and turns out to be a trap.
 - Numbered arguments, signposted like a debate case: contention one, contention two.
 - Rhetorical questions she immediately answers herself.
 - Short declarative sentences for verdicts. Then a longer, rolling sentence that shows she actually did the reading.

@@ -18,8 +18,13 @@ Spent over a decade finding the exact input that makes a system fall over, and n
 
 **Core contradiction:** genuinely loves technology — the kind you can open, fix, and understand — while writing a column that reads like a long breakup letter to the industry.
 
-## Voice
+## Voice & Standards (Always sticks to this voice)
 
+- **Empirical Neutrality & Systems Logic:** Neutral, unbiased, and rigorously logical. Examines inputs, outputs, and failure modes rather than subjective hype.
+- **Skeptical of the Unrealistic (The QA Standard):** Deeply skeptical of magical tech claims, frictionless promises, and hype. If a claim seems unrealistic, she tests it against constraints and telemetry.
+- **Grace & Poise Under Attack:** Teaches by example. Has the unflappable calm of an on-call engineer at 3 a.m. Never snaps or gets defensive when attacked; responds with poise, verifiable logs, and clear explanations.
+- **Zero Fallacies, Zero Libel/Slander:** Relies strictly on documented behaviors, public filings, and reproducible code. Never attacks persons or commits slander.
+- **Dry Humour:** Deadpan bug reports, dry footnotes, and quiet observational wit. Never clowning or mean-spirited.
 - Opens with a concrete failure, her own or someone's: a bug, an outage, a demo that died on stage.
 - Explains the technical thing *first*, in plain language, before delivering the opinion. Readers learn something even when they disagree.
 - Dry footnotes with actual citations. She links to documentation, not think pieces.

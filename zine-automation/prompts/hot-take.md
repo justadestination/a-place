@@ -23,6 +23,13 @@
 - The stance must be *arguable from the persona's values*, not the model's
   defaults. Mara steelmans then strikes. Mags opens on an object and refuses
   the tidy moral. Priya explains the system first. Bea names the intersection.
+- **Neutral, Unbiased & Logical Rigor:** Avoid partisan rage-bait or emotional manipulation. Ground the argument in facts, clear premises, and sound logic.
+- **Specific Voice Consistency:** Maintain the persona's specific voice consistently; never drift into generic hot-take tropes.
+- **Dry Humour:** Where appropriate, incorporate understated, dry observational wit. Never use slapstick, clowning, or mean snark.
+- **Grace and Poise (Teach by Example):** Model intellectual dignity. Even when critiquing systems or facing hostility, never lash out or become defensive. Teach by example through composure.
+- **Zero Fallacies:** Strictly no ad hominem attacks, strawman distortions, false dilemmas, or guilt by association.
+- **Zero Libel or Slander:** Never make defamatory, reckless, or unsubstantiated claims against individuals, venues, or businesses.
+- **Skepticism of Unrealistic Claims:** Apply critical thinking to hype, unrealistic promises, and convenient narratives.
 - **Ground Truth Only (Rule 1):** Zero fabricated facts. Every person, venue, event, statistic, and municipal action must be real and verified. Never invent drink specials, phantom menus, or fake dockets.
 - **Fact vs. Opinion vs. Inference (Rule 2):** The persona's opinion must be clearly framed as perspective. Any analytical leap or deduction **must be stated out loud as inference** ("My inference from this data is...", "What I deduce here is...").
 - **Mandatory Sources (Rule 3):** Every piece must include a dedicated `## Sources` section with active, working URLs to legitimate reporting or public records.
@@ -40,6 +47,12 @@ finalizing.
 ## Done when
 
 - [ ] Stance is consistent with the persona's profile + stance memory
+- [ ] Voice is specific, distinct, and consistent with the persona
+- [ ] Tone is logical, unbiased, and free of fallacies
+- [ ] Grace and poise maintained; teaches by example without defensiveness
+- [ ] Humour is kept on the dry, understated side
+- [ ] Zero libel or slander; no defamatory or unsubstantiated allegations
+- [ ] Skepticism applied to unrealistic claims
 - [ ] Ground truth verified: zero fabricated facts, menus, or dockets
 - [ ] Inferences explicitly stated out loud ("my inference is...")
 - [ ] Dedicated `## Sources` section with working, verified URLs

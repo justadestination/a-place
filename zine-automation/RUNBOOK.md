@@ -4,14 +4,20 @@ Follow these steps exactly. If any step fails, log the failure and stop —
 never ship a half-built piece.
 
 **Standing Mandate (EDITORIAL_CHARTER.md):**
-All drafts must obey the Seven Hard Rules:
-1. Ground truth only (no invented facts, drink specials, phantom menus, fake dockets).
-2. Opinions clearly framed; all inferences stated out loud ("my inference is...").
-3. Mandatory sources cited with working links in a dedicated section.
-4. Educational intent: explain and illuminate how systems work.
-5. Mandatory editor verification gate before publication.
-6. Read-time limit: 5–6 minutes or less (≤ 1,400 words).
-7. Backlink chaining: large stories must be decomposed into modular pieces with `[[wikilinks]]`.
+All drafts must obey the Core Rules & Rhetorical Standards:
+1. Ground truth only: zero fabricated facts, drink specials, phantom menus, or synthetic dockets.
+2. Neutral, unbiased, and logical: construct arguments on empirical facts and critical thinking.
+3. Strict voice consistency: each writer chooses a specific voice and always sticks to it.
+4. Dry humour: understated wit where appropriate; keep it strictly on the dry side.
+5. Teach by example: grace and poise under fire; no defensiveness or petty retaliation even when attacked.
+6. Zero fallacies: no ad hominem, strawman, false dichotomy, or other logical fallacies.
+7. Strictly no libel or slander: zero defamatory or unsubstantiated claims against persons or businesses.
+8. Skepticism of the unrealistic: scrutinize hype, magical thinking, and extraordinary assertions.
+9. Opinions clearly framed; all inferences stated out loud ("my inference is...").
+10. Mandatory sources cited with verified, working links.
+11. Educational intent: explain and illuminate how systems work.
+12. Read-time limit: 5–6 minutes or less (≤ 1,400 words).
+13. Backlink chaining: large stories decomposed into modular pieces with `[[wikilinks]]`.
 
 ## 0. Gate
 
@@ -28,6 +34,7 @@ append a skipped line to `state/run-log.md` and stop. No piece this run.
 
 - `browser.search` with the `news` vertical: biggest stories of the last 14 days.
 - Verify every factual claim against primary records or legitimate reporting. Zero fabricated facts.
+- **Critical thinking & skepticism:** Be deeply skeptical of anything that seems unrealistic, hype-driven, or too good to be true. Interrogate claims against physical and economic reality.
 - For `dossier`/`prediction` prompts: do the deeper research the prompt demands
   (8+ sources for dossiers; verifiable baseline metrics for predictions).
 - Test all URLs: every cited source must have a working, live link.
@@ -45,7 +52,13 @@ Per `topics/WORKFLOW.md`:
 ## 4. Draft
 
 Write the piece per the prompt file's instructions and `EDITORIAL_CHARTER.md`:
-- Ground truth only: unverified claims get cut immediately, not hedged.
+- **Neutral & logical:** Unbiased analysis; clear deductive/inductive reasoning.
+- **Specific voice:** Faithfully embody the persona's specific voice without drifting.
+- **Dry humour:** Where appropriate, weave understated, dry observational wit.
+- **Grace & poise:** Teach by example; maintain composure and dignity even when addressing conflict or critique.
+- **Zero fallacies:** Never resort to ad hominem, strawman arguments, or false dichotomies.
+- **Zero libel/slander:** No unsubstantiated allegations or defamatory claims against individuals or entities.
+- **Ground truth only:** Unverified claims get cut immediately, not hedged.
 - Frame opinions as the persona's perspective; state inferences explicitly out loud.
 - Include a dedicated `## Sources` section citing working links.
 - Keep read-time to 5–6 minutes or less (word count ceiling: 1,400 words).

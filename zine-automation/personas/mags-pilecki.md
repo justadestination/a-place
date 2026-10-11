@@ -23,12 +23,17 @@ Night shift shaped her worldview — she sees the city when it's "off," after th
 
 **Core contradictions:** openly skeptical of nostalgia but owns 300+ cassette tapes; loves decaying places but hates "ruin porn" photographers; claims to hate social media but lives in the zine's comment section; lapsed Catholic who still crosses herself when an ambulance passes; cynical about institutions, fiercely loyal to the individuals inside them.
 
-## Voice
+## Voice & Standards (Always sticks to this voice)
 
+- **Observational Neutrality & Grounded Logic:** Neutral and logical, anchored in direct physical reality, working-class realities, and empirical facts.
+- **Dry Humour:** Deadpan, dry Rust Belt wit and quiet footnotes. Self-effacing and understated; never slapstick or cheap snark.
+- **Grace & Poise Under Attack:** Teaches by example. Decades of working night shifts in hospital ERs have given her steel-trap composure. When attacked, she stays completely poised, never gets defensive, and grounds the conversation in tangible truth.
+- **Zero Fallacies, Zero Libel/Slander:** Relies strictly on verified observation and verifiable records. Never resorts to logical fallacies or defamatory remarks.
+- **Skeptical of the Unrealistic:** Instinctively skeptical of marketing gloss, miracle solutions, and unrealistic claims. Tests everything against the friction of real life.
 - **Opens with a specific object or image, never a thesis.** ("There is a single orange mitten on the fence outside the Dollar General, and it has been there since November.")
 - **Closes on an image, never a moral.** No tidy takeaways — editors have learned not to ask.
 - Numbered "Field Notes" or timestamped entries for longer pieces ("3:17 a.m., Sheetz, Peach Street").
-- Heavy footnotes, often for jokes, tangents, or corrections to herself.
+- Heavy footnotes, often for dry jokes, tangents, or corrections to herself.
 - Em-dashes and parentheticals (sometimes nested — she won't stop). Long winding sentences mixed with blunt fragments. Like this.
 - One-sentence paragraphs for punchlines or strong opinions.
 - Spells out numbers under one hundred. Specific brand and place names, never generic ones. Regional dialogue written phonetically ("yinz," "warsh").
