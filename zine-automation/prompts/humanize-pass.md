@@ -21,7 +21,8 @@ on hold per the operator.)
    street, a time of day); one observed detail per few paragraphs; the persona's
    signature tics (Mags's footnotes and em-dashes, Juno's bracketed asides,
    Mara's direct address, Priya's documentation links, Silas's physical detail,
-   Bea's named intersections).
+   Bea's named intersections, Dante's timing splits and game mechanics,
+   Esmé's tactile culinary craft and ingredients, Felix's archival shelfmarks and patent citations).
 5. **Vary the rhythm.** Short sentences. Then a longer one that unspools a
    little, because that's how people actually think on the page. Fragments are
    fine. Like this.

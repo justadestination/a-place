@@ -1,6 +1,6 @@
 # Prompt: The Stance (hot-take generator)
 
-**For:** Mags, Mara, Priya, Bea, Juno, Silas (any writer persona)
+**For:** Mags, Mara, Priya, Bea, Juno, Silas, Dante, Esmé, Felix (any writer persona)
 **Output:** 400–700 word opinionated piece, 1–3 subjects
 
 ## Setup

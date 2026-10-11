@@ -17,7 +17,8 @@ STATE = os.path.join(BASE, 'state', 'state.json')
 LOG = os.path.join(BASE, 'state', 'run-log.md')
 
 PERSONAS = ["mags-pilecki", "juno-voss", "mara-okwonko", "dev-malik",
-            "nico-varela", "priya-raman", "silas-brandt", "bea-luna"]
+            "nico-varela", "priya-raman", "silas-brandt", "bea-luna",
+            "dante-morales", "esme-navarro", "felix-brauer"]
 # (prompt file, weight) — editors-letter is never auto-picked
 PROMPTS = [("hot-take", 35), ("dossier", 20), ("prediction", 20),
            ("cartoon-brief", 15), ("topic-overview", 10)]

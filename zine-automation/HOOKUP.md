@@ -10,7 +10,7 @@ do this alone — the platform must schedule *agent runs* that follow the runboo
 ```
 zine-automation/
   README.md, SCHEDULER-SPEC.md, RUNBOOK.md, RUNBOOK-EDITOR.md, CIPHER.md (held)
-  personas/      8 roster files, each with append-only "Stances taken" memory
+  personas/      11 roster files, each with append-only "Stances taken" memory
   prompts/       hot-take, dossier, prediction, topic-overview, cartoon-brief,
                  humanize-pass, editor-pass, editors-letter (OPERATOR-OWNED)
   scripts/state.py   stdlib-only state helpers (gate/pick/topic/stance/

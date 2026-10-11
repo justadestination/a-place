@@ -1,6 +1,6 @@
 # Prompt: The Forecast (prediction piece)
 
-**For:** Priya, Mara, Juno, Mags
+**For:** Priya, Mara, Juno, Mags, Dante, Felix
 **Output:** 500–800 word article predicting something within the next year
 
 ## Setup
