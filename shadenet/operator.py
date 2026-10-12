@@ -120,14 +120,14 @@ def get_zine_operator_status() -> dict[str, Any]:
     recent_personas = []
     runs = 0
     pieces = 0
-    if state_file.exists():
-        try:
+    try:
+        if state_file.exists():
             s = json.loads(state_file.read_text(encoding="utf-8"))
             recent_personas = s.get("recent_personas", [])
             runs = s.get("runs", 0)
             pieces = s.get("pieces", 0)
-        except Exception:
-            pass
+    except Exception:
+        pass
 
     personas = [
         {"id": "dev-malik", "name": "Dev Malik", "role": "Editor & Host", "weight": 10, "quiet": False},
