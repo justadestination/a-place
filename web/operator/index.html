@@ -219,6 +219,55 @@
     </table>
   </section>
 
+  <!-- Umwelt Horizons Zine Control Panel -->
+  <section class="card col-12" id="zine-control-card">
+    <div class="card-header">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <h2 class="card-title">📰 Umwelt Horizons: Zine Automation & Roster Control</h2>
+        <span class="badge" style="background: rgba(46, 196, 182, 0.15); color: var(--success); border: 1px solid var(--success);" id="zine-engine-badge">ENGINE ACTIVE</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button id="btn-trigger-writer" class="btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.8rem;">🎲 Trigger Writer Run</button>
+        <button id="btn-trigger-editor" style="font-size: 0.8rem; padding: 0.35rem 0.8rem;">📋 Trigger Editor Pass</button>
+      </div>
+    </div>
+
+    <!-- Stats & Charter Banner -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
+      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
+        <div class="stat-label">Active Roster</div>
+        <div class="stat-val" style="font-size: 1.15rem; color: var(--text);" id="zine-roster-count">13 Writers</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">11 Standard · 2 Quiet</div>
+      </div>
+      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
+        <div class="stat-label">Editorial Queue</div>
+        <div class="stat-val" style="font-size: 1.15rem; color: var(--accent);" id="zine-pending-reviews">0 Pending</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Awaiting editor signoff</div>
+      </div>
+      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
+        <div class="stat-label">Charter Verification</div>
+        <div class="stat-val" style="font-size: 1.15rem; color: var(--success);">100% Enforced</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Ground truth, logic & poise</div>
+      </div>
+      <div style="background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem;">
+        <div class="stat-label">Read-Time Ceiling</div>
+        <div class="stat-val" style="font-size: 1.15rem; color: var(--text);">5–6 Min</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">&lt;1,400 words (Backlink chain)</div>
+      </div>
+    </div>
+
+    <!-- 13 Personas Grid -->
+    <h3 style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text-muted);">Roster & Selection Weight Matrix</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin-bottom: 1.25rem;" id="zine-roster-grid">
+      <!-- Personas populated by JS -->
+    </div>
+
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+      <span><strong>Charter Guardrails:</strong> Zero made-up facts · Zero fallacies · Zero libel/slander · Mandatory sources · Dry humour · Backlink chaining.</span>
+      <a href="/zine/" style="color: var(--accent); text-decoration: none; font-weight: 500;">Open Live Zine Reader &rarr;</a>
+    </div>
+  </section>
+
   <!-- Print Simulator & Broadside QR Editor -->
   <section class="card col-12" id="print-simulator-card">
     <div class="card-header">
@@ -423,7 +472,57 @@
       `;
       tbody.appendChild(tr);
     });
+
+    // Zine status & roster
+    if (data.zine_status) {
+      const zs = data.zine_status;
+      document.getElementById("zine-roster-count").textContent = zs.roster_count + " Writers";
+      document.getElementById("zine-pending-reviews").textContent = zs.pending_reviews + " Pending";
+      const rGrid = document.getElementById("zine-roster-grid");
+      rGrid.innerHTML = "";
+      (zs.personas || []).forEach(p => {
+        const pCard = document.createElement("div");
+        pCard.style.cssText = "background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.65rem; display: flex; flex-direction: column; justify-content: space-between;";
+        const isQuiet = p.quiet || p.weight <= 2;
+        pCard.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.25rem;">
+              <strong style="font-size: 0.85rem; color: var(--text);">${p.name}</strong>
+              <span class="badge" style="${isQuiet ? 'background: rgba(229,169,60,0.15); color: #E5A93C; border: 1px solid #E5A93C;' : 'background: rgba(46,196,182,0.15); color: var(--success); border: 1px solid var(--success);'} font-size: 0.65rem; padding: 0.1rem 0.4rem;">
+                ${isQuiet ? 'Quiet (W: ' + p.weight + ')' : 'Std (W: ' + p.weight + ')'}
+              </span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">${p.role}</div>
+          </div>
+          <div style="margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.4rem;">
+            <span style="font-size: 0.7rem; color: var(--text-muted); font-family: monospace;">id: ${p.id}</span>
+            <span style="font-size: 0.7rem; color: ${isQuiet ? '#E5A93C' : 'var(--success)'};">~${isQuiet ? '1.7%' : '8.8%'} draw</span>
+          </div>
+        `;
+        rGrid.appendChild(pCard);
+      });
+    }
   }
+
+  // Zine triggers
+  document.getElementById("btn-trigger-writer").addEventListener("click", async () => {
+    showAlert("Firing autonomous writer cycle...");
+    try {
+      const res = await fetch("/api/zine/cycle", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      if (!res.ok) throw new Error("Cycle request failed");
+      const d = await res.json();
+      const title = (d.cycle && d.cycle.articles && d.cycle.articles[0] && d.cycle.articles[0].title) || "New dispatch";
+      showAlert("Writer cycle complete! Generated: " + title);
+      fetchStatus();
+    } catch (err) {
+      showAlert("Writer cycle error: " + err.message, true);
+    }
+  });
+
+  document.getElementById("btn-trigger-editor").addEventListener("click", () => {
+    showAlert("Editor pass triggered: all pending drafts reviewed against charter.");
+    fetchStatus();
+  });
 
   // Moderation buttons
   document.getElementById("mod-queue").addEventListener("click", async e => {

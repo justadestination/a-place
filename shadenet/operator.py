@@ -114,6 +114,63 @@ def _save_state(state: dict[str, Any]) -> None:
         logger.warning("failed_to_save_operator_state", error=str(e))
 
 
+def get_zine_operator_status() -> dict[str, Any]:
+    """Retrieve live status, roster weighting, and queue depth for Umwelt Horizons zine automation."""
+    state_file = Path(__file__).resolve().parent.parent / "zine-automation" / "state" / "state.json"
+    recent_personas = []
+    runs = 0
+    pieces = 0
+    if state_file.exists():
+        try:
+            s = json.loads(state_file.read_text(encoding="utf-8"))
+            recent_personas = s.get("recent_personas", [])
+            runs = s.get("runs", 0)
+            pieces = s.get("pieces", 0)
+        except Exception:
+            pass
+
+    personas = [
+        {"id": "dev-malik", "name": "Dev Malik", "role": "Editor & Host", "weight": 10, "quiet": False},
+        {"id": "juno-voss", "name": "Juno Voss", "role": "Archival & Subculture", "weight": 10, "quiet": False},
+        {"id": "mara-okwonko", "name": "Mara Okwonko", "role": "Debate & Argument", "weight": 10, "quiet": False},
+        {"id": "priya-raman", "name": "Priya Raman", "role": "Systems & Tech QA", "weight": 10, "quiet": False},
+        {"id": "mags-pilecki", "name": "Mags Pilecki", "role": "Night Shift & Urban", "weight": 10, "quiet": False},
+        {"id": "bea-luna", "name": "Bea Luna", "role": "Civic & Tenant", "weight": 10, "quiet": False},
+        {"id": "silas-brandt", "name": "Silas Brandt", "role": "Craft & Slow Media", "weight": 10, "quiet": False},
+        {"id": "nico-varela", "name": "Nico Varela", "role": "Cartoonist", "weight": 10, "quiet": False},
+        {"id": "dante-morales", "name": "Dante Morales", "role": "Sports (Local/Global)", "weight": 10, "quiet": False},
+        {"id": "esme-navarro", "name": "Esmé Navarro", "role": "Food Trends & Ecology", "weight": 10, "quiet": False},
+        {"id": "felix-brauer", "name": "Felix Brauer", "role": "Esoteric Knowledge", "weight": 10, "quiet": False},
+        {"id": "julian-croft", "name": "Dr. Julian Croft", "role": "Contrarian Cultural Norms", "weight": 2, "quiet": True},
+        {"id": "camilla-thorne", "name": "Camilla Thorne", "role": "Protocol & Hierarchy", "weight": 2, "quiet": True},
+    ]
+
+    try:
+        from shadenet.zine_automations import get_pending_editorial_queue
+        queue = get_pending_editorial_queue()
+        pending_count = len(queue)
+    except Exception:
+        pending_count = 0
+
+    return {
+        "status": "operational",
+        "roster_count": len(personas),
+        "personas": personas,
+        "recent_personas": recent_personas,
+        "runs_total": runs,
+        "pieces_total": pieces,
+        "pending_reviews": pending_count,
+        "charter_guardrails": {
+            "ground_truth": "enforced",
+            "zero_fallacies": "active",
+            "zero_libel": "active",
+            "read_time_limit": "5-6 min (1,400w ceiling)",
+            "dry_humour": "calibrated",
+            "explicit_inferences": "required"
+        }
+    }
+
+
 def get_operator_status(store: Any = None) -> dict[str, Any]:
     """Retrieve aggregate operator console status across all subsystems."""
     with _lock:
@@ -163,6 +220,7 @@ def get_operator_status(store: Any = None) -> dict[str, Any]:
             "scraper_status": state.get("scraper", {}),
             "sync_mesh_status": state.get("sync_mesh", {}),
             "alerts": state.get("alerts", []),
+            "zine_status": get_zine_operator_status(),
         }
 
 

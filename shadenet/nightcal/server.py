@@ -46,9 +46,11 @@ from shadenet.nightcal.surface import (
 )
 from shadenet.operator import (
     get_operator_status,
+    get_zine_operator_status,
     moderate_queue_item,
     rotate_active_key,
 )
+from shadenet.zine_automations import run_newsroom_cycle
 from shadenet.ratelimit import limiter
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
@@ -286,6 +288,11 @@ class Handler(BaseHTTPRequestHandler):
                     payload = get_operator_status(store)
                 finally:
                     store.close()
+            self._json(200, payload)
+            return
+
+        if path in ("/api/zine/status", "/api/zine/config"):
+            payload = get_zine_operator_status()
             self._json(200, payload)
             return
 
@@ -771,6 +778,14 @@ class Handler(BaseHTTPRequestHandler):
             res = verify_door_presentation(body)
             # Door scanner always returns 200 JSON with status: "admitted" or "rejected"
             self._json(200, res)
+            return
+
+        if path == "/api/zine/cycle":
+            try:
+                cycle_res = run_newsroom_cycle(mock_mode=True)
+                self._json(200, {"status": "success", "cycle": cycle_res})
+            except Exception as e:
+                self._json(500, {"status": "error", "message": str(e)})
             return
 
         if path == "/api/action":
