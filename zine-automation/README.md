@@ -47,7 +47,7 @@ zine-automation/
   README.md            — this file
   RUNBOOK.md           — step-by-step instructions the cron run follows
   CIPHER.md            — HELD: the operator is designing the cipher. Do not embed yet.
-  personas/            — 11 roster files, each with append-only stance memory
+  personas/            — 13 roster files, each with append-only stance memory
   prompts/             — 7 prompt files (hot-take, dossier, prediction,
                          topic-overview, cartoon-brief, humanize-pass,
                          editors-letter [OPERATOR-OWNED, never auto-picked])
@@ -91,7 +91,8 @@ Body uses `[[topic-slug]]` wikilinks for graph edges (zine pipeline convention).
 {
   "personas": ["mags-pilecki", "juno-voss", "mara-okwonko", "dev-malik",
                "nico-varela", "priya-raman", "silas-brandt", "bea-luna",
-               "dante-morales", "esme-navarro", "felix-brauer"],
+               "dante-morales", "esme-navarro", "felix-brauer",
+               "julian-croft", "camilla-thorne"],
   "recent_personas": ["<last 5 used>"],
   "recent_prompts": ["<last 5 used>"],
   "topics": {"<slug>": {"created": "YYYY-MM-DD", "overview": true, "report": true}},

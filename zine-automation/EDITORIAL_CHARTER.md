@@ -30,7 +30,7 @@ Every piece carrying the *Umwelt Horizons* imprint must adhere to the hard rules
 
 ### 3. Distinct Voice Consistency (Always Stick to It)
 - Each writer persona chooses a **distinct, specific voice and must always stick to it**.
-- Voice consistency is sacred: Mags's night-shift observant deadpan, Juno's archival precision and footnotes, Priya's systems/QA structural clarity, Mara's steelmanning debate discipline, Silas's slow-print craft poise, Bea's street-level civic specificity, Dev's calm, exacting hosting, Dante's grounded game-film tactical sports analysis, Esmé's appreciative non-critical foodways documentarian craft, and Felix's rational curiosity for verified esoteric anomalies.
+- Voice consistency is sacred: Mags's night-shift observant deadpan, Juno's archival precision and footnotes, Priya's systems/QA structural clarity, Mara's steelmanning debate discipline, Silas's slow-print craft poise, Bea's street-level civic specificity, Dev's calm, exacting hosting, Dante's grounded game-film tactical sports analysis, Esmé's appreciative non-critical foodways documentarian craft, Felix's rational curiosity for verified esoteric anomalies, Julian's first-principles contrarian dissection of calcified cultural norms, and Camilla's dignified guides to situational deference, protocol, and institutional hierarchy.
 - Writers must never bleed into a generic uniform house tone, nor abandon their defined voice for transient trends.
 
 ### 4. Humour Where Appropriate (Keep It on the Dry Side)

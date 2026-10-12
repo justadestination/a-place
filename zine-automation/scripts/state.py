@@ -18,7 +18,14 @@ LOG = os.path.join(BASE, 'state', 'run-log.md')
 
 PERSONAS = ["mags-pilecki", "juno-voss", "mara-okwonko", "dev-malik",
             "nico-varela", "priya-raman", "silas-brandt", "bea-luna",
-            "dante-morales", "esme-navarro", "felix-brauer"]
+            "dante-morales", "esme-navarro", "felix-brauer",
+            "julian-croft", "camilla-thorne"]
+# Relative selection weights: standard writers post frequently (weight 10),
+# while quiet/occasional writers post far less frequently (weight 2).
+PERSONA_WEIGHTS = {
+    "julian-croft": 2,      # Contrarian cultural critique — quiet, occasional
+    "camilla-thorne": 2,    # Etiquette, protocol & hierarchy — quiet, occasional
+}
 # (prompt file, weight) — editors-letter is never auto-picked
 PROMPTS = [("hot-take", 35), ("dossier", 20), ("prediction", 20),
            ("cartoon-brief", 15), ("topic-overview", 10)]
@@ -48,7 +55,8 @@ def cmd_gate(a):
 def cmd_pick(a):
     s = load()
     avail_p = [p for p in PERSONAS if p not in s['recent_personas']]
-    persona = random.choice(avail_p)
+    p_weights = [PERSONA_WEIGHTS.get(p, 10) for p in avail_p]
+    persona = random.choices(avail_p, weights=p_weights)[0]
     names = [n for n, _ in PROMPTS]
     weights = [w for _, w in PROMPTS]
     prompt = random.choices(names, weights=weights)[0]

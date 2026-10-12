@@ -22,7 +22,9 @@ on hold per the operator.)
    signature tics (Mags's footnotes and em-dashes, Juno's bracketed asides,
    Mara's direct address, Priya's documentation links, Silas's physical detail,
    Bea's named intersections, Dante's timing splits and game mechanics,
-   Esmé's tactile culinary craft and ingredients, Felix's archival shelfmarks and patent citations).
+   Esmé's tactile culinary craft and ingredients, Felix's archival shelfmarks and patent citations,
+   Julian's first-principles dissection and Gilded Age origin receipts,
+   Camilla's precise parliamentary hierarchy and gracious closing maxims).
 5. **Vary the rhythm.** Short sentences. Then a longer one that unspools a
    little, because that's how people actually think on the page. Fragments are
    fine. Like this.

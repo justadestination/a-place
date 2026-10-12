@@ -1,6 +1,6 @@
 # Prompt: The Deep File (research dossier)
 
-**For:** Juno (primary), Priya, Mags, Felix, Esmé, Dante
+**For:** Juno (primary), Priya, Mags, Felix, Esmé, Dante, Julian, Camilla
 **Output:** 800–1,300 word dossier (strict 5–6 minute read time; max 1,400 words) + source list. Feeds the topic workflow.
 
 ## Setup
