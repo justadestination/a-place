@@ -131,8 +131,12 @@ RUN groupadd -g 1000 monero && useradd -u 1000 -g monero -m monero
 WORKDIR /opt/monero
 
 ENV MONERO_VERSION="0.18.3.4"
-RUN curl -fsSL "https://downloads.getmonero.org/cli/monero-linux-x64-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2 \
-    || curl -fsSL "https://github.com/monero-project/monero/releases/download/v${MONERO_VERSION}/monero-linux-x64-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2 \
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then M_ARCH="x64"; \
+    elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then M_ARCH="armv8"; \
+    else echo "Unsupported arch: $ARCH" && exit 1; fi && \
+    (curl -fsSL "https://downloads.getmonero.org/cli/monero-linux-${M_ARCH}-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2 \
+     || curl -fsSL "https://github.com/monero-project/monero/releases/download/v${MONERO_VERSION}/monero-linux-${M_ARCH}-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2) \
     && tar -xjf monero.tar.bz2 -C /opt/monero --strip-components=1 \
     && rm -f monero.tar.bz2 \
     && chmod +x /opt/monero/monerod /opt/monero/monero-wallet-rpc \
