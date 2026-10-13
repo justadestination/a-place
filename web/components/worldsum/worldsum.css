@@ -1,0 +1,468 @@
+/* WorldSum map. The sheet is the page. Tokens only. */
+
+.nc-worldsum {
+  display: grid;
+  gap: var(--nc-space-4);
+}
+
+.nc-worldsum__body {
+  display: grid;
+  gap: var(--nc-space-4);
+}
+
+.nc-worldsum__sheet {
+  position: relative;
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-lg);
+  overflow: hidden;
+}
+
+.nc-worldsum__spin {
+  position: relative;
+  transform-origin: 50% 42%;
+}
+
+.nc-worldsum__spin > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nc-worldsum__spin {
+    animation: nc-worldsum-spin 2.6s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+  }
+}
+
+html[data-motion="reduce"] .nc-worldsum__spin {
+  animation: none;
+}
+
+html[data-motion="full"] .nc-worldsum__spin {
+  animation: nc-worldsum-spin 2.6s cubic-bezier(0.16, 0.84, 0.24, 1) both;
+}
+
+@keyframes nc-worldsum-spin {
+  from { transform: rotate(-720deg) scale(0.5); }
+  to { transform: rotate(0deg) scale(1); }
+}
+
+.nc-worldsum__forest {
+  fill: var(--nc-palette-green-700);
+  opacity: 0.16;
+}
+
+.nc-worldsum__woods {
+  fill: var(--nc-palette-green-700);
+  opacity: 0.34;
+}
+
+.nc-worldsum__water {
+  fill: var(--nc-palette-azure-500);
+  opacity: 0.72;
+}
+
+.nc-worldsum__trail {
+  fill: none;
+  stroke: var(--nc-color-text);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.35;
+  vector-effect: non-scaling-stroke;
+}
+
+.nc-worldsum__near {
+  fill: var(--nc-palette-amber-500);
+  fill-opacity: 0.12;
+  stroke: var(--nc-palette-amber-500);
+  stroke-width: 2;
+  stroke-dasharray: 8 8;
+  vector-effect: non-scaling-stroke;
+}
+
+.nc-worldsum__milestone {
+  fill: var(--nc-color-surface);
+  stroke: var(--nc-color-text);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.nc-worldsum__label,
+.nc-worldsum__country,
+.nc-worldsum__sheet-note {
+  fill: var(--nc-color-text);
+  font-family: var(--nc-font-family-sans);
+}
+
+.nc-worldsum__label,
+.nc-worldsum__country {
+  font-weight: var(--nc-font-weight-bold);
+}
+
+.nc-worldsum__label {
+  font-size: var(--nc-font-size-xs);
+}
+
+.nc-worldsum__country {
+  font-size: var(--nc-font-size-xl);
+}
+
+.nc-worldsum__sheet-note {
+  fill: var(--nc-color-text-muted);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__pins {
+  position: absolute;
+  inset: 0;
+}
+
+.nc-worldsum__pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: var(--nc-size-target);
+  height: var(--nc-size-target);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--nc-color-text);
+  cursor: pointer;
+}
+
+.nc-worldsum__pin:focus-visible,
+.nc-worldsum__person:focus-visible {
+  outline: var(--nc-size-focus-ring) solid var(--nc-color-focus);
+  outline-offset: var(--nc-space-1);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-worldsum__mark {
+  width: var(--nc-space-4);
+  height: var(--nc-space-4);
+  border: var(--nc-size-border) solid var(--nc-color-text);
+  background: var(--nc-color-surface);
+}
+
+.nc-worldsum__mark[data-kind="you"] {
+  border-radius: var(--nc-radius-pill);
+  background: var(--nc-palette-amber-500);
+}
+
+.nc-worldsum__mark[data-kind="person"] {
+  border-radius: var(--nc-radius-pill);
+  background: var(--nc-color-surface);
+}
+
+.nc-worldsum__mark[data-kind="person"][data-bored="true"] {
+  background: var(--nc-palette-amber-300);
+}
+
+.nc-worldsum__mark[data-kind="human"] {
+  background: var(--nc-palette-coral-500);
+  clip-path: polygon(0 0, 100% 20%, 0 100%);
+  border: 0;
+}
+
+.nc-worldsum__mark[data-kind="steward"] {
+  background: var(--nc-palette-azure-500);
+  clip-path: polygon(0 0, 100% 0, 70% 100%, 0 70%);
+  border: 0;
+}
+
+.nc-worldsum__mark[data-kind="business"] {
+  background: var(--nc-palette-gold-500);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-worldsum__pin-name {
+  position: absolute;
+  font-size: var(--nc-font-size-xs);
+  line-height: var(--nc-font-line-height-tight);
+  white-space: nowrap;
+}
+
+.nc-worldsum__pin[data-side="s"] .nc-worldsum__pin-name {
+  top: 100%;
+  left: 50%;
+  margin-top: var(--nc-space-1);
+  transform: translateX(-50%);
+}
+
+.nc-worldsum__pin[data-side="n"] .nc-worldsum__pin-name {
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: var(--nc-space-1);
+  transform: translateX(-50%);
+}
+
+.nc-worldsum__pin[data-side="e"] .nc-worldsum__pin-name {
+  left: 100%;
+  top: 50%;
+  margin-left: var(--nc-space-1);
+  transform: translateY(-50%);
+}
+
+.nc-worldsum__pin[data-side="w"] .nc-worldsum__pin-name {
+  right: 100%;
+  top: 50%;
+  margin-right: var(--nc-space-1);
+  transform: translateY(-50%);
+}
+
+.nc-worldsum__pin[aria-pressed="true"] .nc-worldsum__pin-name,
+.nc-worldsum__person[aria-pressed="true"] {
+  font-weight: var(--nc-font-weight-bold);
+}
+
+.nc-worldsum__aside {
+  display: grid;
+  align-content: start;
+  gap: var(--nc-space-3);
+}
+
+.nc-worldsum__aside h2,
+.nc-worldsum__aside p {
+  margin: 0;
+}
+
+.nc-worldsum__people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--nc-space-1);
+}
+
+.nc-worldsum__person {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--nc-space-3);
+  width: 100%;
+  min-height: var(--nc-size-target);
+  padding: var(--nc-space-1) 0;
+  border: 0;
+  background: transparent;
+  color: var(--nc-color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nc-worldsum__person-kind {
+  color: var(--nc-color-text-muted);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__kind {
+  color: var(--nc-color-text-muted);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-3);
+  align-items: center;
+}
+
+.nc-worldsum__key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__chat .nc-chat {
+  max-width: none;
+  padding: 0;
+}
+
+.nc-worldsum__workshop {
+  display: grid;
+  gap: var(--nc-space-3);
+  margin: 0;
+}
+
+.nc-worldsum__preview {
+  display: grid;
+  justify-items: center;
+}
+
+.nc-worldsum__pin .nc-worldsum__pennant {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: var(--nc-space-6);
+  height: auto;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.nc-worldsum__pennant--preview {
+  position: static;
+  width: calc(var(--nc-space-8) + var(--nc-space-6));
+  transform: none;
+}
+
+@media (min-width: 60rem) {
+  .nc-worldsum__pin .nc-worldsum__pennant {
+    width: var(--nc-space-7);
+  }
+}
+
+.nc-worldsum__banner {
+  margin: 0 auto;
+  max-width: var(--nc-space-8);
+  padding: var(--nc-space-1) var(--nc-space-2);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  letter-spacing: var(--nc-font-tracking-caps);
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.nc-worldsum__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+}
+
+.nc-worldsum__swatch {
+  width: var(--nc-size-target);
+  height: var(--nc-size-target);
+  border: var(--nc-size-border-strong) solid var(--nc-color-text);
+  border-radius: var(--nc-radius-sm);
+  cursor: pointer;
+}
+
+.nc-worldsum__swatch[aria-pressed="true"] {
+  outline: var(--nc-size-focus-ring) solid var(--nc-color-focus);
+  outline-offset: var(--nc-space-1);
+}
+
+.nc-worldsum__swatch:focus-visible,
+.nc-worldsum__control:focus-visible {
+  outline: var(--nc-size-focus-ring) solid var(--nc-color-focus);
+  outline-offset: var(--nc-space-1);
+}
+
+.nc-worldsum__control {
+  width: 100%;
+  min-height: var(--nc-size-target);
+  box-sizing: border-box;
+}
+
+.nc-worldsum__workshop input.nc-worldsum__control {
+  padding: 0 var(--nc-space-3);
+  border: var(--nc-size-border) solid var(--nc-color-border-strong);
+  border-radius: var(--nc-radius-md);
+  background: var(--nc-color-surface);
+  color: var(--nc-color-text);
+  font: inherit;
+  font-size: var(--nc-font-size-md);
+}
+
+.nc-worldsum__steward {
+  margin: 0;
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nc-space-2);
+}
+
+.nc-worldsum__details {
+  border-top: var(--nc-size-border) solid var(--nc-color-border);
+}
+
+.nc-worldsum__details summary {
+  min-height: var(--nc-size-target);
+  cursor: pointer;
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  line-height: var(--nc-size-target);
+}
+
+.nc-worldsum__detail-grid {
+  display: grid;
+  gap: var(--nc-space-3);
+  padding-bottom: var(--nc-space-3);
+}
+
+.nc-worldsum__intent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--nc-space-2);
+}
+
+.nc-worldsum__intent-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  min-height: var(--nc-size-target);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__intent-icon,
+.nc-worldsum__rate-icon {
+  width: var(--nc-space-5);
+  height: var(--nc-space-5);
+  flex: none;
+}
+
+.nc-worldsum__pin .nc-worldsum__intents {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + var(--nc-space-5));
+  display: flex;
+  gap: var(--nc-space-1);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.nc-worldsum__profile {
+  margin: 0;
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__rating {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  min-height: var(--nc-size-target);
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__range {
+  display: block;
+  width: 100%;
+  min-height: var(--nc-size-target);
+  min-width: var(--nc-size-target);
+  box-sizing: border-box;
+}
+
+.nc-worldsum__rate-num {
+  font-size: var(--nc-font-size-sm);
+}
+
+.nc-worldsum__deal,
+.nc-worldsum__deal-form {
+  display: grid;
+  gap: var(--nc-space-2);
+}
+
+@media (min-width: 60rem) {
+  .nc-worldsum__body {
+    grid-template-columns: 1.6fr 0.8fr;
+    align-items: start;
+  }
+}

@@ -127,7 +127,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     since = int(qs.get("since", [0])[0])
                     parts = path.split("/")
                     room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
-                    msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since)
+                    auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+                    token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+                    user_id = "user_" + token[:8] if token else "anon_patron"
+                    viewer = get_pseudonym_for_user(conn, user_id)
+                    try:
+                        msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since, viewer=viewer)
+                    except PermissionError as exc:
+                        data = json.dumps({"error": str(exc)}).encode()
+                        self.send_response(403)
+                        self.send_header("Content-Type", "application/json")
+                        self.send_header("Content-Length", str(len(data)))
+                        self.end_headers()
+                        self.wfile.write(data)
+                        return
                     if path.startswith("/_matrix/"):
                         chunk = [{"event_id": m["event_id"], "sender": m["sender"], "origin_server_ts": m["timestamp"], "type": "m.room.message", "content": {"body": m["content"], "msgtype": "m.text"}} for m in msgs]
                         data = json.dumps({"chunk": chunk, "start": str(since), "end": str(msgs[-1]["timestamp"] if msgs else since)}).encode()
@@ -147,7 +160,47 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self._proxy("GET")
         return super().do_GET()
 
+    def _json(self, status: int, payload: dict) -> None:
+        import json
+        data = json.dumps(payload).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+    def _accord_read(self) -> None:
+        import json
+        import sys
+        length = int(self.headers.get("Content-Length") or 0)
+        if length > 65536:
+            self._json(400, {"ok": False, "message": "I have not read the room."})
+            return
+        root = Path(__file__).resolve().parent.parent.parent
+        if str(root) not in sys.path:
+            sys.path.insert(0, str(root))
+        try:
+            from shadenet.serendipilyst.intents import hear_side
+            from shadenet.serendipilyst.store import FlagError
+            body = json.loads(self.rfile.read(length) or b"{}")
+            heard = hear_side(
+                body.get("messages") or [],
+                side=str(body.get("side") or ""),
+                buyer=str(body.get("buyer") or ""),
+                seller=str(body.get("seller") or ""),
+            )
+        except FlagError as exc:
+            self._json(400, {"ok": False, "message": str(exc)})
+            return
+        except Exception:
+            self._json(400, {"ok": False, "message": "I have not read the room."})
+            return
+        self._json(200, {"ok": True, **heard})
+
     def do_POST(self):
+        if self.path.split("?", 1)[0] == "/api/accord-read":
+            self._accord_read()
+            return
         if self.path.startswith("/api/chat/") or self.path.startswith("/_matrix/"):
             try:
                 import sys
@@ -177,8 +230,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
                     raw = body.get("content")
                     content = str(raw.get("body") if isinstance(raw, dict) else (raw or body.get("body") or ""))
-                    res = post_chat_message(conn, room_id, pseudonym, content)
-                    data = json.dumps(res).encode()
+                    try:
+                        res = post_chat_message(conn, room_id, pseudonym, content)
+                        data = json.dumps(res).encode()
+                        status = 200
+                    except PermissionError as exc:
+                        data = json.dumps({"error": str(exc)}).encode()
+                        status = 403
+                    self.send_response(status)
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Content-Length", str(len(data)))
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
                 elif path == "/api/chat/moderate":
                     op = str(body.get("op") or "redact")
                     target = str(body.get("target_id") or body.get("message_id") or body.get("pseudonym") or "")

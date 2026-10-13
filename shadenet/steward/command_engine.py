@@ -51,6 +51,8 @@ SCOPES = {
     "prefs.get": "agent:{id}",
     "prefs.forget": "agent:{id}",
     "prefs.infer": "setup / read-only",
+    "flags.upsert": "agent:{id}",
+    "flags.deal": "agent:{id}",
 }
 
 # ---------------------------------------------------------------------------
@@ -160,6 +162,86 @@ EVENT_SUBSCRIBE_SCHEMA = {
     },
 }
 
+FLAGS_UPSERT_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["kind"],
+    "properties": {
+        "kind": {"enum": ["personal", "business_node", "business_flag"]},
+        "holder": {"enum": ["human", "steward"]},
+        "counterpartName": {"type": "string", "minLength": 1, "maxLength": 80},
+        "counterpart_name": {"type": "string", "minLength": 1, "maxLength": 80},
+        "human": {"type": "object"},
+        "steward": {"type": "object"},
+        "id": {"type": "string", "minLength": 1},
+        "flag_id": {"type": "string", "minLength": 1},
+        "displayName": {"type": "string", "minLength": 1, "maxLength": 80},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 80},
+        "name": {"type": "string", "minLength": 1, "maxLength": 120},
+        "bio": {"type": "string", "maxLength": 2000},
+        "declarations": {"type": "array"},
+        "pgp": {"type": "string", "maxLength": 500},
+        "availability": {"type": "array"},
+        "skills": {"type": "array"},
+        "offerTitle": {"type": "string", "maxLength": 160},
+        "offerBody": {"type": "string", "maxLength": 4000},
+        "offer_title": {"type": "string", "maxLength": 160},
+        "offer_body": {"type": "string", "maxLength": 4000},
+        "linkPostings": {},
+        "link_postings": {},
+        "anonymous": {},
+        "listed": {},
+        "placeId": {"type": "string", "maxLength": 40},
+        "place_id": {"type": "string", "maxLength": 40},
+        "order": {"type": "string", "maxLength": 200},
+        "appearance": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "field": {"type": "string", "maxLength": 24},
+                "charge": {"type": "string", "maxLength": 24},
+                "motto": {"type": "string", "maxLength": 24},
+                "line": {"type": "string", "maxLength": 24},
+                "fly": {"type": "string", "maxLength": 24},
+                "ribbon": {},
+            },
+        },
+        "inbox": {"type": "string"},
+        "venueId": {"type": "string"},
+        "venue_id": {"type": "string"},
+        "nodeId": {"type": "string", "minLength": 1},
+        "node_id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "maxLength": 160},
+        "body": {"type": "string", "maxLength": 4000},
+    },
+}
+
+FLAGS_DEAL_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["action"],
+    "properties": {
+        "action": {"enum": ["interest", "accord", "oblige", "pay", "release", "counsel"]},
+        "step": {"type": "string", "maxLength": 16},
+        "give": {"type": "string", "maxLength": 160},
+        "get": {"type": "string", "maxLength": 160},
+        "flag_id": {"type": "string", "minLength": 1},
+        "flagId": {"type": "string", "minLength": 1},
+        "sentence": {"type": "string", "maxLength": 160},
+        "amount": {},
+        "tip": {},
+        "personal": {},
+        "product": {},
+        "word": {"type": "string", "maxLength": 24},
+        "obligation_id": {"type": "string", "minLength": 1},
+        "obligationId": {"type": "string", "minLength": 1},
+        "room_id": {"type": "string"},
+        "roomId": {"type": "string"},
+    },
+}
+
 PREFS_SET_SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
@@ -184,6 +266,8 @@ REGISTRY: dict[str, tuple[dict, bool]] = {
     "prefs.get": ({"type": "object", "properties": {}}, False),
     "prefs.forget": ({"type": "object", "properties": {}}, True),
     "prefs.infer": ({"type": "object", "properties": {}}, False),
+    "flags.upsert": (FLAGS_UPSERT_SCHEMA, False),
+    "flags.deal": (FLAGS_DEAL_SCHEMA, False),
 }
 
 # ---------------------------------------------------------------------------
@@ -502,6 +586,18 @@ def _apply_prefs_forget(args: dict) -> dict:
     return {"ok": True, "result": {"status": "forgotten"}}
 
 
+def _apply_flags_upsert(args: dict) -> dict:
+    """Personal flag, business node, or business flag. Actor is injected by execute."""
+    from shadenet.serendipilyst import apply_upsert
+    return apply_upsert(args)
+
+
+def _apply_flags_deal(args: dict) -> dict:
+    """Private room, obligation, or counsel. Actor is injected by execute."""
+    from shadenet.serendipilyst import apply_deal
+    return apply_deal(args)
+
+
 EFFECTS: dict[str, callable] = {
     "event.create": _apply_event_create,
     "event.update": _apply_event_update,
@@ -514,6 +610,8 @@ EFFECTS: dict[str, callable] = {
     "prefs.get": lambda a: {"ok": True, "result": {}},
     "prefs.infer": lambda a: {"ok": True, "result": {"suggestions": []}},
     "event.unsubscribe": lambda a: {"ok": True, "result": {"subscriptionId": a.get("subscriptionId", "")}},
+    "flags.upsert": _apply_flags_upsert,
+    "flags.deal": _apply_flags_deal,
 }
 
 
@@ -553,6 +651,9 @@ def execute(envelope: dict, sender: str) -> dict:
     handler = EFFECTS.get(command)
     if handler is None:
         return {"ok": False, "error": {"code": "unknown_command", "message": f"Command {command!r} not in deployed registry"}}
+
+    if command in ("flags.upsert", "flags.deal"):
+        args = {**args, "actor": sender}
 
     try:
         effect_result = handler(args)

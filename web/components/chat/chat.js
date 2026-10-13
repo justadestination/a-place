@@ -48,6 +48,10 @@ export function chatView({
   apiBase = "",
   sessionToken = "",
   externalMatrixUrl = "https://chat.example.org",
+  title = "Downtown Night Chat",
+  heading = "h1",
+  privacy = "",
+  showBridge = true,
 } = {}) {
   let currentRoomId = activeRoomId || rooms[0]?.room_id;
   let currentMessages = [...messages];
@@ -58,7 +62,7 @@ export function chatView({
   // Header & Privacy
   const header = h("header.nc-chat__header", {},
     h("p.nc-chat__eyebrow", {}, "NightCal Comms"),
-    h("h1.nc-chat__title", { id: "nc-chat-title" }, "Downtown Night Chat"),
+    h(`${heading}.nc-chat__title`, { id: "nc-chat-title" }, title),
     h("div.nc-chat__meta", {},
       h("span", {}, "Your chat pseudonym:"),
       h("span.nc-chat__pseudonym-badge", { id: "nc-chat-my-pseudonym" }, currentPseudonym),
@@ -67,7 +71,7 @@ export function chatView({
 
   const privacyBanner = h("div.nc-chat__privacy-banner", { role: "note" },
     h("strong", {}, "Patron Notice"),
-    h("span", {}, "Room messages are public to all visitors and persist in the room history (unlike ephemeral in-box Thoughts). Your real account identity is never disclosed to other chatters."),
+    h("span", {}, privacy || "Room messages are public to all visitors and persist in the room history (unlike ephemeral in-box Thoughts). Your real account identity is never disclosed to other chatters."),
   );
 
   const layout = h("div.nc-chat__layout");
@@ -89,7 +93,7 @@ export function chatView({
         "aria-label": `Room ${r.name}`,
       },
         h("span", {}, r.name),
-        h("span.nc-chat__room-kind", {}, r.kind === "domain" ? "Town" : "Space"),
+        h("span.nc-chat__room-kind", {}, r.kind === "domain" ? "Town" : r.kind === "private" ? "Private" : "Space"),
       );
       btn.addEventListener("click", () => {
         if (currentRoomId !== r.room_id) {
@@ -233,7 +237,8 @@ export function chatView({
     }, "Open on Element / Matrix →"),
   );
 
-  container.append(header, privacyBanner, layout, bridge);
+  container.append(header, privacyBanner, layout);
+  if (showBridge) container.append(bridge);
 
   async function loadRoomMessages(roomId) {
     try {

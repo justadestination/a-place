@@ -46,9 +46,15 @@ def init_chat_schema(conn: sqlite3.Connection) -> None:
             alias TEXT UNIQUE,
             name TEXT NOT NULL,
             topic TEXT NOT NULL,
-            kind TEXT NOT NULL, -- 'domain' | 'space'
+            kind TEXT NOT NULL, -- 'domain' | 'space' | 'private'
             venue_id TEXT,
             created_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS chat_members (
+            room_id TEXT NOT NULL REFERENCES chat_rooms(id) ON DELETE CASCADE,
+            pseudonym TEXT NOT NULL,
+            PRIMARY KEY (room_id, pseudonym)
         );
 
         CREATE TABLE IF NOT EXISTS chat_pseudonyms (
@@ -193,6 +199,7 @@ def list_rooms(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
                (SELECT content FROM chat_messages m WHERE m.room_id = r.id AND m.redacted = 0 ORDER BY m.timestamp DESC LIMIT 1) as last_message,
                (SELECT timestamp FROM chat_messages m WHERE m.room_id = r.id AND m.redacted = 0 ORDER BY m.timestamp DESC LIMIT 1) as last_activity
         FROM chat_rooms r
+        WHERE r.kind != 'private'
         ORDER BY r.kind ASC, r.created_at ASC
     """)
     rows = cur.fetchall()
@@ -212,10 +219,69 @@ def list_rooms(conn: sqlite3.Connection) -> List[Dict[str, Any]]:
     ]
 
 
+def _is_member(conn: sqlite3.Connection, room_id: str, pseudonym: str) -> bool:
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT 1 FROM chat_members WHERE room_id = ? AND pseudonym = ?",
+        (room_id, pseudonym),
+    )
+    return cur.fetchone() is not None
+
+
+def create_private_room(
+    conn: sqlite3.Connection,
+    *,
+    name: str,
+    topic: str,
+    members: List[str],
+    opening: str = "",
+) -> Dict[str, Any]:
+    """A room the public list does not return. Steward and the two parties."""
+    roster = list(members)
+    if opening and STEWARD_PSEUDONYM not in roster:
+        roster.append(STEWARD_PSEUDONYM)
+    if len(roster) < 2:
+        raise ValueError("a private room needs its members")
+    room_id = f"!private_{uuid.uuid4().hex[:12]}:{DOMAIN}"
+    alias = f"#{room_id.split(':', 1)[0].lstrip('!')}:{DOMAIN}"
+    now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO chat_rooms (id, alias, name, topic, kind, venue_id, created_at)
+           VALUES (?, ?, ?, ?, 'private', NULL, ?)""",
+        (room_id, alias, name, topic, now_iso),
+    )
+    for member in roster:
+        cur.execute(
+            "INSERT OR IGNORE INTO chat_members (room_id, pseudonym) VALUES (?, ?)",
+            (room_id, member),
+        )
+    conn.commit()
+    if opening:
+        post_message(conn, room_id, STEWARD_PSEUDONYM, opening)
+    return {
+        "room_id": room_id,
+        "alias": alias,
+        "name": name,
+        "topic": topic,
+        "kind": "private",
+    }
+
+
 def get_room_messages(
-    conn: sqlite3.Connection, room_id: str, limit: int = 50, since_ts: int = 0
+    conn: sqlite3.Connection,
+    room_id: str,
+    limit: int = 50,
+    since_ts: int = 0,
+    *,
+    viewer: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     cur = conn.cursor()
+    cur.execute("SELECT kind FROM chat_rooms WHERE id = ?", (room_id,))
+    room = cur.fetchone()
+    if room is not None and room["kind"] == "private":
+        if not viewer or not _is_member(conn, room_id, viewer):
+            raise PermissionError("this room is private")
     query = """
         SELECT id, room_id, sender, content, msgtype, timestamp, redacted, created_at
         FROM chat_messages
@@ -296,10 +362,12 @@ def post_message(
 
     cur = conn.cursor()
     # Verify room exists
-    cur.execute("SELECT id, venue_id FROM chat_rooms WHERE id = ?", (room_id,))
+    cur.execute("SELECT id, venue_id, kind FROM chat_rooms WHERE id = ?", (room_id,))
     room = cur.fetchone()
     if not room:
         raise ValueError(f"Room {room_id} does not exist")
+    if room["kind"] == "private" and not _is_member(conn, room_id, sender_pseudonym):
+        raise PermissionError("this room is private")
 
     cur.execute(
         """INSERT INTO chat_messages (id, room_id, sender, content, msgtype, timestamp, redacted, created_at)

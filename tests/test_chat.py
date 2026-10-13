@@ -133,3 +133,26 @@ def test_operator_moderation_redact_and_ban(chat_db):
     # Spammer cannot send further messages
     with pytest.raises(PermissionError, match="is banned from chat"):
         post_message(chat_db, general_id, spammer, "Another spam attempt")
+
+
+def test_private_room_stays_off_the_public_list(chat_db):
+    from shadenet.chat import create_private_room
+
+    buyer = get_pseudonym_for_user(chat_db, "buyer")
+    seller = get_pseudonym_for_user(chat_db, "seller")
+    room = create_private_room(
+        chat_db,
+        name="Lumen",
+        topic="A tube amp.",
+        members=[STEWARD_PSEUDONYM, buyer, seller],
+        opening="I told their steward. This room is private.",
+    )
+    public = list_rooms(chat_db)
+    assert any(item["name"] == "Downtown General" for item in public)
+    assert all(item["room_id"] != room["room_id"] for item in public)
+    seen = get_room_messages(chat_db, room["room_id"], viewer=buyer)
+    assert any("private" in item["content"] for item in seen)
+    with pytest.raises(PermissionError):
+        get_room_messages(chat_db, room["room_id"])
+    with pytest.raises(PermissionError):
+        post_message(chat_db, room["room_id"], f"@anon-outsider:{DOMAIN}", "hello")
