@@ -28,6 +28,8 @@ HELP = [
     ("recoveries [status]", "account recovery requests"),
     ("overrides", "active 21+ overrides"),
     ("sessions", "signed-in operators"),
+    ("venues-pending", "business nodes naming a venue nobody has verified"),
+    ("venue-verify <node_id> [off]", "confirm a node really is its venue (needs step-up)"),
     ("audit [n]", "recent operator actions"),
 ]
 
@@ -158,6 +160,27 @@ def _audit(args, actor, su):
     return "\n".join(f"{e['ts'][:19]}  {e['actor']:<10} {e['action']}  {e['target']}" for e in rows) or "empty", rows
 
 
+def _venues_pending(args, actor, su):
+    from shadenet.serendipilyst import get_store, pending_venues
+
+    rows = [{k: v for k, v in node.items() if k != "controller"} for node in pending_venues(get_store())]
+    return "\n".join(f"{r['id']}  {r['venue_id']:<20} {r['name']}" for r in rows) or "none waiting", rows
+
+
+def _venue_verify(args, actor, su):
+    from shadenet.serendipilyst import FlagError, get_store, verify_venue
+
+    if not su:
+        raise StepUpRequired("venue-verify needs step-up: enter a fresh authenticator code and resend")
+    on = not (len(args) > 1 and args[1].lower() == "off")
+    try:
+        node = verify_venue(get_store(), node_id=args[0], verified=on)
+    except FlagError as exc:
+        raise ValueError(str(exc)) from None
+    audit.record(actor, "venue.verify", target=args[0], via="steward", venue_id=node["venue_id"], verified=on)
+    return f"{node['name']} {'is' if on else 'is no longer'} {node['venue_id']}", None
+
+
 COMMANDS: dict[str, Callable] = {
     "help": lambda a, u, s: (_fmt_help(), None),
     "status": _status, "health": _status,
@@ -166,4 +189,5 @@ COMMANDS: dict[str, Callable] = {
     "flags": _flags, "flag": _flag,
     "recoveries": _recoveries, "overrides": _overrides,
     "sessions": _sessions, "audit": _audit,
+    "venues-pending": _venues_pending, "venue-verify": _venue_verify,
 }

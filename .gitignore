@@ -36,3 +36,6 @@ shadenet/data/ops/
 
 # Age-check stand-in. The private key stays on the host that verifies.
 shadenet/data/certs/
+
+# brainstorming mockups
+.superpowers/

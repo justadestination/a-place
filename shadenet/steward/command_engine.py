@@ -181,7 +181,7 @@ FLAGS_UPSERT_SCHEMA = {
         "name": {"type": "string", "minLength": 1, "maxLength": 120},
         "bio": {"type": "string", "maxLength": 2000},
         "declarations": {"type": "array"},
-        "pgp": {"type": "string", "maxLength": 500},
+        "pgp": {"type": "string", "maxLength": 8000},
         "availability": {"type": "array"},
         "skills": {"type": "array"},
         "offerTitle": {"type": "string", "maxLength": 160},
@@ -207,13 +207,31 @@ FLAGS_UPSERT_SCHEMA = {
                 "ribbon": {},
             },
         },
-        "inbox": {"type": "string"},
         "venueId": {"type": "string"},
         "venue_id": {"type": "string"},
         "nodeId": {"type": "string", "minLength": 1},
         "node_id": {"type": "string", "minLength": 1},
         "title": {"type": "string", "maxLength": 160},
         "body": {"type": "string", "maxLength": 4000},
+        "intents": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["kind", "sentence"],
+                "properties": {
+                    "kind": {"enum": ["conversation", "work", "fun", "sale", "purchase"]},
+                    "sentence": {"type": "string", "maxLength": 160},
+                },
+            },
+        },
+        "good_at": {"type": "string", "maxLength": 160},
+        "goodAt": {"type": "string", "maxLength": 160},
+        "enjoy": {"type": "string", "maxLength": 160},
+        "refuse": {"type": "string", "maxLength": 160},
+        "retract": {"type": "boolean"},
+        "new": {"type": "boolean"},
     },
 }
 
@@ -223,22 +241,21 @@ FLAGS_DEAL_SCHEMA = {
     "additionalProperties": False,
     "required": ["action"],
     "properties": {
-        "action": {"enum": ["interest", "accord", "oblige", "pay", "release", "counsel"]},
-        "step": {"type": "string", "maxLength": 16},
-        "give": {"type": "string", "maxLength": 160},
-        "get": {"type": "string", "maxLength": 160},
+        "action": {"enum": ["interest", "accord", "oblige", "pay", "release", "rate", "counsel"]},
+        "step": {"enum": ["read", "confirm"]},
+        "terms": {"type": "string", "maxLength": 64},
         "flag_id": {"type": "string", "minLength": 1},
         "flagId": {"type": "string", "minLength": 1},
+        "relay": {"type": "string", "maxLength": 80},
+        "room_id": {"type": "string", "maxLength": 120},
+        "roomId": {"type": "string", "maxLength": 120},
         "sentence": {"type": "string", "maxLength": 160},
-        "amount": {},
-        "tip": {},
         "personal": {},
         "product": {},
         "word": {"type": "string", "maxLength": 24},
         "obligation_id": {"type": "string", "minLength": 1},
         "obligationId": {"type": "string", "minLength": 1},
-        "room_id": {"type": "string"},
-        "roomId": {"type": "string"},
+        "tip": {"type": "string", "maxLength": 24},
     },
 }
 
@@ -436,6 +453,24 @@ def _validate_prop(prop_schema: dict, value: Any, path: str) -> list[str]:
     elif ptype == "array":
         if not isinstance(value, list):
             errors.append(f"{path}: expected array")
+        else:
+            max_items = prop_schema.get("maxItems")
+            if max_items is not None and len(value) > max_items:
+                errors.append(f"{path}: at most {max_items} items")
+            item_schema = prop_schema.get("items")
+            if isinstance(item_schema, dict):
+                for index, item in enumerate(value):
+                    errors.extend(_validate_prop(item_schema, item, f"{path}[{index}]"))
+    elif ptype == "boolean":
+        if not isinstance(value, bool):
+            errors.append(f"{path}: expected true or false")
+
+    if "enum" in prop_schema and value not in prop_schema["enum"]:
+        errors.append(f"{path}: value not in enum {prop_schema['enum']}")
+    if ptype == "object" and isinstance(value, dict):
+        for req in prop_schema.get("required", []):
+            if req not in value:
+                errors.append(f"{path}: missing required field {req}")
 
     # nullable union
     if isinstance(prop_schema, list):
@@ -587,13 +622,13 @@ def _apply_prefs_forget(args: dict) -> dict:
 
 
 def _apply_flags_upsert(args: dict) -> dict:
-    """Personal flag, business node, or business flag. Actor is injected by execute."""
+    """Write or retract a personal flag, business node, or business flag. Actor is injected by execute."""
     from shadenet.serendipilyst import apply_upsert
     return apply_upsert(args)
 
 
 def _apply_flags_deal(args: dict) -> dict:
-    """Private room, obligation, or counsel. Actor is injected by execute."""
+    """Private room, accord, Monero obligation, rating, or counsel. Actor is injected by execute."""
     from shadenet.serendipilyst import apply_deal
     return apply_deal(args)
 

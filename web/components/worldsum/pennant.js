@@ -250,45 +250,69 @@ function hasWord(text, phrase) {
   return new RegExp(`(?<![a-z0-9])${escaped}(?![a-z0-9])`).test(text);
 }
 
-function flashClause(clause) {
-  const low = clause.toLowerCase();
-  if (/^motto\b/.test(low)) return true;
-  if (colorIn(low) || chargeIn(low) || placeIn(low)) return true;
-  return ["fine", "thin", "heavy", "thick", "bold", "ribbon", "swallowtail", "swallow tail", "notched", "notch", "banner", "list", "pull", "unlist"]
-    .some((phrase) => hasWord(low, phrase));
+// A part made only of these words is a flash order, even inside a longer
+// sentence ("selling an amp and crimson"). "red wine" is not: "wine" isn't here.
+// Keep in step with _FLASH_WORDS and _COMMAND in shadenet/serendipilyst/flash.py.
+const FLASH_WORDS = new Set((
+  "a an the it its with no on off at in to field line fly ribbon charge only "
+  + "crimson red rust burnt orange gold ink black parchment paper "
+  + "dagger rose anchor acorn plain bare "
+  + "fine thin heavy thick bold swallowtail swallow tail notched notch banner "
+  + "courthouse railroad square rail dark pool lot north gate far lake long water narrows three pools east "
+  + "list unlist pull"
+).split(" "));
+const COMMAND = /^(?:motto\b|list\b|unlist\b|pull\b|paint\b|make it\b|hang it\b|plant it\b|put it\b|take it\b|no ribbon\b|ribbon\b)/i;
+const MOTTO = /^motto\s*[:\-]?\s*(.+)$/i;
+
+function orderParts(text) {
+  const pieces = text.replace(/dagger and rose/gi, "dagger_and_rose").split(/(\s*,\s*|\s+and\s+|(?<=[.!?])\s+)/i);
+  const out = [];
+  let sep = "";
+  pieces.forEach((piece, index) => {
+    if (index % 2) {
+      sep = piece;
+      return;
+    }
+    const part = piece.replace(/dagger_and_rose/gi, "dagger and rose").trim();
+    if (part) out.push([sep, part]);
+    sep = "";
+  });
+  return out;
+}
+
+function isOrder(part) {
+  const low = part.toLowerCase().trim();
+  if (COMMAND.test(low)) return true;
+  const words = low.match(/[a-z]+/g) || [];
+  return words.length > 0 && words.every((word) => FLASH_WORDS.has(word));
+}
+
+function opensSentence(part) {
+  if (MOTTO.test(part.trim())) return true;
+  try {
+    return profileClause(part) !== null;
+  } catch {
+    return false;
+  }
 }
 
 function spokenClauses(text) {
-  const parts = orderClauses(text);
+  const parts = orderParts(text);
   const merged = [];
   let index = 0;
   while (index < parts.length) {
-    const clause = parts[index];
-    let profile = null;
-    try {
-      profile = profileClause(clause);
-    } catch {
-      merged.push(clause);
-      index += 1;
-      continue;
+    let clause = parts[index][1];
+    index += 1;
+    if (opensSentence(clause)) {
+      while (index < parts.length && !".!?".includes(clause[clause.length - 1])
+        && !isOrder(parts[index][1]) && !opensSentence(parts[index][1])) {
+        clause = `${clause}${parts[index][0]}${parts[index][1]}`;
+        index += 1;
+      }
     }
-    let sentence = profile && profile.sentence ? profile.sentence : "";
-    let end = index + 1;
-    while (sentence && !".!?".includes(sentence[sentence.length - 1]) && end < parts.length && !flashClause(parts[end])) {
-      sentence = `${sentence}, ${parts[end]}`;
-      end += 1;
-    }
-    merged.push(end === index + 1 ? clause : parts.slice(index, end).join(", "));
-    index = end;
+    merged.push(clause);
   }
   return merged;
-}
-
-function orderClauses(text) {
-  return text.replace(/dagger and rose/gi, "dagger_and_rose")
-    .split(/\s*(?:,|\band\b)\s*/i)
-    .map((part) => part.replace(/dagger_and_rose/gi, "dagger and rose").trim())
-    .filter(Boolean);
 }
 
 function colorIn(clause) {
@@ -335,16 +359,15 @@ const CLEARS = {
   purchase: ["not looking to purchase", "not looking to buy", "drop the purchase"],
 };
 
-const ATTEMPT = /looking for a conversation|available (?:to|for) work|looking for fun|(?:stuff|something) for sale|\bfor sale\b|\bselling\b|looking to (?:purchase|buy)|\bgood at\b|\bi enjoy\b|^enjoy\b|don't want|do not want|won't want|wont want|not part of|\bi refuse\b/i;
+const ATTEMPT = /^(?:i am |i'm |i have )?(?:looking for a conversation|conversation|available (?:to|for) work|looking for fun|(?:stuff|something) for sale|for sale|selling|looking to (?:purchase|buy)|good at|i enjoy|enjoy|i (?:don't|do not|won't|wont) want|not part of|i refuse)\b/i;
+// A dot between two digits is a decimal point, not the end of a sentence.
+const STOP = /(?<!\d)[.!?]|[.!?](?!\d)/g;
 
 function oneSentence(value, what = "an intent") {
   const text = String(value || "").trim().replace(/^["']|["']$/g, "").replace(/\s+/g, " ");
   if (!text) throw new Error(`${what} needs a sentence`);
   if (text.length > 160) throw new Error("that sentence is longer than 160 characters");
-  const stops = [];
-  for (let index = 0; index < text.length; index += 1) {
-    if (".!?".includes(text[index])) stops.push(index);
-  }
+  const stops = [...text.matchAll(STOP)].map((match) => match.index);
   if (stops.length > 1 || (stops.length && stops[stops.length - 1] !== text.length - 1)) {
     throw new Error("one sentence");
   }
@@ -390,16 +413,7 @@ function profileClause(clause) {
 }
 
 function applyClause(clause, look, effect, notes) {
-  const profile = profileClause(clause);
-  if (profile) {
-    const bucket = effect.profile || (effect.profile = { intents: [], good_at: null, enjoy: null, refuse: null });
-    if (profile.field === "intent") bucket.intents.push({ kind: profile.kind, sentence: profile.sentence });
-    else bucket[profile.field] = profile.sentence;
-    notes.push(profile.reply);
-    return true;
-  }
-  const low = clause.toLowerCase();
-  const motto = clause.trim().match(/^motto\s*[:\-]?\s*(.+)$/i);
+  const motto = clause.trim().match(MOTTO);
   if (motto) {
     const text = motto[1].trim().replace(/^["']|["']$/g, "");
     if (text.length > 24) throw new Error("motto is longer than 24 characters");
@@ -407,6 +421,17 @@ function applyClause(clause, look, effect, notes) {
     notes.push(`Motto ${text}.`);
     return true;
   }
+  const profile = profileClause(clause);
+  if (profile) {
+    const bucket = effect.profile || (effect.profile = { intents: [], good_at: null, enjoy: null, refuse: null });
+    if (profile.field === "intent") {
+      if (bucket.intents.some((item) => item.kind === profile.kind)) throw new Error("one mark per intent");
+      bucket.intents.push({ kind: profile.kind, sentence: profile.sentence });
+    } else bucket[profile.field] = profile.sentence;
+    notes.push(profile.reply);
+    return true;
+  }
+  const low = clause.toLowerCase();
   let hit = false;
   const color = colorIn(low);
   if (color) {

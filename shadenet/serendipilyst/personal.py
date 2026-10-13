@@ -1,83 +1,35 @@
 """Personal flags: one for the human, one for the Steward.
 
-The spec also calls a flag an agent card. In this package the record is a
-flag. The human and the Steward each have one. They share the Steward
-address that writes and receives contact, and they point at each other.
-They do not share a name, a bio, or an offer.
+Both flags belong to the same Steward (``owner``) and point at each other.
+Each keeps its own pseudonym, bio, skills, availability, marks, and
+optional offer. The Steward flag shows a public address, and that address
+is a relay: the Steward's own address never leaves the server.
 
-Spec §3.A. A flag shows a pseudonym, declarations, availability, and skill
-tags. The Steward flag also shows its A2A address. ``link_postings`` chooses
-whether an offer on that flag points back at it. ``listed`` is separate:
-only a listed flag publishes a WorldSum place. Real names, mail, and
-phone numbers are not fields on either flag.
+A write changes only the fields it names. ``link_postings`` decides whether
+an offer points back at its flag. ``listed`` puts the flag's place on the
+WorldSum sheet. Real names, mail, and phone numbers are refused.
 """
 
 from __future__ import annotations
 
 import json
-import re
 from typing import Any
 
-from shadenet.serendipilyst.flash import omitted_listing, settle_flash
-from shadenet.serendipilyst.intents import omitted_profile, settle_profile
+from shadenet.serendipilyst import policy
+from shadenet.serendipilyst.fields import KEEP, actor as check_actor, as_bool, canon, given, skills, strings, text
+from shadenet.serendipilyst.flash import settle_flash
+from shadenet.serendipilyst.intents import LINES, settle_profile
+from shadenet.serendipilyst.relay import relay_for
 from shadenet.serendipilyst.store import FlagError, FlagStore, load_obj, loads, new_id, now_iso
 
-_A2A = re.compile(r"^a2a://agent/[A-Za-z0-9_.:-]{1,80}$")
-_TAG = re.compile(r"[a-z0-9][a-z0-9_-]{0,31}")
 HOLDERS = ("human", "steward")
-
-
-def _actor(actor: str) -> str:
-    if not _A2A.match(actor or ""):
-        raise FlagError("scope_denied", "actor must be an a2a://agent/ address")
-    return actor
-
-
-def _text(value: str, label: str, limit: int, *, required: bool = False) -> str:
-    text = (value or "").strip()
-    if required and not text:
-        raise FlagError("schema_invalid", f"{label} is required")
-    if len(text) > limit:
-        raise FlagError("schema_invalid", f"{label} is longer than {limit} characters")
-    return text
-
-
-def _strings(values: list | None, label: str, limit: int, item_limit: int) -> list[str]:
-    if not values:
-        return []
-    if not isinstance(values, list):
-        raise FlagError("schema_invalid", f"{label} must be a list")
-    out: list[str] = []
-    for raw in values:
-        text = str(raw).strip()
-        if not text:
-            continue
-        if len(text) > item_limit:
-            raise FlagError("schema_invalid", f"{label} entry is too long")
-        if text not in out:
-            out.append(text)
-    if len(out) > limit:
-        raise FlagError("schema_invalid", f"at most {limit} {label}")
-    return out
-
-
-def _skills(values: list | None) -> list[str]:
-    tags = []
-    for raw in _strings(values, "skills", 12, 32):
-        tag = raw.lstrip("#").lower()
-        if not _TAG.fullmatch(tag):
-            raise FlagError("schema_invalid", f"skill tag {raw!r} is not a short label")
-        if tag not in tags:
-            tags.append(tag)
-    return tags
-
-
-def _as_bool(value: Any, default: bool) -> bool:
-    if value is None:
-        return default
-    if isinstance(value, str):
-        return value.strip().lower() in {"1", "true", "yes"}
-    return bool(value)
+PGP_LIMIT = 8000
+FIELDS = (
+    "display_name", "bio", "declarations", "pgp", "availability", "skills",
+    "offer_title", "offer_body", "link_postings", "anonymous",
+    "listed", "place_id", "appearance", "order",
+    "intents", "good_at", "enjoy", "refuse",
+)
 
 
 def _holder(value: str) -> str:
@@ -100,15 +52,17 @@ def _row(row) -> dict[str, Any]:
         "display_name": row["display_name"],
         "bio": row["bio"],
         "declarations": loads(row["declarations"]),
-        "address": row["address"],
+        "address": row["address"] or "",
         "pgp": row["pgp"] or "",
         "availability": loads(row["availability"]),
         "skills": loads(row["skills"]),
         "offer_title": row["offer_title"] or "",
         "offer_body": row["offer_body"] or "",
+        "offered_at": row["offered_at"] or "",
         "link_postings": bool(row["link_postings"]),
         "anonymous": bool(row["anonymous"]),
         "listed": bool(row["listed"]),
+        "listed_at": row["listed_at"] or "",
         "place_id": row["place_id"] or "",
         "appearance": load_obj(row["appearance"]),
         "intents": loads(row["intents"]),
@@ -128,255 +82,209 @@ def _by_holder(store: FlagStore, owner: str, holder: str):
     )
 
 
+def _public_address(store: FlagStore, owner: str, holder: str) -> str:
+    """The Steward flag shows a relay. The human flag shows no address."""
+    if holder != "steward":
+        return ""
+    return relay_for(store, ref=f"profile:{owner}", target=owner)
+
+
 def _link_pair(store: FlagStore, owner: str) -> None:
     human = _by_holder(store, owner, "human")
     steward = _by_holder(store, owner, "steward")
     if human is None or steward is None:
         return
-    stamp = now_iso()
-    store.execute(
-        "UPDATE personal_flags SET linked_flag_id = ?, updated_at = ? WHERE id = ?",
-        (steward["id"], stamp, human["id"]),
-    )
-    store.execute(
-        "UPDATE personal_flags SET linked_flag_id = ?, updated_at = ? WHERE id = ?",
-        (human["id"], stamp, steward["id"]),
-    )
+    store.execute("UPDATE personal_flags SET linked_flag_id = ? WHERE id = ?", (steward["id"], human["id"]))
+    store.execute("UPDATE personal_flags SET linked_flag_id = ? WHERE id = ?", (human["id"], steward["id"]))
 
 
-def _blank_flag(store: FlagStore, owner: str, holder: str, display_name: str) -> str:
+def _blank_flag(store: FlagStore, owner: str, holder: str, display_name: str) -> None:
     """The other flag, opened with a name and nothing else."""
-    saved_id = new_id("flg")
     stamp = now_iso()
-    address = owner if holder == "steward" else ""
     store.execute(
         """
         INSERT INTO personal_flags (
-            id, owner, holder, linked_flag_id, display_name, bio, declarations,
-            address, pgp, availability, skills, offer_title, offer_body,
-            link_postings, anonymous, listed, place_id, appearance,
-            status, created_at, updated_at
-        ) VALUES (?, ?, ?, '', ?, '', '[]', ?, NULL, '[]', '[]', NULL, NULL, 0, 1, 0, NULL, NULL, 'active', ?, ?)
+            id, owner, holder, linked_flag_id, display_name, address, status, created_at, updated_at
+        ) VALUES (?, ?, ?, '', ?, ?, 'active', ?, ?)
         """,
-        (saved_id, owner, holder, display_name, address, stamp, stamp),
+        (new_id("flg"), owner, holder, display_name, _public_address(store, owner, holder), stamp, stamp),
     )
-    return saved_id
+
+
+def _current(store: FlagStore, owner: str, holder: str, flag_id: str | None):
+    if not flag_id:
+        return _by_holder(store, owner, holder)
+    row = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,))
+    if row is None:
+        raise FlagError("not_found", f"personal flag {flag_id} does not exist")
+    if row["owner"] != owner:
+        raise FlagError("scope_denied", "only the owner can update this flag")
+    if row["holder"] != holder:
+        raise FlagError("schema_invalid", "flag belongs to the other holder")
+    return row
+
+
+def _pick(changes: dict[str, Any], key: str, stored: Any, clean) -> Any:
+    """The cleaned new value when the write names ``key``, else the stored one."""
+    if key in changes and given(changes[key]):
+        return clean(changes[key])
+    return stored
 
 
 def upsert_flag(
     store: FlagStore,
     *,
     actor: str,
-    display_name: str,
     holder: str,
     flag_id: str | None = None,
     counterpart_name: str | None = None,
-    bio: str = "",
-    declarations: list | None = None,
-    pgp: str | None = None,
-    availability: list | None = None,
-    skills: list | None = None,
-    offer_title: str | None = None,
-    offer_body: str | None = None,
-    link_postings: bool = False,
-    anonymous: bool = True,
-    listed: bool | None = False,
-    place_id: str | None = None,
-    appearance: dict | None = None,
-    order: str | None = None,
-    intents: list | None = None,
-    good_at: str | None = None,
-    enjoy: str | None = None,
-    refuse: str | None = None,
+    **changes: Any,
 ) -> dict[str, Any]:
-    """Create or replace one flag. The first flag opened also opens the other.
+    """Create one flag, or change the fields a write names.
 
-    ``holder`` is ``human`` or ``steward``. The Steward address is the owner
-    of both. On the first write, ``counterpart_name`` is the other flag's
-    pseudonym. Later writes touch only the named holder. A write replaces
-    the flag. An order changes only the parts it names, and it leaves the
-    listing alone unless it says to list or pull.
+    ``changes`` takes the names in ``FIELDS``. A name left out keeps its
+    stored value; an empty value clears it. The first flag a Steward opens
+    also opens the other one, named by ``counterpart_name``.
     """
-    owner = _actor(actor)
+    owner = check_actor(actor)
     who = _holder(holder)
-    name = _text(display_name, "display_name", 80, required=True)
-    about = _text(bio, "bio", 2000)
-    decls = _strings(declarations, "declarations", 12, 280)
-    slots = _strings(availability, "availability", 12, 80)
-    tags = _skills(skills)
-    key = _text(pgp or "", "pgp", 500)
-    title = _text(offer_title or "", "offer_title", 160)
-    body = _text(offer_body or "", "offer_body", 4000)
-    if bool(title) != bool(body):
-        raise FlagError("schema_invalid", "an offer needs both a title and a body")
+    unknown = set(changes) - set(FIELDS)
+    if unknown:
+        raise FlagError("schema_invalid", f"a personal flag has no {sorted(unknown)[0]}")
 
-    current = None
-    if flag_id:
-        current = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,))
+    with store.transaction():
+        current = _current(store, owner, who, flag_id)
+        cur = _row(current) if current is not None else None
+
+        name = _pick(changes, "display_name", cur and cur["display_name"],
+                     lambda v: text(v, "display_name", 80, required=True))
+        if not name:
+            raise FlagError("schema_invalid", "display_name is required")
+        about = _pick(changes, "bio", cur["bio"] if cur else "", lambda v: text(v, "bio", 2000))
+        decls = _pick(changes, "declarations", cur["declarations"] if cur else [],
+                      lambda v: strings(v, "declarations", 12, 280))
+        slots = _pick(changes, "availability", cur["availability"] if cur else [],
+                      lambda v: strings(v, "availability", 12, 80))
+        tags = _pick(changes, "skills", cur["skills"] if cur else [], skills)
+        key = _pick(changes, "pgp", cur["pgp"] if cur else "", lambda v: text(v, "pgp", PGP_LIMIT))
+        title = _pick(changes, "offer_title", cur["offer_title"] if cur else "",
+                      lambda v: text(v, "offer_title", 160))
+        body = _pick(changes, "offer_body", cur["offer_body"] if cur else "",
+                     lambda v: text(v, "offer_body", 4000))
+        if bool(title) != bool(body):
+            raise FlagError("schema_invalid", "an offer needs both a title and a body")
+        linked = _pick(changes, "link_postings", cur["link_postings"] if cur else False,
+                       lambda v: as_bool(v, False))
+        hidden = _pick(changes, "anonymous", cur["anonymous"] if cur else True, lambda v: as_bool(v, True))
+
+        on_map, place, look, heard = settle_flash(
+            listed=changes.get("listed", KEEP),
+            place_id=changes.get("place_id", KEEP),
+            appearance=changes.get("appearance", KEEP),
+            order=changes.get("order") or None,
+            current_listed=cur["listed"] if cur else False,
+            current_place=cur["place_id"] if cur else "",
+            current_appearance=cur["appearance"] if cur else None,
+        )
+        marks, lines = settle_profile(
+            heard,
+            intents=changes.get("intents", KEEP),
+            lines={k: changes.get(k, KEEP) for k in LINES},
+            current_intents=cur["intents"] if cur else [],
+            current_lines={k: cur[k] for k in LINES} if cur else {},
+        )
+
+        stamp = now_iso()
+        # Saving a listing or an offer renews it. A new one has to fit the limits.
+        renewing_place = on_map and (not cur or not cur["listed"] or "listed" in changes or bool(changes.get("order")))
+        listed_at = stamp if renewing_place else (cur["listed_at"] if cur and on_map else None)
+        offer_changed = bool(title) and (not cur or (title, body) != (cur["offer_title"], cur["offer_body"])
+                                          or "offer_title" in changes)
+        offered_at = stamp if offer_changed else (cur["offered_at"] if cur and title else None)
+        adding = 0
+        if on_map and not (cur and cur["listed"] and policy.fresh(cur["listed_at"])):
+            adding += 1
+        if title and not (cur and cur["offer_title"] and policy.fresh(cur["offered_at"])):
+            adding += 1
+        policy.admit(store, owner, adding=adding)
+
+        other = _by_holder(store, owner, _other(who))
+        if current is None and other is None:
+            other_name = text(counterpart_name or "", "counterpart_name", 80, required=True)
+            _blank_flag(store, owner, _other(who), other_name)
+
+        values = {
+            "display_name": name, "bio": about, "declarations": json.dumps(decls),
+            "address": _public_address(store, owner, who), "pgp": key or None,
+            "availability": json.dumps(slots), "skills": json.dumps(tags),
+            "offer_title": title or None, "offer_body": body or None, "offered_at": offered_at or None,
+            "link_postings": int(bool(linked)), "anonymous": int(bool(hidden)),
+            "listed": int(on_map), "listed_at": listed_at or None, "place_id": place or None,
+            "appearance": look, "intents": json.dumps(marks), **lines,
+            "status": "active", "updated_at": stamp,
+        }
         if current is None:
-            raise FlagError("not_found", f"personal flag {flag_id} does not exist")
-        if current["owner"] != owner:
-            raise FlagError("scope_denied", "only the owner can update this flag")
-        if current["holder"] != who:
-            raise FlagError("schema_invalid", "flag belongs to the other holder")
-    else:
-        current = _by_holder(store, owner, who)
-
-    on_map, place, look, heard_profile = settle_flash(
-        listed=listed,
-        place_id=place_id,
-        appearance=appearance,
-        order=order,
-        current_listed=bool(current["listed"]) if current is not None else False,
-        current_place=(current["place_id"] or "") if current is not None else "",
-        current_appearance=load_obj(current["appearance"]) if current is not None else None,
-    )
-    marks, skilled, liked, refused = settle_profile(
-        heard_profile,
-        ordered=bool((order or "").strip()),
-        intents=intents,
-        good_at=good_at,
-        enjoy=enjoy,
-        refuse=refuse,
-        current_intents=loads(current["intents"]) if current is not None else [],
-        current_good=(current["good_at"] or "") if current is not None else "",
-        current_enjoy=(current["enjoy"] or "") if current is not None else "",
-        current_refuse=(current["refuse"] or "") if current is not None else "",
-    )
-
-    other = _by_holder(store, owner, _other(who))
-    if current is None and other is None:
-        other_name = _text(counterpart_name or "", "counterpart_name", 80, required=True)
-        _blank_flag(store, owner, _other(who), other_name)
-
-    address = owner if who == "steward" else ""
-    stamp = now_iso()
-    fields = (
-        name, about, json.dumps(decls), address, key or None,
-        json.dumps(slots), json.dumps(tags), title or None, body or None,
-        int(bool(link_postings)), int(bool(anonymous)),
-        int(on_map), place or None, look,
-        json.dumps(marks), skilled, liked, refused, stamp,
-    )
-    if current is None:
-        saved_id = new_id("flg")
-        store.execute(
-            """
-            INSERT INTO personal_flags (
-                id, owner, holder, linked_flag_id, display_name, bio, declarations,
-                address, pgp, availability, skills, offer_title, offer_body,
-                link_postings, anonymous, listed, place_id, appearance,
-                intents, good_at, enjoy, refuse,
-                status, created_at, updated_at
-            ) VALUES (?, ?, ?, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)
-            """,
-            (saved_id, owner, who, *fields, stamp),
-        )
-    else:
-        saved_id = current["id"]
-        store.execute(
-            """
-            UPDATE personal_flags SET
-                display_name = ?, bio = ?, declarations = ?, address = ?, pgp = ?,
-                availability = ?, skills = ?, offer_title = ?, offer_body = ?,
-                link_postings = ?, anonymous = ?, listed = ?, place_id = ?,
-                appearance = ?, intents = ?, good_at = ?, enjoy = ?, refuse = ?,
-                status = 'active', updated_at = ?
-            WHERE id = ?
-            """,
-            (*fields, saved_id),
-        )
-    _link_pair(store, owner)
-    row = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (saved_id,))
-    return _row(row)
+            saved_id = new_id("flg")
+            columns = ["id", "owner", "holder", "linked_flag_id", "created_at", *values]
+            store.execute(
+                f"INSERT INTO personal_flags ({', '.join(columns)}) VALUES ({', '.join('?' * len(columns))})",
+                (saved_id, owner, who, "", stamp, *values.values()),
+            )
+        else:
+            saved_id = current["id"]
+            assignments = ", ".join(f"{column} = ?" for column in values)
+            store.execute(
+                f"UPDATE personal_flags SET {assignments} WHERE id = ?",
+                (*values.values(), saved_id),
+            )
+        _link_pair(store, owner)
+        return _row(store.query_one("SELECT * FROM personal_flags WHERE id = ?", (saved_id,)))
 
 
-def open_flags(
-    store: FlagStore,
-    *,
-    actor: str,
-    human: dict,
-    steward: dict,
-) -> dict[str, Any]:
-    """Open or refresh both flags. Neither flag is optional."""
+def open_flags(store: FlagStore, *, actor: str, human: dict, steward: dict) -> dict[str, Any]:
+    """Open or change both flags in one write. Neither flag is optional.
+
+    If either side is refused, neither is saved.
+    """
     if not isinstance(human, dict) or not isinstance(steward, dict):
         raise FlagError("schema_invalid", "a personal flag opens a human flag and a steward flag")
-    human_listed, human_place, human_order = omitted_listing(human)
-    steward_listed, steward_place, steward_order = omitted_listing(steward)
-    human_intents, human_good, human_enjoy, human_refuse = omitted_profile(human)
-    steward_intents, steward_good, steward_enjoy, steward_refuse = omitted_profile(steward)
-    human_flag = upsert_flag(
-        store,
-        actor=actor,
-        holder="human",
-        display_name=human.get("display_name") or human.get("displayName") or "",
-        counterpart_name=steward.get("display_name") or steward.get("displayName") or "",
-        flag_id=human.get("id") or human.get("flag_id"),
-        bio=human.get("bio") or "",
-        declarations=human.get("declarations"),
-        pgp=human.get("pgp"),
-        availability=human.get("availability"),
-        skills=human.get("skills"),
-        offer_title=human.get("offer_title") or human.get("offerTitle"),
-        offer_body=human.get("offer_body") or human.get("offerBody"),
-        link_postings=_as_bool(human.get("link_postings", human.get("linkPostings")), False),
-        anonymous=_as_bool(human.get("anonymous"), True),
-        listed=human_listed,
-        place_id=human_place,
-        appearance=human.get("appearance"),
-        order=human_order,
-        intents=human_intents,
-        good_at=human_good,
-        enjoy=human_enjoy,
-        refuse=human_refuse,
-    )
-    steward_flag = upsert_flag(
-        store,
-        actor=actor,
-        holder="steward",
-        display_name=steward.get("display_name") or steward.get("displayName") or "",
-        flag_id=steward.get("id") or steward.get("flag_id"),
-        bio=steward.get("bio") or "",
-        declarations=steward.get("declarations"),
-        pgp=steward.get("pgp"),
-        availability=steward.get("availability"),
-        skills=steward.get("skills"),
-        offer_title=steward.get("offer_title") or steward.get("offerTitle"),
-        offer_body=steward.get("offer_body") or steward.get("offerBody"),
-        link_postings=_as_bool(steward.get("link_postings", steward.get("linkPostings")), False),
-        anonymous=_as_bool(steward.get("anonymous"), True),
-        listed=steward_listed,
-        place_id=steward_place,
-        appearance=steward.get("appearance"),
-        order=steward_order,
-        intents=steward_intents,
-        good_at=steward_good,
-        enjoy=steward_enjoy,
-        refuse=steward_refuse,
-    )
+    human, steward = canon(human), canon(steward)
+    with store.transaction():
+        human_flag = upsert_flag(
+            store,
+            actor=actor,
+            holder="human",
+            flag_id=human.get("flag_id"),
+            counterpart_name=steward.get("display_name") or "",
+            **{k: v for k, v in human.items() if k != "flag_id"},
+        )
+        steward_flag = upsert_flag(
+            store,
+            actor=actor,
+            holder="steward",
+            flag_id=steward.get("flag_id"),
+            **{k: v for k, v in steward.items() if k != "flag_id"},
+        )
     return {"human": human_flag, "steward": steward_flag}
 
 
 def list_flags(store: FlagStore, *, active_only: bool = True) -> list[dict[str, Any]]:
-    if active_only:
-        rows = store.query_all(
-            "SELECT * FROM personal_flags WHERE status = 'active' ORDER BY updated_at DESC"
-        )
-    else:
-        rows = store.query_all("SELECT * FROM personal_flags ORDER BY updated_at DESC")
+    where = "WHERE status = 'active'" if active_only else ""
+    rows = store.query_all(f"SELECT * FROM personal_flags {where} ORDER BY updated_at DESC")
     return [_row(row) for row in rows]
 
 
 def retract_flag(store: FlagStore, *, actor: str, flag_id: str) -> dict[str, Any]:
-    owner = _actor(actor)
-    current = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,))
-    if current is None:
-        raise FlagError("not_found", f"personal flag {flag_id} does not exist")
-    if current["owner"] != owner:
-        raise FlagError("scope_denied", "only the owner can retract this flag")
-    store.execute(
-        "UPDATE personal_flags SET status = 'retracted', updated_at = ? WHERE id = ?",
-        (now_iso(), flag_id),
-    )
-    row = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,))
-    return _row(row)
+    """Take one flag down. The other flag in the pair stays."""
+    owner = check_actor(actor)
+    with store.transaction():
+        current = store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,))
+        if current is None:
+            raise FlagError("not_found", f"personal flag {flag_id} does not exist")
+        if current["owner"] != owner:
+            raise FlagError("scope_denied", "only the owner can retract this flag")
+        store.execute(
+            "UPDATE personal_flags SET status = 'retracted', updated_at = ? WHERE id = ?",
+            (now_iso(), flag_id),
+        )
+        return _row(store.query_one("SELECT * FROM personal_flags WHERE id = ?", (flag_id,)))

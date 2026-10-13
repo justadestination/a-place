@@ -160,47 +160,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return self._proxy("GET")
         return super().do_GET()
 
-    def _json(self, status: int, payload: dict) -> None:
-        import json
-        data = json.dumps(payload).encode()
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(data)))
-        self.end_headers()
-        self.wfile.write(data)
-
-    def _accord_read(self) -> None:
-        import json
-        import sys
-        length = int(self.headers.get("Content-Length") or 0)
-        if length > 65536:
-            self._json(400, {"ok": False, "message": "I have not read the room."})
-            return
-        root = Path(__file__).resolve().parent.parent.parent
-        if str(root) not in sys.path:
-            sys.path.insert(0, str(root))
-        try:
-            from shadenet.serendipilyst.intents import hear_side
-            from shadenet.serendipilyst.store import FlagError
-            body = json.loads(self.rfile.read(length) or b"{}")
-            heard = hear_side(
-                body.get("messages") or [],
-                side=str(body.get("side") or ""),
-                buyer=str(body.get("buyer") or ""),
-                seller=str(body.get("seller") or ""),
-            )
-        except FlagError as exc:
-            self._json(400, {"ok": False, "message": str(exc)})
-            return
-        except Exception:
-            self._json(400, {"ok": False, "message": "I have not read the room."})
-            return
-        self._json(200, {"ok": True, **heard})
-
     def do_POST(self):
-        if self.path.split("?", 1)[0] == "/api/accord-read":
-            self._accord_read()
-            return
         if self.path.startswith("/api/chat/") or self.path.startswith("/_matrix/"):
             try:
                 import sys

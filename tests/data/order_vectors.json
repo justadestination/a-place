@@ -1,0 +1,408 @@
+[
+  {
+    "order": "paint it black",
+    "base": {
+      "field": "crimson",
+      "charge": "dagger",
+      "motto": "TUBE AMP"
+    },
+    "expect": {
+      "field": "ink",
+      "charge": "dagger",
+      "motto": "TUBE AMP",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "dagger and rose",
+    "expect": {
+      "field": "parchment",
+      "charge": "dagger",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "paint it black and list it at the lot",
+    "base": {
+      "field": "crimson",
+      "charge": "dagger",
+      "motto": "TUBE AMP"
+    },
+    "expect": {
+      "field": "ink",
+      "charge": "dagger",
+      "motto": "TUBE AMP",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": true,
+      "place_id": "lot",
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "fine line, no ribbon, notched",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "fine",
+      "ribbon": false,
+      "fly": "notched",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "list it at courthouse square",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": true,
+      "place_id": "square",
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "pull it",
+    "base": {
+      "field": "ink",
+      "charge": "dagger",
+      "motto": ""
+    },
+    "expect": {
+      "field": "ink",
+      "charge": "dagger",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": false,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "I enjoy black coffee and red wine",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": "black coffee and red wine",
+      "refuse": null
+    }
+  },
+  {
+    "order": "motto selling out",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "selling out",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "motto good at nothing",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "good at nothing",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "motto rock and roll, crimson",
+    "expect": {
+      "field": "crimson",
+      "charge": "none",
+      "motto": "rock and roll",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "selling a bass amp, list it at the square",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": true,
+      "place_id": "square",
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": "a bass amp"
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "stuff for sale: Sunday backline, one night.",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": "Sunday backline, one night."
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "selling an amp and crimson",
+    "expect": {
+      "field": "crimson",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": "an amp"
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "looking for a conversation about the square",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [
+        {
+          "kind": "conversation",
+          "sentence": "the square"
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "selling a 3.5mm cable",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": "a 3.5mm cable"
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "I'm good at bass and drums",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": "bass and drums",
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "drop the sale",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": ""
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "selling an amp, selling a kit",
+    "error": "one mark per intent"
+  },
+  {
+    "order": "looking for a conversation",
+    "error": "an intent needs a sentence"
+  },
+  {
+    "order": "make it plaid",
+    "error": "tell the Steward a field, a charge, a motto, or paint it black"
+  },
+  {
+    "order": "list it and pull it",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": false,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "crimson and gold",
+    "expect": {
+      "field": "gold",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": null,
+      "place_id": null,
+      "intents": [],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  },
+  {
+    "order": "motto XXXXXXXXXXXXXXXXXXXXXXXXX",
+    "error": "motto is longer than 24 characters"
+  },
+  {
+    "order": "stuff for sale: Sunday backline, one night. list it at the square",
+    "expect": {
+      "field": "parchment",
+      "charge": "none",
+      "motto": "",
+      "line": "heavy",
+      "ribbon": true,
+      "fly": "",
+      "listed": true,
+      "place_id": "square",
+      "intents": [
+        {
+          "kind": "sale",
+          "sentence": "Sunday backline, one night."
+        }
+      ],
+      "good_at": null,
+      "enjoy": null,
+      "refuse": null
+    }
+  }
+]

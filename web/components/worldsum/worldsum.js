@@ -476,6 +476,67 @@ export function worldsumMap() {
     return ".!?".includes(said[said.length - 1]) ? said : `${said}.`;
   }
 
+  // The market room talks to the API as the signed-in Steward. Sample people
+  // on the static sheet have no flag behind them, so they get no room.
+  const SESSION_KEY = "nightcal.auth.session_token";
+
+  function sessionToken() {
+    try {
+      return localStorage.getItem(SESSION_KEY) || "";
+    } catch {
+      return "";
+    }
+  }
+
+  function authHeaders() {
+    const token = sessionToken();
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+      headers["X-Session-Token"] = token;
+    }
+    return headers;
+  }
+
+  async function dealCall(args) {
+    let response;
+    try {
+      response = await fetch("/api/flags", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({ command: "deal", args }),
+      });
+    } catch {
+      throw new Error("I can't reach the house right now.");
+    }
+    let data = {};
+    try {
+      data = await response.json();
+    } catch {
+      /* keep the generic line below */
+    }
+    if (!response.ok || !data.ok) {
+      throw new Error((data.error && (data.error.message || data.error)) || "That didn't go through.");
+    }
+    return data.result;
+  }
+
+  async function loadRoom() {
+    if (!deal) return;
+    const headers = authHeaders();
+    try {
+      const [who, said] = await Promise.all([
+        fetch("/api/chat/auth", { headers }).then((r) => r.json()),
+        fetch(`/api/chat/rooms/${encodeURIComponent(deal.roomId)}/messages?limit=200`, { headers }).then((r) => r.json()),
+      ]);
+      deal.pseudonym = who.pseudonym || deal.pseudonym;
+      deal.messages = Array.isArray(said.messages) ? said.messages : deal.messages;
+    } catch {
+      /* keep what is on screen */
+    }
+    paintChat();
+  }
+
   function paintChat() {
     const chat = chatView({
       title: deal.name,
@@ -484,52 +545,41 @@ export function worldsumMap() {
       showBridge: false,
       rooms: [{
         room_id: deal.roomId,
-        alias: `#private-${deal.personId}:shady.example.org`,
+        alias: "#private:shady.example.org",
         name: deal.name,
         topic: deal.sentence,
         kind: "private",
       }],
       activeRoomId: deal.roomId,
       messages: deal.messages,
-      pseudonym: "@anon-you:shady.example.org",
+      pseudonym: deal.pseudonym,
+      sessionToken: sessionToken(),
     });
     chatHost.replaceChildren(chat);
   }
 
-  function openPrivate(person) {
+  async function openPrivate(person) {
     const sentence = (person.intents && person.intents[0] && person.intents[0].sentence) || person.note;
-    const roomId = `!private_${person.id}:shady.example.org`;
-    const sale = (person.intents || []).some((item) => item.kind === "sale");
-    const name = person.label || person.name;
+    steward.textContent = "I'm telling their steward.";
+    let opened;
+    try {
+      opened = await dealCall({ action: "interest", flag_id: person.flagId, sentence: sentencePeriod(sentence) });
+    } catch (err) {
+      steward.textContent = err.message;
+      return;
+    }
     deal = {
       personId: person.id,
-      name,
-      sentence,
-      roomId,
-      sale,
+      name: opened.name || person.label || person.name,
+      sentence: opened.sentence,
+      roomId: opened.room_id,
       stage: "talk",
-      give: "",
-      get: sentence,
-      amount: "",
-      messages: [{
-        event_id: "$m_private",
-        sender: "@steward:shady.example.org",
-        content: `I told their steward. You and ${name} are both in this room. You wanted to talk about ${sentencePeriod(sentence)} This room is private.`,
-        timestamp: Date.now(),
-        redacted: false,
-      }],
+      terms: null,
+      messages: [],
+      pseudonym: "",
     };
-    if (sale) {
-      deal.messages.push({
-        event_id: "$m_foundry",
-        sender: "@anon-foundry:shady.example.org",
-        content: `${sentencePeriod(sentence)} Say what you give and the price.`,
-        timestamp: Date.now(),
-        redacted: false,
-      });
-    }
-    paintChat();
-    steward.textContent = "I told their steward. The room is private. You are both in it.";
+    steward.textContent = opened.reply;
+    await loadRoom();
     renderDeal();
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
       || document.documentElement.getAttribute("data-motion") === "reduce";
@@ -542,49 +592,126 @@ export function worldsumMap() {
     return h("div.nc-worldsum__rating", {}, mark, h("span", {}, label), input, readout);
   }
 
-  function settleDeal(step, tip, hearts, flames, word) {
+  function termsLine(terms) {
+    const price = `${terms.amount} ${terms.unit || ""}`.trim();
+    return `${sentencePeriod(terms.item)} The price is ${price}.`;
+  }
+
+  async function readRoom() {
+    if (!deal || deal.reading) return;
+    deal.reading = true;
+    steward.textContent = "I'm reading the room.";
+    try {
+      deal.terms = await dealCall({ action: "accord", step: "read", room_id: deal.roomId });
+      deal.stage = "confirm";
+      steward.textContent = deal.terms.reply;
+    } catch (err) {
+      steward.textContent = err.message;
+    } finally {
+      deal.reading = false;
+    }
+    await loadRoom();
+    renderDeal();
+  }
+
+  async function confirmTerms() {
+    try {
+      const seen = await dealCall({ action: "accord", step: "confirm", room_id: deal.roomId, terms: deal.terms.terms });
+      deal.terms = seen;
+      deal.stage = seen.state === "accorded" ? "rate" : "waiting";
+      steward.textContent = seen.reply;
+    } catch (err) {
+      steward.textContent = err.message;
+      if (/terms I read last/.test(err.message)) deal.stage = "talk";
+    }
+    renderDeal();
+  }
+
+  function inXmr(terms) {
+    return ["XMR", "MONERO"].includes(String(terms && terms.unit || "").toUpperCase());
+  }
+
+  async function takeObligation() {
+    try {
+      deal.obligation = await dealCall({ action: "oblige", room_id: deal.roomId, terms: deal.terms.terms });
+      steward.textContent = deal.obligation.reply;
+    } catch (err) {
+      steward.textContent = err.message;
+    }
+    renderDeal();
+  }
+
+  async function obligationStep(action, tip) {
+    try {
+      deal.obligation = await dealCall({
+        action, obligation_id: deal.obligation.id,
+        ...(tip && tip.value.trim() ? { tip: tip.value.trim() } : {}),
+      });
+      steward.textContent = deal.obligation.reply;
+    } catch (err) {
+      steward.textContent = err.message;
+    }
+    renderDeal();
+  }
+
+  function obligationForm() {
+    const ob = deal.obligation;
+    if (!ob) {
+      if (deal.terms.side !== "buyer") {
+        return h("p", {}, "The price is in XMR. The buyer can take on the obligation to the platform.");
+      }
+      return h("div.nc-worldsum__deal-form", {},
+        h("p", {}, `You would owe the platform ${deal.terms.amount} XMR for ${sentencePeriod(deal.terms.item)}`),
+        button({ label: "Take on the obligation", variant: "secondary", attrs: { id: "nc-deal-oblige" }, onClick: takeObligation }),
+      );
+    }
+    if (ob.state === "obliged" && deal.terms.side === "buyer") {
+      const tip = h("input.nc-worldsum__control", {
+        id: "nc-deal-tip", type: "text", inputmode: "decimal", "aria-label": "Tip the platform, optional",
+      });
+      return h("div.nc-worldsum__deal-form", {},
+        h("p", {}, `You owe the platform ${ob.amount_xmr} XMR.`),
+        h("label.nc-label", { for: "nc-deal-tip" }, "Tip, if you want"),
+        tip,
+        button({ label: "Pay", variant: "secondary", attrs: { id: "nc-deal-pay" }, onClick: () => obligationStep("pay", tip) }),
+      );
+    }
+    if (ob.state === "paid") {
+      return h("div.nc-worldsum__deal-form", {},
+        h("p", {}, `Paid. ${ob.amount_xmr} XMR is with the platform.`),
+        button({ label: "Release", variant: "secondary", attrs: { id: "nc-deal-release" }, onClick: () => obligationStep("release") }),
+      );
+    }
+    if (ob.state === "released") return h("p", {}, "Released to the seller.");
+    return h("p", {}, `The buyer owes the platform ${ob.amount_xmr} XMR.`);
+  }
+
+  async function sendRating(hearts, flames, word) {
     const token = word.value.trim();
     if (!token) {
       steward.textContent = "A rating needs hearts, flames, and one word.";
       return;
     }
-    if (!/^[A-Za-z][A-Za-z'-]{0,23}$/.test(token)) {
-      steward.textContent = "The word is one word.";
-      return;
-    }
-    const tipNote = tip.value.trim() && Number(tip.value) > 0 ? " Tip noted." : "";
-    const rateNote = ` Hearts ${hearts.value}. Flames ${flames.value}. ${token}.`;
-    if (step === "pay") {
-      deal.stage = "paid";
-      steward.textContent = `You owe the platform ${deal.amount} XMR for ${sentencePeriod(deal.sentence)}${tipNote}${rateNote} The ratings stay with me until 25 transactions. I'm holding the ratings.`;
-    } else {
-      deal.stage = "released";
-      steward.textContent = `Released to the seller. ${sentencePeriod(deal.sentence)}${tipNote}${rateNote} The ratings stay with me until 25 transactions. I'm holding the ratings.`;
+    try {
+      const done = await dealCall({
+        action: "rate", room_id: deal.roomId,
+        personal: Number(hearts.value), product: Number(flames.value), word: token,
+      });
+      deal.stage = "done";
+      steward.textContent = done.reply;
+    } catch (err) {
+      steward.textContent = err.message;
     }
     renderDeal();
   }
 
-  function payForm(step) {
-    const tip = h("input.nc-worldsum__control", {
-      id: "nc-deal-tip",
-      type: "text",
-      inputmode: "decimal",
-      "aria-label": "Tip the platform, optional",
-    });
+  function rateForm() {
     const hearts = h("input.nc-worldsum__range", {
-      id: "nc-deal-hearts",
-      type: "range",
-      min: "1",
-      max: "100",
-      value: "50",
+      id: "nc-deal-hearts", type: "range", min: "1", max: "100", value: "50",
       "aria-label": "Personal rating, hearts",
     });
     const flames = h("input.nc-worldsum__range", {
-      id: "nc-deal-flames",
-      type: "range",
-      min: "1",
-      max: "100",
-      value: "50",
+      id: "nc-deal-flames", type: "range", min: "1", max: "100", value: "50",
       "aria-label": "Product rating, flames",
     });
     const heartRead = h("span.nc-worldsum__rate-num", {}, "50");
@@ -592,26 +719,20 @@ export function worldsumMap() {
     hearts.addEventListener("input", () => { heartRead.textContent = hearts.value; });
     flames.addEventListener("input", () => { flameRead.textContent = flames.value; });
     const word = h("input.nc-worldsum__control", {
-      id: "nc-deal-word",
-      type: "text",
-      maxlength: "24",
-      "aria-label": "One word for the experience",
-    });
-    const action = button({
-      label: step === "pay" ? "Pay" : "Release",
-      variant: "secondary",
-      attrs: { id: step === "pay" ? "nc-deal-pay" : "nc-deal-release" },
-      onClick: () => settleDeal(step, tip, hearts, flames, word),
+      id: "nc-deal-word", type: "text", maxlength: "24", "aria-label": "One word for the experience",
     });
     return h("div.nc-worldsum__deal-form", {},
-      step === "pay" ? h("p", {}, `The price is ${deal.amount} XMR.`) : null,
-      h("label.nc-label", { for: "nc-deal-tip" }, "Tip, if you want"),
-      tip,
+      h("p", {}, "If you want, leave a rating. Only the Steward sees it."),
       rateRow("hearts", hearts, heartRead),
       rateRow("flames", flames, flameRead),
       h("label.nc-label", { for: "nc-deal-word" }, "One word"),
       word,
-      action,
+      button({
+        label: "Leave the rating",
+        variant: "secondary",
+        attrs: { id: "nc-deal-rate" },
+        onClick: () => sendRating(hearts, flames, word),
+      }),
     );
   }
 
@@ -622,179 +743,55 @@ export function worldsumMap() {
     const intents = person.intents || [];
     if (!deal || deal.personId !== selectedId) {
       if (!intents.length) return;
-      dealHost.append(
-        intentList(intents),
-        button({
+      dealHost.append(intentList(intents));
+      if (!person.flagId) {
+        dealHost.append(h("p.nc-muted", {}, "A sample flag. Nobody stands behind it, so there is no room to open."));
+      } else if (!sessionToken()) {
+        dealHost.append(h("p.nc-muted", {}, "Sign in, and your Steward can tell theirs."));
+      } else {
+        dealHost.append(button({
           label: "Tell their steward",
           variant: "secondary",
           attrs: { id: "nc-tell-steward" },
           onClick: () => openPrivate(person),
-        }),
-      );
+        }));
+      }
       return;
     }
     dealHost.append(h("p", {}, `You and ${deal.name} are in the room.`));
-    if (!deal.sale) return;
-    if (deal.stage === "talk") dealHost.append(accordForm());
-    else if (deal.stage === "confirm") {
+    const refresh = button({ label: "Refresh the room", variant: "secondary", onClick: loadRoom });
+    if (deal.stage === "talk") {
       dealHost.append(
-        h("p", {}, exchangeLine(deal)),
-        button({
-          label: "Yes. That is what I expect.",
-          variant: "secondary",
-          attrs: { id: "nc-accord-yes" },
-          onClick: confirmMine,
-        }),
+        h("p", {}, "Talk it through in the room. When you have settled what changes hands and the price, ask the Steward to read it."),
+        h("div.nc-worldsum__actions", {},
+          refresh,
+          button({ label: "Read the room", variant: "secondary", attrs: { id: "nc-accord-read" }, onClick: readRoom }),
+        ),
       );
-    } else if (deal.stage === "theirs") {
+    } else if (deal.stage === "confirm") {
       dealHost.append(
-        h("p", {}, `${exchangeLine(deal)} Their user has not confirmed yet.`),
-        button({
-          label: "Their user confirms",
-          variant: "secondary",
-          attrs: { id: "nc-accord-theirs" },
-          onClick: confirmTheirs,
-        }),
+        h("p", {}, termsLine(deal.terms)),
+        h("div.nc-worldsum__actions", {},
+          button({ label: "Yes. That is what I expect.", variant: "secondary", attrs: { id: "nc-accord-yes" }, onClick: confirmTerms }),
+          button({ label: "Not quite. Keep talking.", variant: "secondary", onClick: () => { deal.stage = "talk"; renderDeal(); } }),
+        ),
       );
-    } else if (deal.stage === "pay") dealHost.append(payForm("pay"));
-    else if (deal.stage === "paid") dealHost.append(payForm("release"));
-    else dealHost.append(h("p", {}, "Released to the seller."));
-  }
-
-  function roomSpeakers() {
-    const names = new Set();
-    for (const message of deal.messages) {
-      const sender = message.sender || "";
-      if (!sender || sender.startsWith("@steward")) continue;
-      names.add(sender);
+    } else if (deal.stage === "waiting") {
+      dealHost.append(
+        h("p", {}, `${termsLine(deal.terms)} Their user has not confirmed yet.`),
+        h("div.nc-worldsum__actions", {},
+          button({ label: "Check again", variant: "secondary", attrs: { id: "nc-accord-check" }, onClick: confirmTerms }),
+          button({ label: "Read the room again", variant: "secondary", onClick: readRoom }),
+        ),
+      );
+    } else if (deal.stage === "rate") {
+      dealHost.append(h("p", {}, termsLine(deal.terms)));
+      if (inXmr(deal.terms)) dealHost.append(obligationForm());
+      dealHost.append(rateForm());
+    } else {
+      if (inXmr(deal.terms)) dealHost.append(obligationForm());
+      dealHost.append(h("p", {}, "Rated. Thank you."));
     }
-    return names;
-  }
-
-  function sayInRoom(input) {
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    deal.messages.push({
-      event_id: `$m_you_${Date.now()}`,
-      sender: "@anon-you:shady.example.org",
-      content: text,
-      timestamp: Date.now(),
-      redacted: false,
-    });
-    paintChat();
-  }
-
-  async function askSide(side, lines) {
-    const you = "@anon-you:shady.example.org";
-    const them = "@anon-foundry:shady.example.org";
-    let response;
-    try {
-      response = await fetch("/api/accord-read", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          side,
-          buyer: you,
-          seller: them,
-          messages: lines,
-        }),
-      });
-    } catch {
-      throw new Error("I have not read the room.");
-    }
-    let data;
-    try {
-      data = await response.json();
-    } catch {
-      throw new Error("I have not read the room.");
-    }
-    if (!response.ok || !data.ok) throw new Error(data.message || "I have not read the room.");
-    return data;
-  }
-
-  async function readRoom() {
-    if (!deal || deal.reading) return;
-    if (roomSpeakers().size < 2) {
-      steward.textContent = "Both of you have to speak before I read an accord.";
-      return;
-    }
-    deal.reading = true;
-    steward.textContent = "I'm reading the room.";
-    try {
-      const lines = deal.messages.map((message) => ({ sender: message.sender, content: message.content }));
-      const buyer = await askSide("buyer", lines);
-      const seller = await askSide("seller", lines);
-      const fold = (value) => String(value || "").toLowerCase().split(/\s+/).filter(Boolean).join(" ").replace(/[.!?]+$/g, "");
-      const parts = ["buyer_give", "buyer_get", "seller_give", "seller_get"];
-      const aligned = buyer.amount === seller.amount && parts.every((key) => fold(buyer[key]) === fold(seller[key]));
-      deal.give = buyer.buyer_give;
-      deal.get = buyer.buyer_get;
-      deal.theirGive = buyer.seller_give;
-      deal.theirGet = buyer.seller_get;
-      deal.amount = buyer.amount;
-      const terms = exchangeLine(deal);
-      const line = aligned
-        ? `I read the room. Their steward read it too. We are on the same page. ${terms} Confirm that this is what you expect.`
-        : `I read the room. Their steward read it too. We are not on the same page. ${terms} Nothing is confirmed.`;
-      deal.messages.push({
-        event_id: `$m_accord_${Date.now()}`,
-        sender: "@steward:shady.example.org",
-        content: line,
-        timestamp: Date.now(),
-        redacted: false,
-      });
-      deal.stage = aligned ? "confirm" : "talk";
-      steward.textContent = line;
-      paintChat();
-      renderDeal();
-    } catch (err) {
-      steward.textContent = err.message || "I have not read the room.";
-    } finally {
-      if (deal) deal.reading = false;
-    }
-  }
-
-  function exchangeLine(view) {
-    return `You give ${sentencePeriod(view.give)} You get ${sentencePeriod(view.get)} They give ${sentencePeriod(view.theirGive)} They get ${sentencePeriod(view.theirGet)} The price is ${view.amount} XMR.`;
-  }
-
-  function confirmMine() {
-    deal.stage = "theirs";
-    steward.textContent = `You confirmed. ${exchangeLine(deal)} Their user has not confirmed yet.`;
-    renderDeal();
-  }
-
-  function confirmTheirs() {
-    deal.stage = "pay";
-    steward.textContent = `You confirmed. ${exchangeLine(deal)} Both of you confirmed. This is what each user gives, what each user gets, and the price.`;
-    renderDeal();
-  }
-
-  function accordForm() {
-    const line = h("input.nc-worldsum__control", {
-      id: "nc-room-line",
-      type: "text",
-      maxlength: "400",
-      "aria-label": "Say it in the room",
-    });
-    return h("div.nc-worldsum__deal-form", {},
-      h("p", {}, "Say it in the room. Both stewards read what each user gives, what each user gets, and the price."),
-      h("label.nc-label", { for: "nc-room-line" }, "Say it in the room"),
-      line,
-      button({
-        label: "Say it",
-        variant: "secondary",
-        attrs: { id: "nc-room-say" },
-        onClick: () => sayInRoom(line),
-      }),
-      button({
-        label: "Read the room",
-        variant: "secondary",
-        attrs: { id: "nc-accord-read" },
-        onClick: () => { readRoom(); },
-      }),
-    );
   }
 
   const listBtn = button({ label: "List this flag", variant: "primary", onClick: listFlag });
@@ -910,12 +907,10 @@ export function worldsumMap() {
     },
   },
     h("h2.nc-h3", {}, "Your flag"),
-    h("p.nc-muted", {}, "One line is enough. An intent needs a sentence. Listing it is what puts the place on the sheet."),
+    h("p.nc-muted", {}, "Set the flag below, or tell the Steward in one line. An intent needs a sentence. Listing it is what puts the place on the sheet."),
     previewHost,
     banner,
-    h("div", {}, h("label.nc-label", { for: "nc-flag-order" }, "Tell the Steward"), order),
-    h("div.nc-worldsum__actions", {}, tellBtn),
-    h("details.nc-worldsum__details", {},
+    h("details.nc-worldsum__details", { open: true },
       h("summary", {}, "Every detail"),
       h("div.nc-worldsum__detail-grid", {},
         h("div", {}, h("span.nc-label", { id: "nc-flag-field-label" }, "Field"), swatches),
@@ -927,6 +922,8 @@ export function worldsumMap() {
         h("div", {}, h("label.nc-label", { for: "nc-flag-place" }, "Place"), place),
       ),
     ),
+    h("div", {}, h("label.nc-label", { for: "nc-flag-order" }, "Or tell the Steward"), order),
+    h("div.nc-worldsum__actions", {}, tellBtn),
     h("p.nc-eyebrow", {}, "Steward"),
     steward,
     h("div.nc-worldsum__actions", {}, listBtn, pullBtn),
@@ -952,11 +949,53 @@ export function worldsumMap() {
     ),
   );
 
+  // Listed flags from the house join the sample sheet. Each stands a little
+  // off its place so several flags at one place stay clickable.
+  async function loadLiveFlags() {
+    let live;
+    try {
+      const response = await fetch("/api/flags/sheet");
+      if (!response.ok) return;
+      live = await response.json();
+    } catch {
+      return;
+    }
+    const crowd = new Map();
+    for (const pin of live.pins || []) {
+      const place = placeById(pin.place_id);
+      if (!place || roster.some((person) => person.id === pin.id)) continue;
+      const n = crowd.get(place.id) || 0;
+      crowd.set(place.id, n + 1);
+      const angle = (n * 2.4) + 0.8;
+      roster.push({
+        id: pin.id,
+        flagId: pin.id,
+        kind: pin.kind === "business_node" ? "business" : (pin.holder === "steward" ? "steward" : "human"),
+        name: pin.name,
+        label: pin.name,
+        listed: true,
+        bored: false,
+        placeId: place.id,
+        appearance: pin.appearance,
+        intents: pin.intents || [],
+        goodAt: pin.good_at || "",
+        enjoy: pin.enjoy || "",
+        refuse: pin.refuse || "",
+        note: "",
+        x: Math.round(place.x + Math.cos(angle) * (26 + 8 * n)),
+        y: Math.round(place.y + Math.sin(angle) * (26 + 8 * n)),
+      });
+    }
+    paintPins();
+    paintBored();
+  }
+
   paintPreview();
   paintPins();
   paintBored();
   renderDetail();
   renderDeal();
+  loadLiveFlags();
 
   return h("section.nc-worldsum", { "aria-label": "WorldSum map" },
     h("div.nc-worldsum__body", {}, sheet, aside),

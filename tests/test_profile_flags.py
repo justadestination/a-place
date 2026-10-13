@@ -58,7 +58,7 @@ def test_human_and_steward_each_get_a_flag(store):
     assert steward["holder"] == "steward"
     assert human["owner"] == steward["owner"] == PERSON
     assert human["address"] == ""
-    assert steward["address"] == PERSON
+    assert steward["address"].startswith("a2a://relay/")
     assert human["linked_flag_id"] == steward["id"]
     assert steward["linked_flag_id"] == human["id"]
     assert human["display_name"] == "Lumen"
@@ -108,7 +108,8 @@ def test_personal_offer_stays_on_its_own_flag(store):
     assert feed[0]["holder"] == "human"
     assert feed[0]["title"] == "Tube amp, cash in person"
     assert feed[0]["flag_id"] is None
-    assert feed[0]["inbox"] == PERSON
+    assert feed[0]["inbox"].startswith("a2a://relay/")
+    assert PERSON not in str(feed)
 
     linked = upsert_personal_flag(
         store,
@@ -188,7 +189,8 @@ def test_business_node_then_flag(store):
         venue_id="ven_neon",
     )
     assert node["id"].startswith("biz_")
-    assert node["inbox"] == ROOM
+    assert node["inbox"].startswith("a2a://relay/")
+    assert node["controller"] == ROOM
     assert node["kind"] == "business_node"
 
     again = upsert_business_node(store, actor=ROOM, name="The Neon Foundry")
@@ -207,7 +209,8 @@ def test_business_node_then_flag(store):
     feed = exposures(store)
     assert len(feed) == 1
     assert feed[0]["kind"] == "business"
-    assert feed[0]["inbox"] == ROOM
+    assert feed[0]["inbox"] == node["inbox"]
+    assert ROOM not in str(feed)
     assert feed[0]["anonymous"] is True
 
 
@@ -322,6 +325,7 @@ def test_listed_flag_publishes_its_place(store):
         "name": "The Neon Foundry",
         "place_id": "rail",
         "appearance": {"field": "rust", "charge": "anchor", "motto": "SUNDAY"},
+        "inbox": node["inbox"],
     }]
     use_store(None)
 

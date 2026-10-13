@@ -71,9 +71,12 @@ SETTINGS: list[Setting] = [
     Setting("umwelt.cycle_mock_mode", "Newsroom cycle in mock mode", "bool", True,
             "Run the newsroom pipeline without calling external models."),
     # SerendipiLyst
-    Setting("serendipilyst.listings_open", "Accept new listings", "bool", True),
-    Setting("serendipilyst.listing_ttl_days", "Listing lifetime (days)", "int", 30, min=1, max=180),
-    Setting("serendipilyst.max_listings_per_steward", "Max live listings per Steward", "int", 5, min=1, max=100),
+    Setting("serendipilyst.listings_open", "Accept new listings", "bool", True,
+            "Closed = no new places on the sheet and no new offers. Live ones stay.", wired=True),
+    Setting("serendipilyst.listing_ttl_days", "Listing lifetime (days)", "int", 30,
+            "A place or offer not renewed in this many days drops off the sheet.", min=1, max=180, wired=True),
+    Setting("serendipilyst.max_listings_per_steward", "Max live listings per Steward", "int", 5,
+            "Places plus offers, counted across the Steward's flags and nodes.", min=1, max=100, wired=True),
     # Stewards
     Setting("steward.activation_open", "New Steward activation", "bool", True,
             "Pause to stop new Stewards being issued (existing ones keep working)."),

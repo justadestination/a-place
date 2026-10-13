@@ -1,13 +1,15 @@
-"""American Traditional flash for a public flag.
+"""American Traditional flash for a public flag, and the order that paints it.
 
-The look is the TacksForSnacks default: bold black ink, crimson, burnt rust,
-gold, and parchment. A person can name one part ("paint it black") or set
-field, charge, motto, line, ribbon, and fly. The Synapse homeserver, the
-Matrix room, and the tackbot's kick and ban commands are not part of this
-package. The Steward speaks for the flag.
+The look is bold black ink, crimson, burnt rust, gold, and parchment. A flag
+sets field, charge, motto, line, ribbon, and fly. The explicit controls are
+the main way to set them. An order ("paint it black, list it at the square")
+is the shortcut: it changes only the parts it names.
 
 A flag is on the WorldSum sheet only when it is listed, and a listed flag
 names one place from ``web/js/data/worldsum.js``.
+
+``web/components/worldsum/pennant.js`` carries the same order grammar.
+``tests/data/order_vectors.json`` holds the cases both must agree on.
 """
 
 from __future__ import annotations
@@ -16,6 +18,7 @@ import json
 import re
 from typing import Any
 
+from shadenet.serendipilyst.fields import KEEP, as_bool, given
 from shadenet.serendipilyst.intents import parse_profile_clause
 from shadenet.serendipilyst.store import FlagError
 
@@ -83,6 +86,24 @@ _CHARGES = (
     ("none", ("no charge", "field only", "plain", "bare"), "No charge. The field has to carry it."),
 )
 
+# A clause made only of these words is a flash order, even inside a longer
+# sentence ("selling an amp and crimson"). "red wine" is not: "wine" isn't here.
+_FLASH_WORDS = frozenset(
+    "a an the it its with no on off at in to field line fly ribbon charge only "
+    "crimson red rust burnt orange gold ink black parchment paper "
+    "dagger rose anchor acorn plain bare "
+    "fine thin heavy thick bold swallowtail swallow tail notched notch banner "
+    "courthouse railroad square rail dark pool lot north gate far lake long water narrows three pools east "
+    "list unlist pull".split()
+)
+# A clause that starts with one of these is an order, not the rest of a sentence.
+_COMMAND = re.compile(
+    r"^(?:motto\b|list\b|unlist\b|pull\b|paint\b|make it\b|hang it\b|plant it\b|put it\b|"
+    r"take it\b|no ribbon\b|ribbon\b)",
+    re.I,
+)
+_MOTTO = re.compile(r"^motto\s*[:\-]?\s*(.+)$", re.I)
+
 
 def clean_place(value: str | None) -> str:
     place = (value or "").strip()
@@ -91,23 +112,17 @@ def clean_place(value: str | None) -> str:
     return place
 
 
-def _word(text: str, phrase: str) -> bool:
-    return re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", text) is not None
-
-
-def _ribbon(value: Any) -> bool:
-    if isinstance(value, str):
-        return value.strip().lower() in {"1", "true", "yes", "on"}
-    return bool(value)
+def _word(said: str, phrase: str) -> bool:
+    return re.search(rf"(?<![a-z0-9]){re.escape(phrase)}(?![a-z0-9])", said) is not None
 
 
 def clean_appearance(value: Any) -> str | None:
-    """Return stored JSON, or None when the flag has no flash yet.
+    """Return stored JSON, or None when the flag has no flash.
 
-    Line, ribbon, and fly are optional. A heavy line, a ribbon, and no fly
-    choice are the ordinary flag, so those defaults are left out of the JSON.
+    A heavy line, a ribbon, and no fly choice are the ordinary flag, so
+    those defaults are left out of the JSON.
     """
-    if value is None or value == "":
+    if value is None or value == "" or value == {}:
         return None
     if not isinstance(value, dict):
         raise FlagError("schema_invalid", "appearance must be an object")
@@ -126,16 +141,16 @@ def clean_appearance(value: Any) -> str | None:
         raise FlagError("schema_invalid", "charge must be dagger, anchor, acorn, rose, or none")
     if len(motto) > MOTTO_LIMIT:
         raise FlagError("schema_invalid", f"motto is longer than {MOTTO_LIMIT} characters")
-    packed = {"field": field, "charge": charge, "motto": motto}
-    if "line" in value and value.get("line") not in (None, ""):
+    packed: dict[str, Any] = {"field": field, "charge": charge, "motto": motto}
+    if value.get("line") not in (None, ""):
         line = str(value.get("line")).strip().lower()
         if line not in LINES:
             raise FlagError("schema_invalid", "line must be heavy or fine")
         if line != "heavy":
             packed["line"] = line
-    if "ribbon" in value and not _ribbon(value.get("ribbon")):
+    if "ribbon" in value and not as_bool(value.get("ribbon"), True):
         packed["ribbon"] = False
-    if "fly" in value and value.get("fly") not in (None, ""):
+    if value.get("fly") not in (None, ""):
         fly = str(value.get("fly")).strip().lower()
         if fly not in FLIES:
             raise FlagError("schema_invalid", "fly must be swallowtail, notched, or banner")
@@ -143,47 +158,65 @@ def clean_appearance(value: Any) -> str | None:
     return json.dumps(packed, separators=(",", ":"))
 
 
-def _flash_clause(clause: str) -> bool:
-    low = clause.lower().strip()
-    if re.match(r"motto\b", low):
-        return True
-    if _color_in(low) or _charge_in(low) or _place_in(low):
-        return True
-    hints = (
-        "fine", "thin", "heavy", "thick", "bold", "ribbon",
-        "swallowtail", "swallow tail", "notched", "notch", "banner",
-        "list", "pull", "unlist",
-    )
-    return any(_word(low, hint) for hint in hints)
+def _parts(said: str) -> list[tuple[str, str]]:
+    """Split on commas, "and", and sentence ends, keeping each separator as typed."""
+    protected = re.sub(r"dagger and rose", "dagger_and_rose", said, flags=re.IGNORECASE)
+    pieces = re.split(r"(\s*,\s*|\s+and\s+|(?<=[.!?])\s+)", protected, flags=re.IGNORECASE)
+    out: list[tuple[str, str]] = []
+    sep = ""
+    for index, piece in enumerate(pieces):
+        if index % 2:
+            sep = piece
+            continue
+        text = piece.replace("dagger_and_rose", "dagger and rose").strip()
+        if text:
+            out.append((sep, text))
+        sep = ""
+    return out
 
 
-def _spoken_clauses(text: str) -> list[str]:
-    """A comma inside an intent sentence is part of the sentence."""
-    parts = _clauses(text)
+def _is_order(part: str) -> bool:
+    """True when a part reads as its own flash order."""
+    low = part.lower().strip()
+    if _COMMAND.match(low):
+        return True
+    words = re.findall(r"[a-z]+", low)
+    return bool(words) and all(word in _FLASH_WORDS for word in words)
+
+
+def _opens_sentence(part: str) -> bool:
+    """A motto or a profile line runs on until the next order."""
+    if _MOTTO.match(part.strip()):
+        return True
+    try:
+        return parse_profile_clause(part) is not None
+    except FlagError:
+        return False
+
+
+def spoken_clauses(said: str) -> list[str]:
+    """Group the parts of an order into clauses.
+
+    A motto, intent, or profile line keeps the words after it, joined the
+    way they were typed, until a part that is its own order or starts a
+    line of its own. So "I enjoy
+    black coffee and red wine" stays one line, and "selling an amp, list it"
+    is a sale and a listing.
+    """
+    parts = _parts(said)
     merged: list[str] = []
     index = 0
     while index < len(parts):
-        clause = parts[index]
-        try:
-            profile = parse_profile_clause(clause)
-        except FlagError:
-            merged.append(clause)
-            index += 1
-            continue
-        sentence = (profile or {}).get("sentence") or ""
-        end = index + 1
-        while sentence and sentence[-1] not in ".!?" and end < len(parts) and not _flash_clause(parts[end]):
-            sentence = f"{sentence}, {parts[end]}"
-            end += 1
-        merged.append(clause if end == index + 1 else ", ".join(parts[index:end]))
-        index = end
+        _sep, clause = parts[index]
+        index += 1
+        if _opens_sentence(clause):
+            while (index < len(parts) and clause[-1] not in ".!?"
+                   and not _is_order(parts[index][1]) and not _opens_sentence(parts[index][1])):
+                sep, more = parts[index]
+                clause = f"{clause}{sep}{more}"
+                index += 1
+        merged.append(clause)
     return merged
-
-
-def _clauses(text: str) -> list[str]:
-    protected = re.sub(r"dagger and rose", "dagger_and_rose", text, flags=re.IGNORECASE)
-    parts = re.split(r"\s*(?:,|\band\b)\s*", protected, flags=re.IGNORECASE)
-    return [part.replace("dagger_and_rose", "dagger and rose").strip() for part in parts if part.strip()]
 
 
 def _color_in(clause: str) -> tuple[str, str] | None:
@@ -213,24 +246,26 @@ def _place_in(clause: str) -> str | None:
 
 
 def _apply_clause(clause: str, look: dict[str, Any], effect: dict[str, Any], notes: list[str]) -> bool:
+    motto = _MOTTO.match(clause.strip())
+    if motto:
+        said = motto.group(1).strip().strip("\"'")
+        if len(said) > MOTTO_LIMIT:
+            raise FlagError("schema_invalid", f"motto is longer than {MOTTO_LIMIT} characters")
+        look["motto"] = said
+        notes.append(f"Motto {said}.")
+        return True
     profile = parse_profile_clause(clause)
     if profile:
         bucket = effect.setdefault("profile", {"intents": [], "good_at": None, "enjoy": None, "refuse": None})
         if profile["field"] == "intent":
+            if any(item["kind"] == profile["kind"] for item in bucket["intents"]):
+                raise FlagError("schema_invalid", "one mark per intent")
             bucket["intents"].append({"kind": profile["kind"], "sentence": profile["sentence"]})
         else:
             bucket[profile["field"]] = profile["sentence"]
         notes.append(profile["reply"])
         return True
     low = clause.lower()
-    motto = re.match(r"motto\s*[:\-]?\s*(.+)$", clause.strip(), flags=re.IGNORECASE)
-    if motto:
-        text = motto.group(1).strip().strip("\"'")
-        if len(text) > MOTTO_LIMIT:
-            raise FlagError("schema_invalid", f"motto is longer than {MOTTO_LIMIT} characters")
-        look["motto"] = text
-        notes.append(f"Motto {text}.")
-        return True
     hit = False
     color = _color_in(low)
     if color:
@@ -294,12 +329,12 @@ def _apply_clause(clause: str, look: dict[str, Any], effect: dict[str, Any], not
     return hit
 
 
-def apply_order(text: str, appearance: dict | None = None) -> dict[str, Any]:
+def apply_order(said: str, appearance: dict | None = None) -> dict[str, Any]:
     """Change only the parts a person named. The rest of the flag stays.
 
     ``listed`` and ``place_id`` are None when the order did not mention them.
     """
-    said = (text or "").strip()
+    said = (said or "").strip()
     if not said:
         raise FlagError("schema_invalid", "tell the Steward what to paint")
     if len(said) > ORDER_LIMIT:
@@ -310,18 +345,18 @@ def apply_order(text: str, appearance: dict | None = None) -> dict[str, Any]:
         "charge": str(base.get("charge") or "none").strip().lower(),
         "motto": str(base.get("motto") or "").strip(),
         "line": str(base.get("line") or "heavy").strip().lower(),
-        "ribbon": True if "ribbon" not in base else _ribbon(base.get("ribbon")),
+        "ribbon": True if "ribbon" not in base else as_bool(base.get("ribbon"), True),
         "fly": str(base.get("fly") or "").strip().lower(),
     }
     effect: dict[str, Any] = {"listed": None, "place_id": None}
     notes: list[str] = []
-    for clause in _spoken_clauses(said):
+    for clause in spoken_clauses(said):
         if not _apply_clause(clause, look, effect, notes):
             raise FlagError(
                 "schema_invalid",
                 "tell the Steward a field, a charge, a motto, or paint it black",
             )
-    packed = {"field": look["field"], "charge": look["charge"], "motto": look["motto"]}
+    packed: dict[str, Any] = {"field": look["field"], "charge": look["charge"], "motto": look["motto"]}
     if look["line"] != "heavy":
         packed["line"] = look["line"]
     if look["ribbon"] is False:
@@ -337,80 +372,40 @@ def apply_order(text: str, appearance: dict | None = None) -> dict[str, Any]:
     }
 
 
-def _flag_bool(value: Any, default: bool) -> bool:
-    if value is None:
-        return default
-    if isinstance(value, str):
-        return value.strip().lower() in {"1", "true", "yes"}
-    return bool(value)
-
-
-def omitted_listing(payload: dict) -> tuple[bool | None, str | None, str | None]:
-    """Return listing fields for one write.
-
-    ``listed`` and ``place_id`` are None when an order is present and the
-    payload left them out, so the current flag keeps its place on the sheet.
-    """
-    raw = payload.get("order")
-    order = raw.strip() if isinstance(raw, str) and raw.strip() else None
-    if "listed" in payload:
-        listed: bool | None = _flag_bool(payload.get("listed"), False)
-    elif order:
-        listed = None
-    else:
-        listed = False
-    if "place_id" in payload:
-        place: str | None = payload.get("place_id") or ""
-    elif "placeId" in payload:
-        place = payload.get("placeId") or ""
-    elif order:
-        place = None
-    else:
-        place = ""
-    return listed, place, order
-
-
 def settle_flash(
     *,
-    listed: bool | None,
-    place_id: str | None,
-    appearance: dict | None,
-    order: str | None,
+    listed: Any = KEEP,
+    place_id: Any = KEEP,
+    appearance: Any = KEEP,
+    order: str | None = None,
     current_listed: bool = False,
-    current_place: str | None = None,
+    current_place: str = "",
     current_appearance: dict | None = None,
 ) -> tuple[bool, str, str | None, dict | None]:
-    """Resolve one write's place and flash.
+    """Resolve one write's listing, place, and flash.
 
-    Without an order, the write replaces both. An order changes only the
-    parts it names. When the order lists and names no place, the caller's
-    place is kept, then the place already on the flag.
+    Anything the write left out keeps its stored value. An order is applied
+    on top and changes only what it names. Returns
+    ``(listed, place_id, appearance_json, heard_profile)``.
     """
-    said = (order or "").strip()
+    look = appearance if given(appearance) else current_appearance
     heard = None
-    if said:
-        base = appearance if appearance is not None else current_appearance
-        heard = apply_order(said, base if isinstance(base, dict) else None)
-        appearance = heard["appearance"]
+    if (order or "").strip():
+        heard = apply_order(order, look if isinstance(look, dict) else None)
+        look = heard["appearance"]
     if heard is not None and heard["listed"] is not None:
         on_map = bool(heard["listed"])
-    elif listed is not None:
-        on_map = _flag_bool(listed, False)
+    elif given(listed):
+        on_map = as_bool(listed, False)
     else:
         on_map = bool(current_listed)
     if heard is not None and heard["place_id"]:
         chosen = heard["place_id"]
-    elif place_id:
-        chosen = place_id
-    elif heard is not None:
-        chosen = current_place or ""
-    else:
+    elif given(place_id):
         chosen = place_id or ""
+    else:
+        chosen = current_place or ""
     place = clean_place(chosen if isinstance(chosen, str) else "")
-    require_listed_place(on_map, place)
-    return on_map, place, clean_appearance(appearance), heard.get("profile") if heard else None
-
-
-def require_listed_place(listed: bool, place: str) -> None:
-    if listed and not place:
+    if on_map and not place:
         raise FlagError("schema_invalid", "a listed flag needs a WorldSum place")
+    return on_map, place, clean_appearance(look), heard.get("profile") if heard else None

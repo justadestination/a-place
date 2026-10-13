@@ -9,7 +9,11 @@ and OpenStreetMap, writes the towncrier store, and pushes a new data model.
 
 from __future__ import annotations
 
+import hashlib
 import json
+# Load the standard logging module before shadenet.nightcal.fill puts shadenet/
+# on sys.path; after that, a bare "import logging" finds shadenet/logging.py.
+import logging  # noqa: F401
 import os
 import sys
 import threading
@@ -67,6 +71,9 @@ class _Discard:
 
 _access_log = StructuredLogger(service="http", sink=_Discard())
 from shadenet.health import check_subsystems
+from shadenet import serendipilyst
+from shadenet.serendipilyst import web as flags_web
+from shadenet.serendipilyst.reader import check_model
 from shadenet.auth import default_auth_manager
 from shadenet.zkp import (
     create_age_challenge,
@@ -92,6 +99,7 @@ from shadenet.chat import (
 
 STATIC = Path(__file__).resolve().parent
 PORT = int(os.environ.get("NIGHTCAL_PORT", "8765"))
+MAX_BODY = 1 << 20
 
 
 def _db_path() -> Path:
@@ -200,7 +208,13 @@ class Handler(BaseHTTPRequestHandler):
         self._send(code, json.dumps(payload).encode(), "application/json; charset=utf-8")
 
     def _read_json(self) -> dict | None:
-        length = int(self.headers.get("Content-Length") or 0)
+        try:
+            length = int(self.headers.get("Content-Length") or 0)
+        except ValueError:
+            length = -1
+        if length < 0 or length > MAX_BODY:
+            self._json(413 if length > 0 else 400, {"error": "bad Content-Length"})
+            return None
         raw = self.rfile.read(length) if length else b"{}"
         try:
             body = json.loads(raw.decode() or "{}")
@@ -211,6 +225,22 @@ class Handler(BaseHTTPRequestHandler):
             self._json(400, {"error": "expected a JSON object"})
             return None
         return body
+
+    # Chat routes speak as flags_web.steward_address(account) for a signed-in
+    # person, so a private market room and their chat session are one identity.
+    def _account_id(self) -> str | None:
+        """The signed-in account behind this request, or None."""
+        auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+        token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+        session = default_auth_manager.validate_session(token) if token else None
+        return str(session["user_id"]) if session else None
+
+    def _flags(self, method: str, path: str, body: dict | None) -> bool:
+        if path != "/api/flags" and not path.startswith("/api/flags/"):
+            return False
+        code, payload = flags_web.handle(method, path, body, self._account_id())
+        self._json(code, payload)
+        return True
 
     def _check_rate_limit(self, category: str = "api") -> bool:
         # Behind Caddy every peer is 127.0.0.1; key buckets on the real client.
@@ -304,7 +334,7 @@ class Handler(BaseHTTPRequestHandler):
             auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
             token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
             session = default_auth_manager.validate_session(token) if token else None
-            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            user_id = flags_web.steward_address(session["user_id"]) if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
             conn = get_chat_db(_db_path())
             pseudonym = get_pseudonym_for_user(conn, user_id)
             self._json(200, {
@@ -324,7 +354,7 @@ class Handler(BaseHTTPRequestHandler):
             auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
             token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
             session = default_auth_manager.validate_session(token) if token else None
-            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            user_id = flags_web.steward_address(session["user_id"]) if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
             viewer = get_pseudonym_for_user(conn, user_id)
             try:
                 msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since, viewer=viewer)
@@ -342,6 +372,8 @@ class Handler(BaseHTTPRequestHandler):
             if not self._check_rate_limit(cat):
                 return
 
+        if self._flags("GET", path, None):
+            return
         if path == "/api/surface":
             with _lock:
                 store = open_store(_db_path())
@@ -588,6 +620,9 @@ class Handler(BaseHTTPRequestHandler):
             if not require_operator(self, "POST"):
                 return
 
+        if self._flags("POST", path, body):
+            return
+
         if path.startswith("/api/auth/"):
             if path == "/api/auth/register/verify":
                 try:
@@ -798,7 +833,7 @@ class Handler(BaseHTTPRequestHandler):
             auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
             token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
             session = default_auth_manager.validate_session(token) if token else None
-            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            user_id = flags_web.steward_address(session["user_id"]) if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
             conn = get_chat_db(_db_path())
             pseudonym = get_pseudonym_for_user(conn, user_id)
             raw_content = body.get("content")
@@ -990,6 +1025,10 @@ def main() -> int:
     path = _db_path()
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
+    flags_db = Path(os.environ.get("SERENDIPILYST_DB") or path.parent / "serendipilyst.db")
+    serendipilyst.configure(flags_db, chat_opener=lambda: get_chat_db(_db_path()))
+    model = check_model()
+    print(f"serendipilyst  {flags_db}  model {model['model'] or '-'}: {model['message']}", flush=True)
     hosts = _bind_hosts()
     servers = [ThreadingHTTPServer((host, PORT), Handler) for host in hosts]
     for host in hosts:
