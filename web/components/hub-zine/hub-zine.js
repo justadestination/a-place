@@ -10,7 +10,7 @@ export function hubZine(article = null, { level = 2 } = {}) {
   const container = h("section.nc-hub-slot.nc-hub-zine", { "aria-label": "Zine feature" });
   
   const eyebrow = h("p.nc-eyebrow", {},
-    h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
+    h("img", { src: "/assets/brand/uh-crimson-256.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
     "Umwelt Horizons"
   );
 

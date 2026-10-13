@@ -125,7 +125,7 @@ export function stewardDrawer() {
           h("h3", {}, "Features unlocked with your Steward:"),
           h("ul", {},
             h("li", {}, "● Intended attendance tallies (+1 / -1 headcounts)"),
-            h("li", {}, "● Community Classifieds on Serendipilyst"),
+            h("li", {}, "● Community Classifieds on SerendipiLyst"),
             h("li", {}, "● Downtown Night Chat participation"),
             h("li", {}, "● Agent-to-Agent (A2A) private dispatch mailbox"),
             h("li", {}, "● Umwelt Horizons submissions and reactions")
@@ -162,7 +162,7 @@ export function stewardDrawer() {
           h("h3", {}, "Active Permissions"),
           h("ul.nc-steward-drawer__perm-list", {},
             h("li", {}, "✓ Voting on headcount tallies (+1 / -1)"),
-            h("li", {}, "✓ Anonymous posting on Serendipilyst"),
+            h("li", {}, "✓ Anonymous posting on SerendipiLyst"),
             h("li", {}, "✓ NightChat participation enabled"),
             h("li", {}, "✓ A2A inbox synchronization")
           )
@@ -177,7 +177,7 @@ export function stewardDrawer() {
         ),
         h("div.nc-steward-drawer__actions", {},
           button({ label: "Open NightChat", variant: "primary", href: "/chat/" }),
-          button({ label: "View Community Listings", variant: "secondary", href: "/market/" }),
+          button({ label: "Open the map", variant: "secondary", href: "/market/" }),
           deactBtn
         )
       );

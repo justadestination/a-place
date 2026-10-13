@@ -19,7 +19,7 @@ export function aboutPage() {
       h("ul.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-2)", paddingLeft: "1.25rem" } },
         h("li", {}, h("strong", {}, "NightCal: "), "A verified ledger of what is happening downtown tonight and this week. Every listing cites the direct primary source where it was discovered."),
         h("li", {}, h("strong", {}, "Umwelt Horizons: "), "The cultural zine and investigative dispatch. Deep investigative dossiers, band interviews, and predictive cultural analysis."),
-        h("li", {}, h("strong", {}, "Serendipilyst: "), "The local community exchange for gig gear, crew availability, stage equipment trades, and lost & found.")
+        h("li", {}, h("strong", {}, "SerendipiLyst: "), "The local community exchange for gig gear, crew availability, stage equipment trades, and lost & found.")
       )
     ),
 

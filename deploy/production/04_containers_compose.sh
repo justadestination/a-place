@@ -1,59 +1,84 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# 04_containers_compose.sh — Isolated Multi-Container Stack & Single Ingress
-# Target: Fresh production VPS (Debian 12 / Ubuntu 24.04)
+# 04_containers_compose.sh — The Nest: Isolated Container Stack & Single Ingress
+# Target: the host Production VPS (Ubuntu 24.04+)
 #
 # ARCHITECTURE:
-# - Single Ingress: Caddy container is the ONLY container with public ports (80/443).
-# - Zero Exposed Ports: Postgres, Synapse, ShadeNet, Monero have NO public port bindings.
-# - Storage: All persistent volumes mounted to /srv/shadenet/data (LUKS2 Encrypted).
-# - Isolated Bridge Networks: ingress-net, matrix-net, monero-net, tor-net.
-# - Automated Self-Healing: willfarrell/autoheal monitors container healthchecks.
+# - Single Ingress: Caddy is the ONLY container with public ports (80/443).
+# - Zero Exposed Ports: Postgres, Synapse, Element, Tor have NO host port bindings.
+# - Storage: All persistent volumes under /srv/shadenet/data (encrypted later
+#   by 07_encrypt_at_rest.sh).
+# - Networks: edge (fixed subnet, egress allowed), matrix-net (internal only).
+# - Public hostnames are STAGED but DISABLED until DNS cutover:
+#     shadenet-ctl sites-enable    (after pointing DNS at this server)
+# - Eggs (not built here): shadenet-core — see the commented block in compose.yaml.
 # ==============================================================================
 set -euo pipefail
 
 ROOT_DIR="/srv/shadenet"
 CONFIG_DIR="${ROOT_DIR}/config"
 DATA_DIR="${ROOT_DIR}/data"
-LOGS_DIR="${ROOT_DIR}/logs"
 COMPOSE_FILE="${ROOT_DIR}/compose.yaml"
 ENV_FILE="${ROOT_DIR}/.env"
-SERVER_VPN_IP="203.0.113.1"
+SERVER_VPN_IP="10.90.80.42"
 
-echo "===> [1/6] Installing Docker Engine and Compose Plugin..."
-if ! command -v docker &>/dev/null; then
-  curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
-  sh /tmp/get-docker.sh
-  rm -f /tmp/get-docker.sh
-  systemctl enable docker
-  systemctl start docker
-fi
+# Matrix identity — server_name is PERMANENT once users exist
+MATRIX_SERVER_NAME="shadesr.net"
+MATRIX_HOST="matrix.shadesr.net"
+CHAT_HOST="chat.shadesr.net"
 
-echo "===> [2/6] Generating cryptographically secure secrets in ${ENV_FILE}..."
+# Fixed edge subnet so Tor can target Caddy by IP (HiddenServicePort needs an IP)
+EDGE_SUBNET="172.30.0.0/24"
+CADDY_EDGE_IP="172.30.0.10"
+
+# Pinned image versions (bump deliberately, never :latest)
+CADDY_IMAGE="caddy:2.11.7-alpine"
+SYNAPSE_IMAGE="matrixdotorg/synapse:v1.162.0"
+POSTGRES_IMAGE="postgres:16.15-alpine"
+ELEMENT_IMAGE="vectorim/element-web:v1.12.30"
+ALPINE_IMAGE="alpine:3.24"
+AUTOHEAL_IMAGE="willfarrell/autoheal:1.2.0"
+
+SYNAPSE_UID=991
+
+echo "===> [1/8] Installing Docker Engine and Compose from the distro archive..."
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq
+apt-get install -y -qq docker.io docker-compose-v2
+
+mkdir -p /etc/docker
+cat > /etc/docker/daemon.json <<'EOF'
+{
+  "log-driver": "json-file",
+  "log-opts": { "max-size": "50m", "max-file": "5" },
+  "no-new-privileges": true,
+  "live-restore": true
+}
+EOF
+systemctl enable docker
+systemctl restart docker
+
+echo "===> [2/8] Generating cryptographically secure secrets in ${ENV_FILE}..."
 if [ ! -f "${ENV_FILE}" ]; then
-  cat > "${ENV_FILE}" <<EOF
+  ( umask 077
+    cat > "${ENV_FILE}" <<EOF
 # ShadeNet Production Environment Secrets
-POSTGRES_PASSWORD=$(openssl rand -hex 16)
-SYNAPSE_REGISTRATION_SECRET=$(openssl rand -hex 24)
-SYNAPSE_MACAROON_SECRET=$(openssl rand -hex 24)
-SYNAPSE_FORM_SECRET=$(openssl rand -hex 24)
-MONERO_RPC_USER=steward_operator
-MONERO_RPC_PASSWORD=$(openssl rand -hex 16)
+POSTGRES_PASSWORD=$(openssl rand -hex 24)
+SYNAPSE_REGISTRATION_SECRET=$(openssl rand -hex 32)
+SYNAPSE_MACAROON_SECRET=$(openssl rand -hex 32)
+SYNAPSE_FORM_SECRET=$(openssl rand -hex 32)
 SHADENET_SECRET_KEY=$(openssl rand -hex 32)
 NIGHTCAL_BEARER=$(openssl rand -hex 24)
-DOMAIN_NAME=example.org
-SERVER_VPN_IP=${SERVER_VPN_IP}
 EOF
-  chmod 600 "${ENV_FILE}"
+  )
 fi
-
-# Load variables into environment for templating
 set -a
 # shellcheck disable=SC1090
 source "${ENV_FILE}"
 set +a
 
-echo "===> [3/6] Setting up Caddyfile (Single Public Ingress)..."
+echo "===> [3/8] Writing Caddy config (single ingress, public sites staged)..."
+mkdir -p "${CONFIG_DIR}/caddy/sites-available" "${CONFIG_DIR}/caddy/sites-enabled"
 cat > "${CONFIG_DIR}/caddy/Caddyfile" <<EOF
 {
     email ops@example.org
@@ -67,138 +92,258 @@ cat > "${CONFIG_DIR}/caddy/Caddyfile" <<EOF
     }
 }
 
-# Web Chat Client (Element Web)
-chat.example.org {
-    reverse_proxy element-web:80
-    encode gzip zstd
-    header {
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "SAMEORIGIN"
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
+# Onion ingress — reachable only from the Tor container on the edge network
+:8080 {
+    respond "ShadeNet onion — nest ready, eggs pending" 200
 }
 
-# Matrix Synapse Homeserver
-matrix.example.org {
-    encode gzip zstd
+# WireGuard management ingress
+http://${SERVER_VPN_IP} {
+    respond "ShadeNet Management Ingress (WireGuard Secured)" 200
+}
 
-    # Matrix Well-Known Delegation
+# Public sites live in sites-available/ and are symlinked in at DNS cutover
+import /etc/caddy/sites-enabled/*.caddy
+EOF
+
+# Keeps the import glob non-empty so Caddy never fails on an empty directory
+echo "# Public sites are enabled with: shadenet-ctl sites-enable" \
+  > "${CONFIG_DIR}/caddy/sites-enabled/00-placeholder.caddy"
+
+cat > "${CONFIG_DIR}/caddy/sites-available/public.caddy" <<EOF
+# ShadeNet front door + Matrix delegation for @user:${MATRIX_SERVER_NAME}
+${MATRIX_SERVER_NAME}, www.${MATRIX_SERVER_NAME}, shady.example.org {
+    encode gzip zstd
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
     handle /.well-known/matrix/server {
         header Content-Type application/json
-        header Access-Control-Allow-Origin *
-        respond "{\"m.server\": \"matrix.example.org:443\"}"
+        respond \`{"m.server": "${MATRIX_HOST}:443"}\`
     }
     handle /.well-known/matrix/client {
         header Content-Type application/json
         header Access-Control-Allow-Origin *
-        respond "{\"m.homeserver\": {\"base_url\": \"https://matrix.example.org\"}}"
+        respond \`{"m.homeserver": {"base_url": "https://${MATRIX_HOST}"}}\`
     }
-
-    # All API and Federation Traffic to Synapse
-    reverse_proxy matrix-synapse:8008 {
-        header_up X-Forwarded-Proto https
-        header_up X-Forwarded-For {remote_host}
+    handle {
+        # Egg: shadenet-core is not built yet — 502 until it is
+        reverse_proxy shadenet-core:8765
     }
 }
 
-# ShadeNet NightCal & Zine Front Door
-shady.example.org {
-    reverse_proxy shadenet-core:8765
+# Matrix Synapse homeserver (client + federation over 443)
+${MATRIX_HOST} {
+    encode gzip zstd
+    header -Server
+    # Admin API is never public — use: shadenet-ctl matrix-admin ...
+    @admin path /_synapse/admin*
+    respond @admin 404
+    reverse_proxy matrix-synapse:8008
+}
+
+# Element web client
+${CHAT_HOST} {
     encode gzip zstd
     header {
-        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        Strict-Transport-Security "max-age=31536000"
         X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
         Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
     }
-}
-
-# WireGuard Internal Discovery Ingress (203.0.113.1)
-http://${SERVER_VPN_IP} {
-    respond "ShadeNet Management Ingress (WireGuard Secured)" 200
+    reverse_proxy element-web:8080
 }
 EOF
 
-echo "===> [4/6] Setting up Monero container build files..."
-mkdir -p "${CONFIG_DIR}/monero"
-cat > "${CONFIG_DIR}/monero/Dockerfile" <<'EOF'
-FROM debian:12-slim
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    bzip2 curl ca-certificates libzmq3-dev libunbound-dev \
-    && rm -rf /var/lib/apt/lists/*
+echo "===> [4/8] Writing Synapse homeserver config (registration closed)..."
+SYN_DIR="${DATA_DIR}/synapse"
+if [ ! -f "${SYN_DIR}/homeserver.yaml" ]; then
+  cat > "${SYN_DIR}/homeserver.yaml" <<EOF
+server_name: "${MATRIX_SERVER_NAME}"
+public_baseurl: "https://${MATRIX_HOST}/"
+pid_file: /data/homeserver.pid
 
-RUN groupadd -g 1000 monero && useradd -u 1000 -g monero -m monero
-WORKDIR /opt/monero
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+    bind_addresses: ['0.0.0.0']
+    resources:
+      - names: [client, federation]
+        compress: false
 
-ENV MONERO_VERSION="0.18.3.4"
-RUN ARCH=$(uname -m) && \
-    if [ "$ARCH" = "x86_64" ]; then M_ARCH="x64"; \
-    elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then M_ARCH="armv8"; \
-    else echo "Unsupported arch: $ARCH" && exit 1; fi && \
-    (curl -fsSL "https://downloads.getmonero.org/cli/monero-linux-${M_ARCH}-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2 \
-     || curl -fsSL "https://github.com/monero-project/monero/releases/download/v${MONERO_VERSION}/monero-linux-${M_ARCH}-v${MONERO_VERSION}.tar.bz2" -o monero.tar.bz2) \
-    && tar -xjf monero.tar.bz2 -C /opt/monero --strip-components=1 \
-    && rm -f monero.tar.bz2 \
-    && chmod +x /opt/monero/monerod /opt/monero/monero-wallet-rpc \
-    && ln -s /opt/monero/monerod /usr/local/bin/monerod \
-    && ln -s /opt/monero/monero-wallet-rpc /usr/local/bin/monero-wallet-rpc
+database:
+  name: psycopg2
+  args:
+    user: synapse
+    password: "${POSTGRES_PASSWORD}"
+    dbname: synapse
+    host: matrix-postgres
+    cp_min: 5
+    cp_max: 10
 
-USER monero
-WORKDIR /var/lib/monero
+log_config: "/data/log.config"
+media_store_path: /data/media_store
+signing_key_path: "/data/${MATRIX_SERVER_NAME}.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+suppress_key_server_warning: true
+report_stats: false
+
+# Accounts are created by the operator only (shadenet-ctl matrix-create-admin)
+enable_registration: false
+registration_shared_secret: "${SYNAPSE_REGISTRATION_SECRET}"
+macaroon_secret_key: "${SYNAPSE_MACAROON_SECRET}"
+form_secret: "${SYNAPSE_FORM_SECRET}"
+
+# Privacy & disk discipline
+url_preview_enabled: false
+allow_public_rooms_over_federation: false
+allow_public_rooms_without_auth: false
+require_auth_for_profile_requests: true
+limit_profile_requests_to_users_who_share_rooms: true
+max_upload_size: 50M
+media_retention:
+  remote_media_lifetime: 90d
 EOF
 
-echo "===> [5/6] Writing Master compose.yaml (All Services Containerized)..."
+  cat > "${SYN_DIR}/log.config" <<'EOF'
+version: 1
+formatters:
+  precise:
+    format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    formatter: precise
+loggers:
+  synapse.storage.SQL:
+    level: WARNING
+root:
+  level: INFO
+  handlers: [console]
+disable_existing_loggers: false
+EOF
+  chown "${SYNAPSE_UID}:${SYNAPSE_UID}" "${SYN_DIR}/homeserver.yaml" "${SYN_DIR}/log.config"
+  chmod 600 "${SYN_DIR}/homeserver.yaml"
+fi
+
+echo "===> [5/8] Writing Element web client config..."
+cat > "${CONFIG_DIR}/element/config.json" <<EOF
+{
+  "default_server_config": {
+    "m.homeserver": {
+      "base_url": "https://${MATRIX_HOST}",
+      "server_name": "${MATRIX_SERVER_NAME}"
+    }
+  },
+  "disable_custom_urls": true,
+  "disable_guests": true,
+  "brand": "ShadeNet Chat",
+  "default_theme": "dark",
+  "show_labs_settings": false,
+  "room_directory": { "servers": ["${MATRIX_SERVER_NAME}"] }
+}
+EOF
+chmod 644 "${CONFIG_DIR}/element/config.json"
+
+echo "===> [6/8] Writing Tor image and onion service config..."
+cat > "${CONFIG_DIR}/tor/Dockerfile" <<EOF
+FROM ${ALPINE_IMAGE}
+RUN apk add --no-cache tor su-exec
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod 755 /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+EOF
+
+cat > "${CONFIG_DIR}/tor/entrypoint.sh" <<'EOF'
+#!/bin/sh
+# Tor refuses to run unless its DataDirectory is private and owned by it
+set -e
+chown -R tor:tor /var/lib/tor
+chmod 700 /var/lib/tor
+exec su-exec tor tor -f /etc/tor/torrc
+EOF
+
+cat > "${CONFIG_DIR}/tor/torrc" <<EOF
+SOCKSPort 0.0.0.0:9050
+SocksPolicy accept ${EDGE_SUBNET}
+SocksPolicy reject *
+
+ORPort 0
+ExitRelay 0
+ExitPolicy reject *:*
+
+DataDirectory /var/lib/tor
+
+# Onion Service: ShadeNet (via Caddy's onion ingress on :8080)
+HiddenServiceDir /var/lib/tor/shadenet_service/
+HiddenServiceVersion 3
+HiddenServicePort 80 ${CADDY_EDGE_IP}:8080
+EOF
+# Read by the unprivileged tor user inside the container
+chmod 644 "${CONFIG_DIR}/tor/torrc"
+
+echo "===> [7/8] Writing compose.yaml..."
 cat > "${COMPOSE_FILE}" <<EOF
-version: "3.8"
+name: shadenet
 
 networks:
-  ingress-net:
+  edge:
     driver: bridge
+    ipam:
+      config:
+        - subnet: ${EDGE_SUBNET}
   matrix-net:
     driver: bridge
     internal: true
-  monero-net:
-    driver: bridge
-    internal: true
-  tor-net:
-    driver: bridge
+
+x-hardening: &hardening
+  restart: always
+  security_opt:
+    - no-new-privileges:true
+  labels:
+    autoheal: "true"
 
 services:
-  # ============================================================================
-  # 1. INGRESS: The ONLY container exposing public ports (80/443)
-  # ============================================================================
+  # ==========================================================================
+  # 1. INGRESS: the ONLY container publishing ports (80/443)
+  # ==========================================================================
   ingress:
-    image: caddy:2.9-alpine
+    <<: *hardening
+    image: ${CADDY_IMAGE}
     container_name: shadenet_ingress
-    restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./config/caddy/sites-enabled:/etc/caddy/sites-enabled:ro
+      - ./config/caddy/sites-available:/etc/caddy/sites-available:ro
       - ./data/caddy_data:/data
       - ./data/caddy_config:/config
       - ./logs/caddy:/var/log/caddy
     networks:
-      - ingress-net
+      edge:
+        ipv4_address: ${CADDY_EDGE_IP}
     healthcheck:
-      test: ["CMD", "caddy", "version"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
       interval: 15s
       timeout: 5s
       retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "5"
 
-  # ============================================================================
-  # 2. MATRIX SYNAPSE HOMESERVER (Zero public port exposure)
-  # ============================================================================
+  # ==========================================================================
+  # 2. MATRIX SYNAPSE (server_name ${MATRIX_SERVER_NAME}; no host ports)
+  # ==========================================================================
   matrix-synapse:
-    image: matrixdotorg/synapse:latest
+    <<: *hardening
+    image: ${SYNAPSE_IMAGE}
     container_name: matrix_synapse
-    restart: always
     depends_on:
       matrix-postgres:
         condition: service_healthy
@@ -206,28 +351,23 @@ services:
       SYNAPSE_CONFIG_PATH: /data/homeserver.yaml
     volumes:
       - ./data/synapse:/data
-      - ./logs/synapse:/var/log/synapse
     networks:
-      - ingress-net
+      - edge
       - matrix-net
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8008/health || exit 1"]
       interval: 20s
       timeout: 5s
       retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "50m"
-        max-file: "5"
+      start_period: 60s
 
-  # ============================================================================
-  # 3. MATRIX POSTGRESQL (Strictly internal to matrix-net, encrypted at rest)
-  # ============================================================================
+  # ==========================================================================
+  # 3. MATRIX POSTGRES (internal network only)
+  # ==========================================================================
   matrix-postgres:
-    image: postgres:16-alpine
+    <<: *hardening
+    image: ${POSTGRES_IMAGE}
     container_name: matrix_postgres
-    restart: always
     environment:
       POSTGRES_USER: synapse
       POSTGRES_PASSWORD: "\${POSTGRES_PASSWORD}"
@@ -243,171 +383,93 @@ services:
       timeout: 5s
       retries: 3
 
-  # ============================================================================
-  # 4. ELEMENT WEB CLIENT (Zero public port exposure)
-  # ============================================================================
+  # ==========================================================================
+  # 4. ELEMENT WEB (no host ports)
+  # ==========================================================================
   element-web:
-    image: vectorim/element-web:latest
+    <<: *hardening
+    image: ${ELEMENT_IMAGE}
     container_name: element_web
-    restart: always
-    networks:
-      - ingress-net
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:80"]
-      interval: 20s
-      timeout: 5s
-      retries: 3
-
-  # ============================================================================
-  # 5. MONERO FULL NODE (Pruned, Outbound P2P only, Tx routed via Tor)
-  # ============================================================================
-  monerod:
-    build:
-      context: ./config/monero
-    container_name: monero_node
-    restart: always
-    command: >
-      monerod
-      --data-dir=/var/lib/monero/data
-      --prune-blockchain
-      --rpc-bind-ip=0.0.0.0
-      --rpc-bind-port=18081
-      --restricted-rpc
-      --confirm-external-bind
-      --no-igd
-      --in-peers=0
-      --out-peers=32
-      --tx-proxy=tor,tor:9050
-      --non-interactive
-    volumes:
-      - ./data/monero:/var/lib/monero
-      - ./logs/monero:/var/log/monero
-    networks:
-      - monero-net
-      - tor-net
-    # Expose restricted RPC strictly to WireGuard VPN IP (203.0.113.1) for operator
-    ports:
-      - "${SERVER_VPN_IP}:18081:18081"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:18081/get_height || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  # ============================================================================
-  # 6. MONERO WALLET RPC (Zero public port exposure)
-  # ============================================================================
-  monero-wallet-rpc:
-    build:
-      context: ./config/monero
-    container_name: monero_wallet_rpc
-    restart: always
-    depends_on:
-      - monerod
-    command: >
-      monero-wallet-rpc
-      --daemon-address=monerod:18081
-      --rpc-bind-ip=0.0.0.0
-      --rpc-bind-port=18082
-      --rpc-login=\${MONERO_RPC_USER}:\${MONERO_RPC_PASSWORD}
-      --wallet-dir=/var/lib/monero/wallets
-      --confirm-external-bind
-      --disable-rpc-login=false
-      --non-interactive
-    volumes:
-      - ./data/monero:/var/lib/monero
-    networks:
-      - monero-net
-    # Expose wallet RPC strictly to WireGuard VPN IP (203.0.113.1) for operator
-    ports:
-      - "${SERVER_VPN_IP}:18082:18082"
-
-  # ============================================================================
-  # 7. SHADENET NIGHTCAL & STEWARD CORE (Zero public port exposure)
-  # ============================================================================
-  shadenet-core:
-    build:
-      context: /opt/shadenet
-      dockerfile: Dockerfile
-    container_name: shadenet_core
-    restart: always
     environment:
-      SHADENET_DB: /data/shadenet/shadenet.db
-      NIGHTCAL_PORT: 8765
-      NIGHTCAL_HOST: 0.0.0.0
-      NIGHTCAL_BEARER: "\${NIGHTCAL_BEARER}"
+      # Unprivileged port: no-new-privileges blocks nginx's file capability for :80
+      ELEMENT_WEB_PORT: 8080
     volumes:
-      - ./data/shadenet:/data/shadenet
-      - ./logs/shadenet:/var/log/shadenet
+      - ./config/element/config.json:/app/config.json:ro
     networks:
-      - ingress-net
-      - tor-net
+      - edge
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8765/api/health || exit 1"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
       interval: 20s
       timeout: 5s
       retries: 3
 
-  # ============================================================================
-  # 8. TOR DAEMON & ONION SERVICES
-  # ============================================================================
+  # ==========================================================================
+  # 5. TOR (SOCKS for the edge network + ShadeNet onion service)
+  # ==========================================================================
   tor:
-    image: alpine:latest
+    <<: *hardening
+    build:
+      context: ./config/tor
+    image: shadenet/tor:local
     container_name: shadenet_tor
-    restart: always
-    entrypoint: ["sh", "-c", "apk add --no-cache tor && exec tor -f /etc/tor/torrc"]
     volumes:
       - ./config/tor/torrc:/etc/tor/torrc:ro
       - ./data/tor:/var/lib/tor
     networks:
-      - tor-net
-      - ingress-net
+      - edge
 
-  # ============================================================================
-  # 9. AUTOHEAL: Automated Container Repair & Recovery Daemon
-  # ============================================================================
+  # ==========================================================================
+  # 6. AUTOHEAL: restarts containers whose healthcheck fails
+  # ==========================================================================
   autoheal:
-    image: willfarrell/autoheal:latest
+    image: ${AUTOHEAL_IMAGE}
     container_name: shadenet_autoheal
     restart: always
+    security_opt:
+      - no-new-privileges:true
     environment:
-      AUTOHEAL_CONTAINER_LABEL: all
+      AUTOHEAL_CONTAINER_LABEL: autoheal
       AUTOHEAL_INTERVAL: 10
       AUTOHEAL_START_PERIOD: 60
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    network_mode: none
+
+  # ==========================================================================
+  # EGG: shadenet-core — uncomment when the ShadeNet image is ready
+  # ==========================================================================
+  # shadenet-core:
+  #   <<: *hardening
+  #   build:
+  #     context: /opt/shadenet
+  #   container_name: shadenet_core
+  #   environment:
+  #     SHADENET_DB: /data/shadenet/shadenet.db
+  #     NIGHTCAL_PORT: 8765
+  #     NIGHTCAL_HOST: 0.0.0.0
+  #     NIGHTCAL_BEARER: "\${NIGHTCAL_BEARER}"
+  #   volumes:
+  #     - ./data/shadenet:/data/shadenet
+  #     - ./logs/shadenet:/var/log/shadenet
+  #   networks:
+  #     - edge
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "curl -fsS http://localhost:8765/api/health || exit 1"]
+  #     interval: 20s
+  #     timeout: 5s
+  #     retries: 3
 EOF
 
-echo "===> [6/6] Writing Tor configuration for container network..."
-mkdir -p "${CONFIG_DIR}/tor"
-cat > "${CONFIG_DIR}/tor/torrc" <<'EOF'
-SOCKSPort 0.0.0.0:9050
-SocksPolicy accept 172.16.0.0/12
-SocksPolicy accept 127.0.0.1
-SocksPolicy reject *
+echo "===> [8/8] Pulling images, building Tor, generating Synapse signing key..."
+cd "${ROOT_DIR}"
+docker compose config --quiet
+docker compose pull --ignore-buildable
+docker compose build
 
-ORPort 0
-ExitRelay 0
-ExitPolicy reject *:*
+if [ ! -f "${SYN_DIR}/${MATRIX_SERVER_NAME}.signing.key" ]; then
+  docker compose run --rm --no-deps --user "${SYNAPSE_UID}:${SYNAPSE_UID}" \
+    --entrypoint python matrix-synapse \
+    -m synapse.app.homeserver --config-path /data/homeserver.yaml --generate-keys
+fi
 
-DataDirectory /var/lib/tor
-
-# Onion Service: ShadeNet Web & Zine
-HiddenServiceDir /var/lib/tor/shadenet_service/
-HiddenServiceVersion 3
-HiddenServicePort 80 shadenet-core:8765
-
-# Onion Service: Matrix Synapse Homeserver
-HiddenServiceDir /var/lib/tor/matrix_service/
-HiddenServiceVersion 3
-HiddenServicePort 80 matrix-synapse:8008
-EOF
-
-chmod 600 "${CONFIG_DIR}/tor/torrc"
-
-echo "✓ Master compose.yaml and container configs generated at ${ROOT_DIR}"
+echo "✓ Nest compose stack prepared at ${ROOT_DIR} (public sites staged, not enabled)"

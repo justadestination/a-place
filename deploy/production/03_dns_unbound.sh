@@ -8,13 +8,13 @@
 # - DNSSEC validation & QNAME minimization
 # - Zero query logging (privacy-preserving)
 # - Local authoritative zone for `.internal` service discovery
-# - Bound strictly to 127.0.0.1 and WireGuard VPN (203.0.113.1). ZERO public exposure.
+# - Bound strictly to 127.0.0.1 and WireGuard VPN (10.90.80.42). ZERO public exposure.
 # ==============================================================================
 set -euo pipefail
 
 ROOT_DIR="/srv/shadenet"
 UNBOUND_CONF_DIR="${ROOT_DIR}/config/unbound"
-SERVER_VPN_IP="203.0.113.1"
+SERVER_VPN_IP="10.90.80.42"
 
 echo "===> [1/3] Installing Unbound and DNSSEC trust anchor..."
 export DEBIAN_FRONTEND=noninteractive
@@ -30,6 +30,8 @@ server:
     interface: 127.0.0.1
     interface: ${SERVER_VPN_IP}
     port: 53
+    # Start even if wg0 is not up yet (boot ordering); bind once it appears
+    ip-freebind: yes
 
     # Protocol settings
     do-ip4: yes
@@ -39,7 +41,7 @@ server:
 
     # Access control (Localhost + WireGuard Subnet ONLY)
     access-control: 127.0.0.0/8 allow
-    access-control: 203.0.113.0/24 allow
+    access-control: 10.90.80.0/24 allow
     access-control: 0.0.0.0/0 refuse
 
     # Privacy & Anonymity Settings
@@ -63,16 +65,17 @@ server:
     infra-cache-numhosts: 10000
     so-reuseport: yes
 
-    # Security & DNSSEC
-    auto-trust-anchor-file: "/var/lib/unbound/root.key"
+    # Security & DNSSEC (trust anchor file is provided by the distro package)
     val-permissive-mode: no
+
+    # Without a CA bundle every DoT handshake fails and ALL queries SERVFAIL
+    tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
 
     # Local Private Zone for Internal Infrastructure Discovery
     private-domain: "internal"
     local-zone: "internal." static
     local-data: "matrix.internal. IN A ${SERVER_VPN_IP}"
     local-data: "shadenet.internal. IN A ${SERVER_VPN_IP}"
-    local-data: "monero.internal. IN A ${SERVER_VPN_IP}"
     local-data: "vault.internal. IN A ${SERVER_VPN_IP}"
 
 # Forward all external queries via DNS-over-TLS (Port 853)
@@ -87,23 +90,35 @@ forward-zone:
     forward-addr: 1.0.0.1@853#cloudflare-dns.com
 EOF
 
-# Update root trust anchor
-unbound-anchor -a /var/lib/unbound/root.key || true
-
-# Test configuration syntax
-unbound-checkconf /etc/unbound/unbound.conf.d/shadenet.conf
+# Test the FULL config (distro defaults + ours), not just our fragment
+unbound-checkconf
 
 echo "===> [3/3] Starting and enabling Unbound service..."
 systemctl restart unbound
 systemctl enable unbound
 
-# Set host resolver to use local Unbound
-if [ -f /etc/resolv.conf ]; then
-  # Preserve backup
-  cp /etc/resolv.conf /etc/resolv.conf.bak || true
+# Resolution must work AND DNSSEC must reject a deliberately broken domain.
+# (Checking SERVFAIL alone passes when Unbound is failing everything.)
+sleep 2
+if [ -z "$(dig @127.0.0.1 +time=5 +tries=3 +short A example.com)" ]; then
+  echo "!! Unbound cannot resolve example.com — check: journalctl -u unbound" >&2
+  exit 1
+fi
+if [ "$(dig @127.0.0.1 +time=5 +tries=2 dnssec-failed.org | awk '/status:/{print $6}' | tr -d ,)" != "SERVFAIL" ]; then
+  echo "!! DNSSEC validation is NOT working (dnssec-failed.org resolved)." >&2
+  exit 1
 fi
 
-echo "nameserver 127.0.0.1" > /etc/resolv.conf.shadenet
-ln -sf /etc/resolv.conf.shadenet /etc/resolv.conf || true
+# Only switch the host resolver once Unbound is proven good
+cp -L /etc/resolv.conf /etc/resolv.conf.bak 2>/dev/null || true
+
+# A REGULAR file, not a symlink: Ubuntu 26.04 AppArmor profiles (dig, etc.)
+# may only read /etc/resolv.conf itself. systemd-resolved leaves a regular
+# file alone ("foreign" mode), and nsswitch uses it directly.
+rm -f /etc/resolv.conf /etc/resolv.conf.shadenet
+printf 'nameserver 127.0.0.1\noptions edns0 trust-ad\n' > /etc/resolv.conf
+chmod 644 /etc/resolv.conf
+getent hosts example.com >/dev/null || { echo "!! Host resolution via Unbound failed" >&2; exit 1; }
+
 
 echo "✓ Privacy Unbound DNS active on 127.0.0.1:53 and ${SERVER_VPN_IP}:53"

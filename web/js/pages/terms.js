@@ -9,7 +9,7 @@ export function termsPage() {
   const hero = h("section.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-3)" } },
     h("p.nc-eyebrow", {}, "Legal & Guidelines"),
     h("h1.nc-h1", {}, "Terms & Conditions"),
-    h("p.nc-lede", {}, "Community rules, age requirements, and terms of service for NightCal, Umwelt Horizons, and Serendipilyst.")
+    h("p.nc-lede", {}, "Community rules, age requirements, and terms of service for NightCal, Umwelt Horizons, and SerendipiLyst.")
   );
 
   const content = h("article.nc-stack", { style: { "--nc-stack-gap": "var(--nc-space-6)", maxWidth: "var(--nc-size-measure)" } },

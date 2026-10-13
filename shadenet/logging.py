@@ -21,6 +21,33 @@ from typing import Any, Optional
 
 _local = threading.local()
 
+# File sink for the operator log viewer. Off unless SHADENET_LOG_FILE is set
+# (the systemd unit / compose file sets it); stderr/journald always gets a copy.
+LOG_ROTATE_BYTES = int(os.environ.get("SHADENET_LOG_ROTATE_MB", "20")) * 1024 * 1024
+LOG_KEEP = int(os.environ.get("SHADENET_LOG_KEEP", "5"))
+_file_lock = threading.Lock()
+
+
+def default_log_file() -> Optional[Path]:
+    raw = os.environ.get("SHADENET_LOG_FILE", "").strip()
+    return Path(raw) if raw else None
+
+
+def _append_rotating(path: Path, line: str) -> None:
+    with _file_lock:
+        try:
+            if path.exists() and path.stat().st_size >= LOG_ROTATE_BYTES:
+                for i in range(LOG_KEEP - 1, 0, -1):
+                    older = path.with_name(f"{path.name}.{i}")
+                    if older.exists():
+                        older.replace(path.with_name(f"{path.name}.{i + 1}"))
+                path.replace(path.with_name(f"{path.name}.1"))
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+        except OSError:
+            pass
+
 def current_trace_id() -> str:
     """Get the current thread's active trace ID or empty string."""
     return getattr(_local, "trace_id", "")
@@ -39,7 +66,7 @@ class StructuredLogger:
     def __init__(self, service: str = "nightcal", sink: Any = None, log_file: Optional[Path] = None):
         self.service = service
         self.sink = sink or sys.stderr
-        self.log_file = log_file
+        self.log_file = log_file or default_log_file()
 
     def _emit(self, level: str, event: str, **kwargs: Any) -> dict:
         ts = datetime.now(timezone.utc).isoformat()
@@ -62,11 +89,7 @@ class StructuredLogger:
             pass
 
         if self.log_file:
-            try:
-                with open(self.log_file, "a", encoding="utf-8") as f:
-                    f.write(line + "\n")
-            except Exception:
-                pass
+            _append_rotating(Path(self.log_file), line)
                 
         return record
 

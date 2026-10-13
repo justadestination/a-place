@@ -30,3 +30,9 @@ node_modules
 web/node_modules
 web/tests/output/
 shadenet/data/flyer_cache/
+
+# Operator control plane state: password hashes, TOTP secrets, audit trail
+shadenet/data/ops/
+
+# Age-check stand-in. The private key stays on the host that verifies.
+shadenet/data/certs/

@@ -2,276 +2,66 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ShadeNet Bar Door Scanner — 21+ Fast Camera Admission</title>
-<style>
-  :root {
-    --bg: #09090b;
-    --surface: #141418;
-    --border: #27272a;
-    --text: #f4f4f5;
-    --text-muted: #a1a1aa;
-    --success: #10b981;
-    --danger: #ef4444;
-    --accent: #f59e0b;
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27; &#x27;sha256-MWfGbnoZSzPtwaRdt79JrkxnORjfzJQgEsk6h0CLBBo=&#x27;; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;; img-src &#x27;self&#x27; https: data: blob:; connect-src &#x27;self&#x27;; frame-src &#x27;self&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;">
+<title>Bar Door Scanner — ShadeNet 21+ Fast Camera Admission</title>
+<meta name="description" content="ISO 18013-5 California DMV mDL and ZK age verification camera scanner for bar door staff and bouncers.">
+<link rel="canonical" href="https://nightcal.example.org/door-scanner/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F6F4EE">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121214">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NightCal">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Bar Door Scanner — ShadeNet 21+ Fast Camera Admission">
+<meta property="og:description" content="ISO 18013-5 California DMV mDL and ZK age verification camera scanner for bar door staff and bouncers.">
+<meta property="og:url" content="https://nightcal.example.org/door-scanner/">
+<meta property="og:image" content="https://nightcal.example.org/og/system.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Bar Door Scanner — ShadeNet 21+ Fast Camera Admission">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Bar Door Scanner — ShadeNet 21+ Fast Camera Admission">
+<meta name="twitter:description" content="ISO 18013-5 California DMV mDL and ZK age verification camera scanner for bar door staff and bouncers.">
+<meta name="twitter:image" content="https://nightcal.example.org/og/system.png">
+<meta name="twitter:image:alt" content="Bar Door Scanner — ShadeNet 21+ Fast Camera Admission">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NightCal">
+<script>(function () {
+  var d = document.documentElement, s = null, q = null;
+  try { s = JSON.parse(localStorage.getItem("nightcal.theme.v1") || "null"); } catch (e) {}
+  try { q = new URLSearchParams(location.search); } catch (e) {}
+  if (q) {
+    s = s || {};
+    if (q.get("scheme")) s.scheme = q.get("scheme");
+    if (q.get("textScale")) s.textScale = parseFloat(q.get("textScale"));
+    if (q.get("density")) s.density = q.get("density");
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1rem;
-    user-select: none;
+  if (!s) return;
+  if (s.scheme === "light" || s.scheme === "dark") d.setAttribute("data-theme", s.scheme);
+  if (s.textScale > 0) d.style.setProperty("--nc-text-scale", String(Math.min(2, Math.max(1, s.textScale))));
+  if (typeof s.density === "number") d.style.setProperty("--nc-density", String(s.density));
+  else if (s.density === "compact" || s.density === "spacious") d.setAttribute("data-density", s.density);
+  if (s.motion === "reduce" || s.motion === "full") d.setAttribute("data-motion", s.motion);
+  if (s.css) {
+    var el = document.createElement("style");
+    el.id = "nc-theme-overrides";
+    el.textContent = s.css;
+    document.head.appendChild(el);
   }
-  header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .venue-info h1 { font-size: 1.15rem; font-weight: 700; }
-  .venue-info p { font-size: 0.75rem; color: var(--text-muted); }
-  .counts { display: flex; gap: 0.75rem; font-size: 0.85rem; font-weight: 600; }
-  .badge-pass { color: var(--success); }
-  .badge-fail { color: var(--danger); }
+})();</script>
+<link rel="stylesheet" href="/css/nightcal.css?v=8fa6a92609">
+<link rel="modulepreload" href="/door-scanner/index.html">
 
-  /* Camera Viewport */
-  #scanner-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    height: 320px;
-    margin: 0.75rem auto;
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .reticle {
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    border: 2px dashed rgba(255,255,255,0.4);
-    border-radius: 16px;
-    pointer-events: none;
-    box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-  }
-
-  /* Big Tactile Result Screen */
-  #result-banner {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 180px;
-    border-radius: 16px;
-    padding: 1.25rem;
-    text-align: center;
-    margin: 0.5rem auto;
-    width: 100%;
-    max-width: 480px;
-    border: 3px solid var(--border);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .status-icon { font-size: 4rem; line-height: 1; margin-bottom: 0.5rem; }
-  .status-title { font-size: 2rem; font-weight: 900; letter-spacing: -0.02em; }
-  .status-subtitle { font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem; }
-
-  /* States */
-  .state-standby { background: var(--surface); border-color: var(--border); }
-  .state-admitted { background: rgba(16, 185, 129, 0.25); border-color: var(--success); }
-  .state-denied { background: rgba(239, 68, 68, 0.25); border-color: var(--danger); }
-
-  /* Action Buttons */
-  footer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    max-width: 480px;
-    margin: 0 auto;
-    width: 100%;
-  }
-  button {
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.85rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  button:active { opacity: 0.8; }
-  button.primary { background: var(--accent); color: #000; border-color: var(--accent); }
-</style>
+<script type="module" src="/door-scanner/index.html"></script>
 </head>
 <body>
-
-<header>
-  <div class="venue-info">
-    <h1 id="venue-title">Door Node · Downtown Entrance</h1>
-    <p>ISO 18013-5 California DMV mDL & ZK Camera Verifier</p>
-  </div>
-  <div class="counts">
-    <span>✓ <span id="count-admitted" class="badge-pass">0</span></span>
-    <span>✗ <span id="count-denied" class="badge-fail">0</span></span>
-  </div>
-</header>
-
-<div id="scanner-wrapper">
-  <video id="camera-stream" autoplay playsinline muted></video>
-  <div class="reticle"></div>
-</div>
-
-<main id="result-banner" class="state-standby">
-  <div id="status-icon" class="status-icon">📷</div>
-  <div id="status-title" class="status-title">Point at Phone ID</div>
-  <div id="status-subtitle" class="status-subtitle">
-    Scan patron's Apple Wallet, Google Wallet, or CA DMV Wallet QR code.
-  </div>
-</main>
-
-<footer>
-  <button id="btn-toggle-cam" class="primary">Start Camera</button>
-  <button id="btn-demo-tap">Simulate 21+ Tap</button>
-</footer>
-
-<script>
-  let admittedCount = 0;
-  let deniedCount = 0;
-  let audioCtx = null;
-
-  function initAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-
-  function playTone(freq, duration, type="sine") {
-    try {
-      initAudio();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    } catch (e) {}
-  }
-
-  function playSuccessChime() {
-    playTone(587.33, 0.12); // D5
-    setTimeout(() => playTone(880.00, 0.25), 100); // A5
-  }
-
-  function playDeniedBuzz() {
-    playTone(150.00, 0.35, "sawtooth");
-  }
-
-  const resultBanner = document.getElementById("result-banner");
-  const statusIcon = document.getElementById("status-icon");
-  const statusTitle = document.getElementById("status-title");
-  const statusSubtitle = document.getElementById("status-subtitle");
-
-  function setAdmitted(msg) {
-    admittedCount++;
-    document.getElementById("count-admitted").textContent = admittedCount;
-    resultBanner.className = "state-admitted";
-    statusIcon.textContent = "🟢";
-    statusTitle.textContent = "21+ ADMITTED";
-    statusTitle.style.color = "var(--success)";
-    statusSubtitle.textContent = msg || "California DMV Digital Signature Verified · Zero PII Stored";
-    playSuccessChime();
-    if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-    setTimeout(resetStandby, 3500);
-  }
-
-  function setDenied(reason) {
-    deniedCount++;
-    document.getElementById("count-denied").textContent = deniedCount;
-    resultBanner.className = "state-denied";
-    statusIcon.textContent = "🔴";
-    statusTitle.textContent = "ENTRY DENIED";
-    statusTitle.style.color = "var(--danger)";
-    statusSubtitle.textContent = reason || "Underage or Invalid Cryptographic Signature";
-    playDeniedBuzz();
-    if (navigator.vibrate) navigator.vibrate(400);
-    setTimeout(resetStandby, 3500);
-  }
-
-  function resetStandby() {
-    resultBanner.className = "state-standby";
-    statusIcon.textContent = "📷";
-    statusTitle.textContent = "Point at Phone ID";
-    statusTitle.style.color = "var(--text)";
-    statusSubtitle.textContent = "Scan patron's Apple Wallet, Google Wallet, or CA DMV Wallet QR code.";
-  }
-
-  // Camera Stream
-  let stream = null;
-  const video = document.getElementById("camera-stream");
-  const btnToggleCam = document.getElementById("btn-toggle-cam");
-
-  async function startCamera() {
-    initAudio();
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
-      });
-      video.srcObject = stream;
-      btnToggleCam.textContent = "Camera Active";
-    } catch (err) {
-      alert("Camera error: " + err.message);
-    }
-  }
-
-  btnToggleCam.addEventListener("click", startCamera);
-
-  // Verification dispatch to local or production node
-  async function verifyPresentation(payload) {
-    try {
-      const res = await fetch("/api/operator/door-verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (data.verified && data.status === "admitted") {
-        setAdmitted(`${data.issuer} · Pass: ${data.door_pass_id}`);
-      } else {
-        setDenied(data.error || "ID check rejected");
-      }
-    } catch (err) {
-      setDenied("Network / Verification error: " + err.message);
-    }
-  }
-
-  document.getElementById("btn-demo-tap").addEventListener("click", () => {
-    initAudio();
-    verifyPresentation({
-      proof_type: "mdl",
-      claim: "age_over_21",
-      status: "valid",
-      issuer: "State of California DMV",
-    });
-  });
-</script>
+<a class="nc-skip" href="#main">Skip to content</a>
+<div id="app"></div>
+<noscript><p class="nc-container nc-section">NightCal needs JavaScript turned on to show listings.</p></noscript>
 </body>
 </html>

@@ -3,6 +3,14 @@
 nightcal.example.org, shady.example.org {
 	encode zstd gzip
 	root * /opt/shadenet/web
+	# Operator console: only reachable over WireGuard. The app also enforces
+	# password + TOTP (and SHADENET_OPS_ALLOW_CIDRS), this is the outer wall.
+	@ops_public {
+		path /ops /ops/* /operator /operator/* /api/ops/* /api/operator/* /api/zine/cycle
+		not path /api/operator/door-verify
+		not remote_ip 203.0.113.0/24
+	}
+	respond @ops_public 404
 	handle /api/* {
 		reverse_proxy 127.0.0.1:8765
 	}

@@ -1,0 +1,489 @@
+/* NightCal — The Road (prototype). Tokens only. */
+
+.road-page { margin: 0; overflow: hidden; background: var(--nc-color-bg); color: var(--nc-color-text); }
+
+.road {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  font-family: var(--nc-font-family-sans);
+  touch-action: none;           /* swipes travel the road instead of scrolling the page */
+  --move: 420ms cubic-bezier(.2, .7, .2, 1);
+}
+
+/* ---- Road surface ------------------------------------------------------- */
+.road__surface { position: absolute; inset: 0; width: 100%; height: 100%; }
+.road__asphalt { fill: var(--nc-color-surface-sunken); stroke: var(--nc-color-border-strong); stroke-width: 2; }
+.road__centre { stroke: var(--nc-color-border-strong); stroke-width: 2; stroke-dasharray: 10 12; }
+.road__groundline { stroke: var(--nc-color-text); stroke-width: 6; }
+
+/* ---- Day bands down the road -------------------------------------------- */
+.road__rows { position: absolute; inset: 0; pointer-events: none; }
+.road-band {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px;
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: transform var(--move), width var(--move), height var(--move), opacity var(--move);
+}
+.road-band.is-entering { opacity: 0; }
+.road-band .road__lane {
+  pointer-events: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  contain: paint;
+  padding-left: var(--inset-l, 0);
+  padding-right: var(--inset-r, 0);
+}
+
+.road-band .road__line { pointer-events: auto; }
+.road-band.is-selected .road__date { background: var(--nc-color-selected-bg); color: var(--nc-color-selected-text); }
+.road-band.is-selected .road__line::before, .road-band.is-selected .road__line::after { background: var(--nc-color-accent); }
+
+.road__line {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  margin: 0;
+  font-size: var(--nc-font-size-md);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.road__line::before, .road__line::after {
+  content: "";
+  flex: 1;
+  height: 4px;
+  background: var(--nc-color-text-muted);
+  border-radius: 2px;
+}
+.road-band .road__line {
+  height: 36px;
+  margin-bottom: var(--clear, 0px);
+  position: relative;
+  z-index: 2;                                /* in front of the signs */
+  font-size: calc(var(--nc-font-size-md) + 4pt);
+}
+.road__date {                                /* reads as a link: link colour, underline, arrow */
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 10px;
+  border-radius: 999px;
+  color: var(--nc-color-link);
+  background: var(--nc-color-bg);
+  border: 2px solid currentColor;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.road__date::after { content: "›"; text-decoration: none; font-weight: 800; }
+.road__date:hover { background: var(--nc-color-link); color: var(--nc-color-bg); }
+.road__date:hover .road__date-count { background: var(--nc-color-bg); color: var(--nc-color-link); }
+.road__date:focus-visible { outline: 3px solid var(--nc-color-focus); outline-offset: 2px; }
+.road__date-count:not(:empty) {
+  min-width: 1.4em;
+  padding: 0 6px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.8em;
+  font-weight: 800;
+  background: var(--nc-color-text);
+  color: var(--nc-color-bg);
+}
+.road-band[data-split="left"] .road__line::after,
+.road-band[data-split="right"] .road__line::before { flex: 0.3; }
+
+/* ---- Foreground (the focused day) ---------------------------------------- */
+.road__ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--ground-y);
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: var(--nc-space-2) var(--nc-space-4) 0 0;
+  column-gap: var(--nc-space-4);
+  box-sizing: border-box;
+  pointer-events: none;
+}
+.road__front {                                /* centred on the 3/4 mark */
+  grid-column: 2;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--nc-space-2);
+  pointer-events: auto;
+  touch-action: pan-y;
+  padding-bottom: var(--nc-space-3);
+}
+.road__lane--today { width: 100%; }
+.road__lane--today .road-lane__signs { justify-content: center; }
+.road__front-date {                           /* tight in front of today's signs */
+  position: sticky;                           /* busy day: stays in view at the bottom */
+  bottom: var(--nc-space-2);
+  z-index: 2;
+  box-shadow: 0 2px 10px var(--nc-color-shadow);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+  margin: 0;
+  padding: 2px 14px;
+  border-radius: 999px;
+  font-size: calc(var(--nc-font-size-xl) + 4pt);
+  font-weight: 700;
+  background: var(--nc-color-text);
+  color: var(--nc-color-bg);
+  white-space: nowrap;
+}
+.road__front-date:focus { outline: none; }
+.road__front-date .road__date-count:not(:empty) { background: var(--nc-color-bg); color: var(--nc-color-text); }
+.road__back { font-size: var(--nc-font-size-sm); padding: 2px 10px; }
+
+/* ---- Sky: the event's image fills everything left of the road -------------- */
+.road__sky { position: absolute; left: 0; top: 0; overflow: hidden; pointer-events: none; }
+.road__sky-layer { position: absolute; inset: 0; opacity: 0; transition: opacity 400ms ease; }
+.road__sky-layer.is-in { opacity: 1; }
+.road__sky-layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.road__sky-layer.is-placeholder {
+  background: radial-gradient(circle at 25% 35%, var(--tone-bg), var(--nc-color-surface-sunken) 70%);
+}
+/* Sit the shape in the open sky (the top-left), clear of the road's edge */
+.road__sky-layer.is-placeholder .nc-glyph {
+  position: absolute;
+  left: 14%;
+  top: 18%;
+  width: 26%;
+  height: auto;
+  aspect-ratio: 1;
+  color: var(--tone-mark);
+  opacity: .5;
+}
+
+/* ---- Viewer: the written part of the event, front-left ---------------------- */
+.road__viewer {
+  grid-column: 1;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: var(--nc-space-2);
+  background: var(--nc-color-surface-raised);
+  border-top: 1px solid var(--nc-color-border);
+  border-right: 1px solid var(--nc-color-border);
+  border-radius: 0 var(--nc-radius-lg) 0 0;
+  box-shadow: var(--nc-shadow-overlay);
+  display: grid;
+  align-content: start;
+  pointer-events: auto;
+  touch-action: pan-y;
+}
+.road__viewer.is-cancelled { border-color: var(--nc-color-kind-comedy-mark); }
+.road__viewer-card {                          /* same container behaviour as the popup dialog */
+  width: 100%;
+  container-type: inline-size;
+  background: var(--nc-color-surface);
+  border-radius: var(--nc-radius-lg);
+}
+.road__viewer-card .nc-event-card { box-shadow: none; border: 0; background: transparent; }
+.road__viewer-card .nc-event-card__meta { justify-content: flex-start; }   /* keep badges together */
+.road__hint { color: var(--nc-color-text-muted); margin: 0; padding: var(--nc-space-3); }
+
+/* ---- Lanes ------------------------------------------------------------- */
+.road-lane__signs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  padding-top: 6px;
+}
+.road-lane__quiet { color: var(--nc-color-text-muted); margin: var(--nc-space-2) 0 0; font-style: italic; }
+
+/* ---- Billboards ---------------------------------------------------------- */
+.road-sign {
+  --grow: 1;
+  --w: 200px;
+  --h: 96px;
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  --s: calc(var(--sign-base, 1) * var(--grow));
+  width: calc(var(--w) * var(--s));
+  max-width: 100%;                            /* never wider than its day */
+  padding-bottom: calc(14px * var(--sign-base, 1));   /* room for the posts */
+  font-size: calc((var(--nc-font-size-sm) - 2pt) * var(--s));
+  transition: width var(--move), transform 150ms;
+}
+.road-sign[data-lod="title"] { --w: 150px; --h: 54px; padding-bottom: calc(8px * var(--sign-base, 1)); font-size: calc((var(--nc-font-size-xs) - 2pt) * var(--s)); }
+.road-sign[data-lod="dot"] { --w: 30px; --h: 30px; padding-bottom: 0; }
+
+/* Two posts under the board */
+.road-sign::before, .road-sign::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: calc(4px * var(--sign-base, 1));
+  height: calc(14px * var(--sign-base, 1));
+  background: var(--nc-color-border-strong);
+}
+.road-sign::before { left: 28%; }
+.road-sign::after { right: 28%; }
+.road-sign[data-lod="title"]::before, .road-sign[data-lod="title"]::after { height: calc(8px * var(--sign-base, 1)); }
+.road-sign[data-lod="dot"]::before, .road-sign[data-lod="dot"]::after { display: none; }
+
+.road-sign__board {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(var(--h) * var(--s));
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-auto-rows: auto;
+  align-content: start;
+  line-height: 1.25;
+  gap: 2px 6px;
+  padding: calc(8px * var(--sign-base, 1)) calc(12px * var(--sign-base, 1));
+  overflow: hidden;
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  border-top: calc(6px * var(--sign-base, 1)) solid var(--tone-mark);
+  border-radius: var(--nc-radius-sm);
+  text-align: left;
+}
+.road-sign__board .nc-glyph {
+  color: var(--tone-mark);
+  grid-row: 1;
+  width: calc(var(--nc-size-glyph) * var(--s));
+  height: calc(var(--nc-size-glyph) * var(--s));
+  margin-top: 0.15em;
+}
+.road-sign__title {
+  font-weight: 700;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.road-sign__meta, .road-sign__extra { grid-column: 1 / -1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.road-sign__meta { opacity: .85; }
+.road-sign[data-lod="title"] .road-sign__title { -webkit-line-clamp: 1; }   /* mid-distance: one-line title + time */
+.road-sign__extra { font-style: italic; opacity: .75; }
+.road-sign__tag {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0 .5em;
+  border-radius: 999px;
+  border: 1px solid var(--tone-mark);
+  font-size: .85em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.road-sign__bodies {                        /* placard hung between the posts */
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  padding: 0 5px;
+  font-size: 0.8em;
+  line-height: calc(14px * var(--sign-base, 1));
+  font-weight: 800;
+  background: var(--tone-mark);
+  color: var(--nc-color-on-accent);
+  border-radius: 3px;
+}
+.road-sign[data-lod="dot"] .road-sign__board {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-top: 0;
+  border-radius: 50%;
+  background: var(--tone-mark);
+}
+.road-sign[data-lod="dot"] .nc-glyph { color: var(--tone-bg); }
+
+/* Busy days: floating cards (no posts), lifted with a shadow */
+.road__lane.is-busy .road-sign { padding-bottom: 0; filter: drop-shadow(0 calc(3px * var(--sign-base, 1)) calc(6px * var(--sign-base, 1)) var(--nc-color-shadow)); }
+.road__lane.is-busy .road-sign::before, .road__lane.is-busy .road-sign::after { display: none; }
+.road__lane.is-busy .road-sign__bodies, .road__lane.is-busy .road-sign__free { bottom: calc(-2px * var(--sign-base, 1)); }
+
+/* The stack: shows that didn't fit, as a pile of cards */
+.road-stack {
+  all: unset;
+  box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
+  width: calc(var(--w) * var(--sign-base, 1));
+  max-width: 100%;
+  height: calc(var(--h) * var(--sign-base, 1) + var(--layers) * 5px * var(--sign-base, 1));
+  --w: 200px;
+  --h: 96px;
+  --step: calc(5px * var(--sign-base, 1));
+  font-size: calc(var(--nc-font-size-sm) * var(--sign-base, 1));
+}
+.road-stack[data-lod="title"] { --w: 150px; --h: 54px; font-size: calc(var(--nc-font-size-xs) * var(--sign-base, 1)); }
+.road-stack[data-lod="dot"] { --w: 30px; --h: 30px; }
+.road-stack__layer, .road-stack__top {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: calc(var(--h) * var(--sign-base, 1));
+  box-sizing: border-box;
+  border-radius: var(--nc-radius-sm);
+  border-top: calc(6px * var(--sign-base, 1)) solid var(--tone-mark);
+  background: var(--tone-bg);
+  box-shadow: 0 calc(2px * var(--sign-base, 1)) calc(5px * var(--sign-base, 1)) var(--nc-color-shadow);
+  transition: transform 160ms;
+}
+.road-stack__layer { top: calc(var(--i) * var(--step)); transform: translateX(calc(var(--i) * var(--step) * 0.6)); opacity: .9; }
+.road-stack__top {
+  top: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: calc(2px * var(--sign-base, 1));
+  color: var(--tone-fg);
+  border-top-color: var(--nc-color-accent);
+}
+.road-stack__count { font-size: 1.8em; font-weight: 900; line-height: 1; }
+.road-stack__kinds { display: flex; gap: calc(3px * var(--sign-base, 1)); }
+.road-stack__kinds .nc-glyph { width: calc(var(--nc-size-glyph) * var(--sign-base, 1)); height: calc(var(--nc-size-glyph) * var(--sign-base, 1)); }
+.road-stack__kinds .nc-glyph[data-tone] { color: var(--tone-mark); }
+.road-stack__hint { font-weight: 700; opacity: .8; }
+.road-stack[data-lod="dot"] .road-stack__top { border-top: 0; border-radius: 999px; background: var(--nc-color-accent); color: var(--nc-color-on-accent); font-weight: 900; }
+.road-stack[data-lod="dot"] .road-stack__layer { border-top: 0; border-radius: 999px; }
+.road-stack:hover .road-stack__layer { transform: translateX(calc(var(--i) * var(--step) * 1.6)) rotate(calc(var(--i) * 3deg)); }
+.road-stack:hover .road-stack__top { transform: translateY(calc(-2px * var(--sign-base, 1))); }
+.road-stack:focus-visible { outline: 3px solid var(--nc-color-focus); outline-offset: 3px; border-radius: var(--nc-radius-sm); }
+
+/* Shapes by kind (the same shapes as the kind glyphs, carried onto the board) */
+.road-sign[data-shape="circle"] .road-sign__board { border-radius: 2.2em; padding-inline: 7%; }                /* live music: rounded */
+.road-sign[data-shape="diamond"] .road-sign__board { clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%); padding-right: 12%; } /* comedy: arrow */
+.road-sign[data-shape="square"] .road-sign__board { border-radius: 0; outline: 3px double var(--tone-mark); outline-offset: -6px; }   /* show: marquee */
+.road-sign[data-shape="triangle"] .road-sign__board { clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%); padding-bottom: 12%; } /* trivia: pennant */
+.road-sign[data-shape="hexagon"] .road-sign__board { clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%); padding-inline: 9%; } /* food: hex */
+.road-sign[data-lod="dot"] .road-sign__board { clip-path: none; outline: 0; }
+
+/* Free: a hanging "Free" plate */
+.road-sign__free {                           /* plate on the posts, left of the +N placard */
+  position: absolute;
+  bottom: 0;
+  left: 4px;
+  z-index: 1;
+  line-height: calc(14px * var(--sign-base, 1));
+  padding: 1px 6px;
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--nc-color-kind-music-mark);
+  color: var(--nc-color-on-accent);
+  border-radius: 3px;
+}
+.road-sign.is-free[data-lod="dot"] .road-sign__board { box-shadow: 0 0 0 3px var(--nc-color-kind-music-mark); }
+
+/* Cancelled: hazard stripes + flashing flag */
+.road-sign.is-cancelled .road-sign__board {
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 12px, var(--nc-color-border) 12px 16px),
+    var(--tone-bg);
+}
+.road-sign.is-cancelled .road-sign__title { text-decoration: line-through; }
+.road-sign__flag {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0 6px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  background: var(--nc-color-kind-comedy-mark);
+  color: var(--nc-color-on-accent);
+  border-radius: var(--nc-radius-sm);
+  animation: road-flash 1.1s steps(2, jump-none) infinite;
+}
+.road-sign.is-cancelled[data-lod="dot"] .road-sign__board { animation: road-flash 1.1s steps(2, jump-none) infinite; }
+@keyframes road-flash { 50% { opacity: .35; } }
+
+/* Interaction */
+.road-sign:hover .road-sign__board, .road-sign.is-pinned .road-sign__board { filter: brightness(1.08); }
+.road-sign:hover { transform: translateY(-2px); }
+.road-sign:focus-visible { outline: 3px solid var(--nc-color-focus); outline-offset: 3px; border-radius: var(--nc-radius-sm); }
+.road-sign.is-pinned::before, .road-sign.is-pinned::after { background: var(--nc-color-focus); }
+
+/* ---- Chrome: travel buttons, filters ------------------------------------- */
+.road__filters {
+  position: absolute;
+  right: var(--nc-space-4);
+  top: var(--nc-space-4);
+  z-index: 200;
+  max-width: 16rem;
+  background: var(--nc-color-surface-raised);
+  border: 1px solid var(--nc-color-border);
+  border-radius: var(--nc-radius-md);
+  padding: var(--nc-space-2) var(--nc-space-3);
+  font-size: var(--nc-font-size-sm);
+}
+.road__filters summary { cursor: pointer; font-weight: 700; }
+.road__filters fieldset { border: 0; padding: 0; margin: var(--nc-space-2) 0; }
+.road__filters legend { font-weight: 600; margin-bottom: var(--nc-space-1); }
+.road__filters label { display: flex; align-items: center; gap: var(--nc-space-2); padding: 2px 0; }
+.road__filters label .nc-glyph { color: var(--tone-mark); }
+.road__source {
+  background: var(--nc-color-bg);
+  padding: 0 var(--nc-space-2);
+  border-radius: 0 0 var(--nc-radius-sm) var(--nc-radius-sm);
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+  z-index: 200;
+}
+
+/* ---- Portrait: road fills the height; viewer is a sheet after a tap -------- */
+.road.is-portrait .road__ground { grid-template-columns: 1fr; padding-inline: var(--nc-space-2); }
+.road.is-portrait .road__sky { display: none; }
+.road.is-portrait .road__front { grid-column: 1; }
+.road.is-portrait .road__front-date { font-size: var(--nc-font-size-lg); }
+.road.is-portrait .road__viewer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: auto;
+  max-height: 60dvh;
+  border-radius: var(--nc-radius-lg) var(--nc-radius-lg) 0 0;
+  transform: translateY(105%);
+  transition: transform var(--move);
+}
+.road.is-portrait.has-pick .road__viewer { transform: none; }
+.road.is-portrait .road__filters { right: var(--nc-space-2); top: var(--nc-space-2); }
+.road.is-portrait .road__source { display: none; }
+
+/* ---- Reduced motion: no animation, no flashing ------------------------------ */
+.road.is-still .road-band, .road.is-still .road-sign, .road.is-still .road__viewer { transition: none; }
+.road.is-still .road-sign__flag,
+.road.is-still .road-sign.is-cancelled[data-lod="dot"] .road-sign__board { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .road-band, .road-sign, .road-stack__layer, .road-stack__top, .road__viewer, .road__sky-layer { transition: none; }
+  .road-sign__flag, .road-sign.is-cancelled .road-sign__board { animation: none; }
+}

@@ -93,44 +93,46 @@ def test_key_rotation_lifecycle():
     assert post_status["key_management"]["active_key"]["key_id"] == res["new_key"]["key_id"]
 
 
-@pytest.fixture(scope="module")
-def operator_server():
-    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
-    port = server.server_port
-    t = threading.Thread(target=server.serve_forever, daemon=True)
-    t.start()
-    yield f"http://127.0.0.1:{port}"
-    server.shutdown()
+def test_operator_http_status_requires_sign_in(live_server):
+    req = urllib.request.Request(f"{live_server}/api/operator/status")
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        urllib.request.urlopen(req)
+    assert exc.value.code == 401
 
 
-def test_operator_http_status_api(operator_server):
-    req = urllib.request.Request(f"{operator_server}/api/operator/status")
-    with urllib.request.urlopen(req) as resp:
-        assert resp.status == 200
-        data = json.loads(resp.read().decode())
-        assert data["health"]["status"] == "healthy"
-        assert "tally_stats" in data
-
-
-def test_operator_http_key_rotation(operator_server):
+def test_operator_http_key_rotation_requires_sign_in(live_server):
     req = urllib.request.Request(
-        f"{operator_server}/api/operator/keys/rotate",
-        data=json.dumps({"operator": "http-test-runner"}).encode(),
+        f"{live_server}/api/operator/keys/rotate",
+        data=json.dumps({"operator": "attacker"}).encode(),
         headers={"Content-Type": "application/json"},
-        method="POST"
+        method="POST",
     )
-    with urllib.request.urlopen(req) as resp:
-        assert resp.status == 200
-        data = json.loads(resp.read().decode())
-        assert data["success"] is True
-        assert "new_key" in data
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        urllib.request.urlopen(req)
+    assert exc.value.code == 401
 
 
-def test_operator_http_html_page(operator_server):
-    req = urllib.request.Request(f"{operator_server}/operator")
-    with urllib.request.urlopen(req) as resp:
-        assert resp.status == 200
-        html = resp.read().decode()
-        assert "ShadeNet Operator Console" in html
-        assert "Content Moderation Queue" in html
-        assert "btn-rotate-key" in html
+def test_operator_http_status_api(ops_client):
+    status, data, _ = ops_client.request("GET", "/api/operator/status")
+    assert status == 200
+    assert data["health"]["status"] == "healthy"
+    assert "tally_stats" in data
+
+
+def test_operator_http_key_rotation(ops_client):
+    status, data, _ = ops_client.request("POST", "/api/operator/keys/rotate", {"operator": "http-test-runner"})
+    assert status == 200
+    assert data["success"] is True
+    assert "new_key" in data
+
+
+def test_operator_page_redirects_to_ops_console(live_server):
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, *a, **k):
+            return None
+
+    opener = urllib.request.build_opener(NoRedirect)
+    with pytest.raises(urllib.error.HTTPError) as exc:
+        opener.open(f"{live_server}/operator")
+    assert exc.value.code == 302
+    assert exc.value.headers["Location"] == "/ops/"

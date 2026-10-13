@@ -5,8 +5,8 @@
 #
 # NETWORK TOPOLOGY:
 # - Public Ingress: 80/tcp, 443/tcp (Caddy), 51820/udp (WireGuard) ONLY.
-# - Zero Other Ports: SSH (22), Postgres, Synapse, ShadeNet, Monero RPC, DNS
-#   are BLOCKED on public internet and accessible ONLY via WireGuard (203.0.113.1).
+# - SSH (22) stays public but key-only + rate limited. Postgres, Synapse, DNS
+#   are BLOCKED on public internet and accessible ONLY via WireGuard (10.90.80.42).
 # ==============================================================================
 set -euo pipefail
 
@@ -15,8 +15,8 @@ WG_DIR="${ROOT_DIR}/config/wireguard"
 CLIENT_DIR="${WG_DIR}/clients"
 WG_IFACE="wg0"
 WG_PORT=51820
-VPN_SUBNET="203.0.113"
-SERVER_VPN_IP="${VPN_SUBNET}.1"
+VPN_SUBNET="10.90.80"
+SERVER_VPN_IP="${VPN_SUBNET}.42"
 
 echo "===> [1/4] Installing WireGuard, UFW, and QR utilities..."
 export DEBIAN_FRONTEND=noninteractive
@@ -51,7 +51,8 @@ PHONE_PRIV=$(cat "${CLIENT_DIR}/operator_phone_private.key")
 PHONE_PUB=$(cat "${CLIENT_DIR}/operator_phone_public.key")
 
 # Detect Public IP
-SERVER_PUB_IP=$(curl -s https://api.ipify.org || curl -s https://icanhazip.com || hostname -I | awk '{print $1}')
+# the host puts the public IPv4 directly on the NIC — no need to ask a third party
+SERVER_PUB_IP=$(ip -4 route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($i=="src") print $(i+1)}')
 
 echo "===> [3/4] Configuring WireGuard Interface (${WG_IFACE})..."
 cat > "/etc/wireguard/${WG_IFACE}.conf" <<EOF
@@ -61,9 +62,7 @@ ListenPort = ${WG_PORT}
 PrivateKey = ${SERVER_PRIV}
 SaveConfig = false
 
-# Enable forwarding
-PostUp = iptables -A FORWARD -i ${WG_IFACE} -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i ${WG_IFACE} -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+# Management-only VPN: peers reach this host, never route through it
 
 # Peer 1: Operator Laptop
 [Peer]
@@ -87,7 +86,7 @@ DNS = ${SERVER_VPN_IP}
 [Peer]
 PublicKey = ${SERVER_PUB}
 Endpoint = ${SERVER_PUB_IP}:${WG_PORT}
-AllowedIPs = ${VPN_SUBNET}.0/24, 203.0.113.0/24
+AllowedIPs = ${VPN_SUBNET}.0/24
 PersistentKeepalive = 25
 EOF
 chmod 600 "${CLIENT_DIR}/operator-laptop.conf"
@@ -101,7 +100,7 @@ DNS = ${SERVER_VPN_IP}
 [Peer]
 PublicKey = ${SERVER_PUB}
 Endpoint = ${SERVER_PUB_IP}:${WG_PORT}
-AllowedIPs = ${VPN_SUBNET}.0/24, 203.0.113.0/24
+AllowedIPs = ${VPN_SUBNET}.0/24
 PersistentKeepalive = 25
 EOF
 chmod 600 "${CLIENT_DIR}/operator-phone.conf"
@@ -109,10 +108,6 @@ chmod 600 "${CLIENT_DIR}/operator-phone.conf"
 # Generate ASCII QR Code for Phone import
 qrencode -t ANSIUTF8 < "${CLIENT_DIR}/operator-phone.conf" > "${CLIENT_DIR}/operator-phone-qr.txt"
 qrencode -o "${CLIENT_DIR}/operator-phone-qr.png" < "${CLIENT_DIR}/operator-phone.conf" || true
-
-# Enable IPv4 Forwarding
-sysctl -w net.ipv4.ip_forward=1
-echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/99-wireguard-forward.conf
 
 systemctl enable "wg-quick@${WG_IFACE}"
 systemctl restart "wg-quick@${WG_IFACE}" || true
@@ -132,8 +127,8 @@ ufw allow ${WG_PORT}/udp comment "WireGuard VPN Management Mesh"
 ufw allow in on "${WG_IFACE}" to any comment "WireGuard Internal Mesh Access"
 ufw allow in on lo to any comment "Local Loopback"
 
-# For bootstrap safety: allow SSH on port 22 with rate limiting initially
-# Once operator connects over VPN (203.0.113.1:22), public 22 can be closed.
+# Public SSH stays open on purpose (operator decision): key-only (00_hardening.sh),
+# rate limited here, fail2ban behind it. the host web console is the break-glass.
 ufw limit 22/tcp comment "Bootstrap SSH (Rate Limited)"
 
 ufw --force enable

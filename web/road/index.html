@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
+<title>NightCal — The Road (prototype)</title>
+<meta name="description" content="Tonight up close, the coming nights down the road. Bigger signs mean more people are going.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/nightcal.css">
+<link rel="stylesheet" href="/road/road.css">
+<script type="module" src="/road/road.js"></script>
+</head>
+<body class="road-page">
+<main class="road" id="road" aria-label="NightCal road: tonight in front of you, the coming nights further down the road">
+  <!-- The sky: the event's image fills everything left of the road, above the ground.
+       Drawn first so the road surface always paints over it at the edge. -->
+  <div class="road__sky" id="road-sky"></div>
+
+  <svg class="road__surface" id="road-surface" aria-hidden="true"></svg>
+
+  <div class="road__rows" id="road-rows"></div>
+
+  <section class="road__ground" id="road-ground" aria-labelledby="road-ground-label">
+    <aside class="road__viewer" id="road-detail" aria-live="polite" aria-label="Selected event"></aside>
+    <div class="road__front">
+      <div class="road__lane road__lane--today" id="road-today"></div>
+      <h1 class="road__front-date" tabindex="-1">
+        <span id="road-ground-label">Loading…</span>
+        <span class="road__date-count" id="road-ground-count"></span>
+        <button type="button" class="nc-button road__back" id="road-back" hidden>Back to today</button>
+      </h1>
+    </div>
+  </section>
+
+  <details class="road__filters" id="road-filters-wrap" open>
+    <summary>Filter</summary>
+    <form id="road-filters">
+      <fieldset>
+        <legend>Kinds</legend>
+        <div id="road-kinds"></div>
+      </fieldset>
+      <label><input type="checkbox" name="free"> Free only</label>
+      <label><input type="checkbox" name="hideCancelled"> Hide cancelled</label>
+    </form>
+  </details>
+
+  <p class="road__source" id="road-source" aria-live="polite"></p>
+</main>
+</body>
+</html>

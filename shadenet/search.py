@@ -19,14 +19,20 @@ import json
 import logging
 import re
 import sqlite3
+import threading
 import time
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any
 
 from shadenet.logging import get_logger
 
 logger = get_logger("search")
+
+LOCAL_TZ = ZoneInfo("America/Los_Angeles")
+_index_lock = threading.Lock()
+_index_fingerprints: dict[str, tuple] = {}
 
 FTS_SCHEMA = """
 CREATE VIRTUAL TABLE IF NOT EXISTS search_index USING fts5(
@@ -77,6 +83,59 @@ def sanitize_query(query: str) -> str:
     return " AND ".join(parts)
 
 
+def _spot_url(starts_at: str | None) -> str:
+    """Link an event to its night on the calendar (local Santa Rosa date)."""
+    try:
+        local = datetime.fromisoformat(starts_at).astimezone(LOCAL_TZ)
+        return f"/?date={local.date().isoformat()}&scope=all"
+    except (TypeError, ValueError):
+        return "/"
+
+
+def load_zine_articles(zine_json: Path) -> list[dict]:
+    """Zine graph nodes from web/data/zine.json, shaped for build_search_index."""
+    try:
+        nodes = json.loads(zine_json.read_text()).get("nodes", [])
+    except (OSError, ValueError):
+        return []
+    return [
+        {
+            "id": n.get("id"),
+            "slug": n.get("slug"),
+            "title": n.get("title"),
+            "author": n.get("author"),
+            "summary": " ".join(filter(None, [n.get("summary"), " ".join(n.get("tags") or [])])),
+            "published_at": n.get("date"),
+        }
+        for n in nodes
+        # event/venue nodes mirror calendar rows that are already indexed as spots/spaces
+        if n.get("id") and n.get("title") and n.get("type") not in ("event", "venue", "missing")
+    ]
+
+
+def ensure_search_index(store: Store, zine_json: Path | None = None) -> None:
+    """Rebuild the index when the underlying data has changed since the last build.
+
+    The scraper writes to the DB from another process, so we fingerprint the
+    source tables (and the zine file) instead of rebuilding on a timer.
+    """
+    conn = store._conn
+    fp = tuple(conn.execute(
+        """
+        SELECT (SELECT count(*) || ':' || ifnull(max(last_seen_at), '') FROM events WHERE active = 1),
+               (SELECT count(*) FROM venues),
+               (SELECT count(*) FROM entities)
+        """
+    ).fetchone()) + ((zine_json.stat().st_mtime if zine_json and zine_json.exists() else 0),)
+    key = str(getattr(store, "path", id(store)))
+    with _index_lock:
+        if _index_fingerprints.get(key) == fp:
+            return
+        n = build_search_index(store, load_zine_articles(zine_json) if zine_json else None)
+        _index_fingerprints[key] = fp
+        logger.info("search_index_rebuilt", items=n)
+
+
 def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
     """Rebuilds the FTS5 index from events, venues, entities, and articles."""
     conn = store._conn
@@ -98,7 +157,7 @@ def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
             """
         ).fetchall()
         for r in rows:
-            meta = json.dumps({"venue": r["venue_name"] or ""})
+            meta = json.dumps({"venue": r["venue_name"] or "", "ticketUrl": r["ticket_url"] or ""})
             conn.execute(
                 """
                 INSERT INTO search_index(kind, item_id, title, subtitle, body, starts_at, url, metadata)
@@ -111,7 +170,7 @@ def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
                     r["venue_name"] or "",
                     r["description"] or "",
                     r["starts_at"] or "",
-                    r["ticket_url"] or f"/event/{r['id']}",
+                    _spot_url(r["starts_at"]),
                     meta,
                 ),
             )
@@ -138,7 +197,7 @@ def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
                     v["address"] or "Santa Rosa, CA",
                     v["website"] or "",
                     "",
-                    f"/space/{v['id']}",
+                    f"/venue/?id={v['id']}",
                     meta,
                 ),
             )
@@ -165,7 +224,7 @@ def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
                     e["role"] or e["kind"] or "act",
                     e["meta"] or "",
                     "",
-                    f"/entity/{e['id']}",
+                    f"/entity/?id={e['id']}",
                     e["meta"] or "{}",
                 ),
             )
@@ -187,7 +246,7 @@ def build_search_index(store: Store, articles: list[dict] | None = None) -> int:
                         art.get("author") or "Zine Editorial",
                         art.get("body") or art.get("summary") or "",
                         art.get("published_at") or "",
-                        f"/zine/{art.get('slug')}",
+                        f"/zine/?node={art.get('id') or art.get('slug')}",
                         meta,
                     ),
                 )

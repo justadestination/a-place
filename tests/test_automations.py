@@ -57,6 +57,12 @@ def test_registry_tasks_metadata(test_registry):
     assert "backup_verification" in task_map
     assert task_map["backup_verification"]["owner"] == "backup-daemon"
 
+    assert "umwelt-horizons/writer-run" in task_map
+    assert task_map["umwelt-horizons/writer-run"]["owner"] == "umwelt-horizons"
+    assert "8h" in task_map["umwelt-horizons/writer-run"]["schedule"]
+    assert "umwelt-horizons/editor-run" in task_map
+    assert task_map["umwelt-horizons/editor-run"]["owner"] == "umwelt-horizons"
+
 
 # --- 1. Scraper Supervision Tests ---
 

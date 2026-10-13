@@ -1,0 +1,67 @@
+/* Operations console. Page-level stylesheet (not a component), tokens where they exist. */
+.nc-ops { min-height: 100vh; }
+.ops-boot { padding: var(--nc-space-6); color: var(--nc-color-text-muted); }
+
+.ops-login { max-width: 24rem; margin: 12vh auto; display: grid; gap: var(--nc-space-4); padding: var(--nc-space-6);
+  border: var(--nc-size-border) solid var(--nc-color-border); border-radius: var(--nc-radius-lg); background: var(--nc-color-surface); }
+.ops-login h1 { font-size: var(--nc-font-size-xl); margin: 0; }
+.ops-field { display: grid; gap: var(--nc-space-1); }
+.ops-field input, .ops-field select, .ops-field textarea, .ops-input {
+  font: inherit; padding: var(--nc-space-2) var(--nc-space-3); border-radius: var(--nc-radius-md);
+  border: var(--nc-size-border) solid var(--nc-color-border); background: var(--nc-color-bg); color: var(--nc-color-text); }
+.ops-error { color: var(--nc-color-danger, #ff6b6b); margin: 0; }
+.ops-muted { color: var(--nc-color-text-muted); }
+
+.ops-shell { display: grid; grid-template-columns: 15rem minmax(0, 1fr); min-height: 100vh; }
+.ops-nav { border-inline-end: var(--nc-size-border) solid var(--nc-color-border); padding: var(--nc-space-4) var(--nc-space-2);
+  display: flex; flex-direction: column; gap: var(--nc-space-1); position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.ops-nav__brand { font-weight: 800; letter-spacing: 0.04em; padding: 0 var(--nc-space-3) var(--nc-space-3); }
+.ops-nav button { text-align: start; font: inherit; padding: var(--nc-space-2) var(--nc-space-3); border-radius: var(--nc-radius-md);
+  border: 0; background: transparent; color: var(--nc-color-text-muted); cursor: pointer; }
+.ops-nav button:hover { background: var(--nc-color-surface-sunken); color: var(--nc-color-text); }
+.ops-nav button[aria-current="page"] { background: var(--nc-color-surface-raised); color: var(--nc-color-text); font-weight: 700; }
+.ops-nav__foot { margin-top: auto; padding: var(--nc-space-3); display: grid; gap: var(--nc-space-2); font-size: var(--nc-font-size-sm); }
+
+.ops-main { padding: var(--nc-space-5) var(--nc-space-6); display: grid; gap: var(--nc-space-5); align-content: start; }
+.ops-main h1 { margin: 0; font-size: var(--nc-font-size-2xl); }
+.ops-panel { border: var(--nc-size-border) solid var(--nc-color-border); border-radius: var(--nc-radius-lg);
+  background: var(--nc-color-surface); padding: var(--nc-space-4); display: grid; gap: var(--nc-space-3); }
+.ops-panel h2 { margin: 0; font-size: var(--nc-font-size-lg); }
+.ops-row { display: flex; flex-wrap: wrap; gap: var(--nc-space-3); align-items: end; }
+.ops-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr)); gap: var(--nc-space-3); }
+.ops-stat { padding: var(--nc-space-3); border-radius: var(--nc-radius-md); background: var(--nc-color-bg); }
+.ops-stat b { display: block; font-size: var(--nc-font-size-xl); }
+
+.ops-table { width: 100%; border-collapse: collapse; font-size: var(--nc-font-size-sm); }
+.ops-table th, .ops-table td { text-align: start; padding: var(--nc-space-2); border-bottom: var(--nc-size-border) solid var(--nc-color-border); vertical-align: top; }
+.ops-table td.ops-wrap { word-break: break-word; }
+.ops-mono, .ops-term { font-family: var(--nc-font-family-mono); font-size: var(--nc-font-size-sm); }
+.ops-level--ERROR { color: var(--nc-color-danger, #ff6b6b); font-weight: 700; }
+.ops-level--WARNING { color: var(--nc-color-accent); }
+
+.ops-setting { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--nc-space-2) var(--nc-space-4); align-items: center;
+  padding-block: var(--nc-space-3); border-bottom: var(--nc-size-border) solid var(--nc-color-border); }
+.ops-setting p { margin: 0; font-size: var(--nc-font-size-sm); }
+.ops-badge { display: inline-block; font-size: var(--nc-font-size-xs); padding: 0 var(--nc-space-2); border-radius: var(--nc-radius-full);
+  border: var(--nc-size-border) solid var(--nc-color-border); color: var(--nc-color-text-muted); margin-inline-start: var(--nc-space-2); }
+.ops-badge--danger { border-color: var(--nc-color-danger, #ff6b6b); color: var(--nc-color-danger, #ff6b6b); }
+.ops-badge--ok { border-color: var(--nc-color-success, #4ade80); color: var(--nc-color-success, #4ade80); }
+
+.ops-term { background: var(--nc-color-bg); border-radius: var(--nc-radius-md); padding: var(--nc-space-3); min-height: 16rem;
+  max-height: 60vh; overflow-y: auto; white-space: pre-wrap; }
+.ops-term__in { color: var(--nc-color-accent); }
+.ops-term + form input { flex: 1; min-width: 12rem; }
+
+.ops-bar { display: flex; gap: var(--nc-space-1); align-items: end; height: 4rem; }
+.ops-bar span { flex: 1; background: var(--nc-color-accent); border-radius: var(--nc-radius-sm) var(--nc-radius-sm) 0 0; min-height: 0.125rem; }
+.ops-bar span.has-errors { background: var(--nc-color-danger, #ff6b6b); }
+
+dialog.ops-stepup { border: var(--nc-size-border) solid var(--nc-color-border); border-radius: var(--nc-radius-lg);
+  background: var(--nc-color-surface-raised); color: var(--nc-color-text); padding: var(--nc-space-5); }
+dialog.ops-stepup::backdrop { background: rgb(0 0 0 / 0.6); }
+
+@media (max-width: 48rem) {
+  .ops-shell { grid-template-columns: 1fr; }
+  .ops-nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; }
+  .ops-main { padding: var(--nc-space-4); }
+}

@@ -1,5 +1,815 @@
 [
   {
+    "cycle_id": "cycle-20261013181800",
+    "timestamp": "2026-10-13T18:18:00.910151+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T18:18:00.910151+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013181713",
+    "timestamp": "2026-10-13T18:17:13.698985+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T18:17:13.698985+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013033614",
+    "timestamp": "2026-10-13T03:36:14.510002+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T03:36:14.510002+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013030202",
+    "timestamp": "2026-10-13T03:02:02.648732+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T03:02:02.648732+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013024106",
+    "timestamp": "2026-10-13T02:41:06.105550+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T02:41:06.105550+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013023841",
+    "timestamp": "2026-10-13T02:38:41.829817+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T02:38:41.829817+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013021001",
+    "timestamp": "2026-10-13T02:10:01.836109+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T02:10:01.836109+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013020537",
+    "timestamp": "2026-10-13T02:05:37.658274+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T02:05:37.658274+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
+    "cycle_id": "cycle-20261013015848",
+    "timestamp": "2026-10-13T01:58:48.769622+00:00",
+    "is_calibration": true,
+    "models": [
+      "Claude 3.5 Sonnet",
+      "Gemini Pro"
+    ],
+    "articles": [
+      {
+        "id": "art-hl-101-calibration",
+        "title": "Calibration Dispatch: City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+        "type": "article",
+        "status": "pending_editor_review",
+        "models_involved": [
+          "Claude 3.5 Sonnet",
+          "Gemini Pro"
+        ],
+        "desk": "Joint Calibration Desk (Claude 3.5 Sonnet & Gemini Pro)",
+        "headline_ref": {
+          "id": "hl-101",
+          "title": "City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations",
+          "source": "City of Santa Rosa Official Code",
+          "url": "https://srcity.org/2180/Noise-Regulations",
+          "category": "nightlife-policy"
+        },
+        "executive_summary": "Both Claude 3.5 Sonnet and Gemini Pro independently chose this headline. This calibration contrasts both models' structural models and predictive theses.",
+        "dossier": {
+          "overview": "Investigative synthesis on City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations.",
+          "perspectives": [
+            {
+              "model": "Claude 3.5 Sonnet",
+              "angle": "Institutional & economic ripple effects",
+              "verdict": "Structural pressure on local spaces"
+            },
+            {
+              "model": "Gemini Pro",
+              "angle": "Patron autonomy & grassroots adaptation",
+              "verdict": "Decentralized resilience"
+            }
+          ]
+        },
+        "scorecard": [
+          {
+            "claim": "Outcome concerning 'City of Santa Rosa Municipal Code Chapter 10-24 Noise Standards & Downtown Live Music Regulations' formalizes within 90 days",
+            "check_by": "2027-01-15",
+            "confidence": 75,
+            "model": "Claude 3.5 Sonnet"
+          },
+          {
+            "claim": "Patron and venue pushback causes policy amendment before summer 2027",
+            "check_by": "2027-06-01",
+            "confidence": 80,
+            "model": "Gemini Pro"
+          }
+        ],
+        "sources": [
+          "https://srcity.org/2180/Noise-Regulations"
+        ],
+        "created_at": "2026-10-13T01:58:48.769622+00:00",
+        "compliance": {
+          "cleared_for_publication": true,
+          "ground_truth_verified": true,
+          "neutrality_and_logic": true,
+          "voice_consistency": true,
+          "dry_humour_calibrated": true,
+          "grace_and_poise": true,
+          "zero_fallacies_verified": true,
+          "zero_libel_or_slander": true,
+          "skepticism_applied": true,
+          "sources": {
+            "valid": true,
+            "sources_count": 1,
+            "errors": []
+          },
+          "length_and_read_time": {
+            "word_count": 56,
+            "read_minutes": 1,
+            "read_time_label": "1 min read",
+            "is_within_limit": true,
+            "requires_chaining": false
+          },
+          "inferences_explicit": true,
+          "educational_intent": true,
+          "backlink_chaining_required": false
+        },
+        "reading_time": "1 min read"
+      }
+    ]
+  },
+  {
     "cycle_id": "cycle-20261011234923",
     "timestamp": "2026-10-11T23:49:23.343871+00:00",
     "is_calibration": true,

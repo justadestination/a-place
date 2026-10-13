@@ -231,6 +231,20 @@ class AutomationRegistry:
             schedule="every 12h",
             handler=run_backup_verification,
         )
+        self.register(
+            name="umwelt-horizons/writer-run",
+            title="Zine Writer Run",
+            owner="umwelt-horizons",
+            schedule="every 8h",
+            handler=run_umwelt_writer,
+        )
+        self.register(
+            name="umwelt-horizons/editor-run",
+            title="Zine Editor Run",
+            owner="umwelt-horizons",
+            schedule="every 8h offset",
+            handler=run_umwelt_editor,
+        )
 
     def _load_state(self) -> None:
         if not self.state_file.exists():
@@ -498,6 +512,50 @@ def run_backup_verification(
         "size_bytes": backup_file.stat().st_size,
         "sha256": actual_hash,
         "integrity_check": "ok",
+    }
+
+
+def _zine_script(name: str) -> Path:
+    return Path.home() / ".hermes" / "scripts" / name
+
+
+def run_umwelt_writer(**kwargs: Any) -> dict[str, Any]:
+    """Platform record for the writer. Hermes cron is the agent that writes.
+
+    This handler does not roll the gate. Rolling here would steal the run
+    from the scheduled writer.
+    """
+    script = _zine_script("writer_assignment.py")
+    handoff = Path(__file__).resolve().parent.parent / "zine-automation" / "HANDOFF-WRITER.md"
+    if not script.exists() or not handoff.exists():
+        raise AutomationFailure(
+            message="Zine writer is not wired: assignment script or HANDOFF-WRITER.md is missing",
+            severity="critical",
+            details={"script": str(script), "handoff": str(handoff)},
+        )
+    return {
+        "status": "scheduled",
+        "runner": "hermes-cron",
+        "job": "umwelt-horizons/writer-run",
+        "handoff": str(handoff),
+    }
+
+
+def run_umwelt_editor(**kwargs: Any) -> dict[str, Any]:
+    """Platform record for the editor. Hermes cron is the agent that edits."""
+    script = _zine_script("editor_assignment.py")
+    handoff = Path(__file__).resolve().parent.parent / "zine-automation" / "HANDOFF-EDITOR.md"
+    if not script.exists() or not handoff.exists():
+        raise AutomationFailure(
+            message="Zine editor is not wired: assignment script or HANDOFF-EDITOR.md is missing",
+            severity="critical",
+            details={"script": str(script), "handoff": str(handoff)},
+        )
+    return {
+        "status": "scheduled",
+        "runner": "hermes-cron",
+        "job": "umwelt-horizons/editor-run",
+        "handoff": str(handoff),
     }
 
 

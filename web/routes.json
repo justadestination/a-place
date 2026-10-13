@@ -93,8 +93,8 @@
     },
     {
       "path": "/market/",
-      "title": "Community Listings — Serendipilyst",
-      "description": "Patron and venue community listings for music gear, backstage crew, lost & found, and nightlife services.",
+      "title": "WorldSum — SerendipiLyst",
+      "description": "A flag is on the WorldSum sheet only when it is listed. Dress the pennant, then list the place. Bored people nearby can be invited into a chat about nothing in particular.",
       "module": "js/pages/market.js",
       "og": "calendar"
     },
@@ -146,13 +146,6 @@
       "description": "Alpha v1 release overview: What ShadeNet and NightCal can do right now, the upcoming venue roadmap, and the complete release changelog.",
       "module": "js/pages/changelog.js",
       "og": "system"
-    },
-    {
-      "path": "/zombie-crawl/",
-      "title": "Downtown Santa Rosa Zombie Crawl 2026 — Official Event Guide & Route",
-      "description": "Official schedule, stop-by-stop bar route, and 21+ fast door camera verification for the Downtown Santa Rosa Zombie Crawl 2026.",
-      "module": "js/pages/zombie-crawl.js",
-      "og": "event"
     }
   ]
 }

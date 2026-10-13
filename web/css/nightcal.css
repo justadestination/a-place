@@ -3494,32 +3494,99 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 }
 
 /* --- components/site-header --- */
+/* Wordmark faces (OFL, self-hosted). Trial: ?wordmark=syne|unbounded|righteous */
+@font-face { font-family: "ShadeNet Syne"; font-weight: 800; font-display: swap; src: url("/assets/fonts/syne-latin.woff2") format("woff2"); }
+@font-face { font-family: "ShadeNet Unbounded"; font-weight: 800; font-display: swap; src: url("/assets/fonts/unbounded-latin.woff2") format("woff2"); }
+@font-face { font-family: "ShadeNet Righteous"; font-weight: 400; font-display: swap; src: url("/assets/fonts/righteous-latin.woff2") format("woff2"); }
+
 .nc-site-header {
   border-bottom: var(--nc-size-border) solid var(--nc-color-border);
-  background: var(--nc-color-bg);
   position: relative;
   z-index: 50;
 }
 .nc-site-header__container {
   display: flex;
   flex-direction: column;
-  padding-block: var(--nc-space-2) var(--nc-space-3);
-  gap: var(--nc-space-2);
+  align-items: stretch;
+  padding-block: var(--nc-space-3);
+  gap: var(--nc-space-3);
 }
 
-/* Row 1: Surfaces Nav */
+/* Row 1: Search · ShadeNet portal · Display */
 .nc-site-header__row1 {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: var(--nc-space-3);
+  position: relative;
+}
+.nc-site-header__left {
+  display: flex;
+  justify-content: flex-start;
+}
+.nc-site-header__left .nc-search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nc-space-2);
+}
+.nc-site-header__center {
   display: flex;
   justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid var(--nc-color-border);
-  padding-block-end: var(--nc-space-2);
 }
+.nc-site-header__right {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+}
+
+/* ShadeNet portal: mark behind, wordmark on top */
+.nc-shadenet-brand {
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  isolation: isolate;
+}
+.nc-shadenet-brand > * {
+  grid-area: 1 / 1;
+}
+.nc-shadenet-brand__logo {
+  width: 7rem;
+  height: 7rem;
+  object-fit: contain;
+  opacity: 0.55;
+  z-index: -1;
+  transition: transform 400ms ease, opacity 400ms ease;
+}
+.nc-shadenet-brand:hover .nc-shadenet-brand__logo,
+.nc-shadenet-brand:focus-visible .nc-shadenet-brand__logo {
+  transform: rotate(45deg) scale(1.06);
+  opacity: 0.8;
+}
+.nc-shadenet-brand__text {
+  font-family: "ShadeNet Syne", var(--nc-font-family-display);
+  font-size: var(--nc-font-size-2xl);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--nc-color-text);
+  text-shadow: 0 0 0.5rem var(--nc-color-bg), 0 0 1rem var(--nc-color-bg);
+}
+.nc-shadenet-brand[data-font="unbounded"] .nc-shadenet-brand__text {
+  font-family: "ShadeNet Unbounded", var(--nc-font-family-display);
+  letter-spacing: 0.02em;
+}
+.nc-shadenet-brand[data-font="righteous"] .nc-shadenet-brand__text {
+  font-family: "ShadeNet Righteous", var(--nc-font-family-display);
+  font-weight: 400;
+}
+
+/* Row 2: Surfaces */
 .nc-surface-nav__list {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: var(--nc-space-3);
+  gap: var(--nc-space-3) var(--nc-space-5);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -3530,98 +3597,50 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 .nc-surface-nav__link {
   display: inline-flex;
   align-items: center;
-  gap: var(--nc-space-2);
-  min-height: 38px;
-  padding: 4px 14px;
+  gap: var(--nc-space-3);
+  min-height: 3.5rem;
+  padding: var(--nc-space-2) var(--nc-space-4);
   border-radius: var(--nc-radius-md);
   text-decoration: none;
   font-weight: var(--nc-font-weight-bold);
-  font-size: var(--nc-font-size-sm);
+  font-size: var(--nc-font-size-xl);
   color: var(--nc-color-text);
-  border: 1px solid transparent;
+  border: var(--nc-size-border) solid transparent;
   transition: all 180ms ease-in-out;
 }
 .nc-surface-nav__icon {
-  width: 20px;
-  height: 20px;
+  width: auto;
+  height: 2.5rem;
   object-fit: contain;
   flex-shrink: 0;
   transition: transform 180ms ease;
 }
-
-/* Active: inverted / high-contrast focus */
 .nc-surface-nav__link.is-active {
-  background: var(--nc-color-surface-raised, #252422);
+  background: var(--nc-color-surface-raised);
   color: var(--nc-surface-accent, var(--nc-color-accent));
   border-color: var(--nc-surface-accent, var(--nc-color-accent));
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--nc-shadow-overlay);
 }
 .nc-surface-nav__link.is-active .nc-surface-nav__icon {
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
-
-/* Inactive: muted / subtle */
+/* UH is a wide mark; give it extra height so it carries the same visual weight as the others. */
+.nc-surface-nav__link--umwelt .nc-surface-nav__icon {
+  height: 3rem;
+}
+/* Inactive surfaces stay readable; logos keep full colour so each mark is clearly visible. */
 .nc-surface-nav__link.is-inactive {
-  opacity: 0.65;
   color: var(--nc-color-text-muted);
 }
 .nc-surface-nav__link.is-inactive:hover {
-  opacity: 1;
   background: var(--nc-color-surface-sunken);
   color: var(--nc-color-text);
 }
 
-/* Row 2: ShadeNet Core & Tools */
-.nc-site-header__row2 {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: var(--nc-space-3);
-  position: relative;
-}
-.nc-site-header__left {
+/* Row 3: Steward on its own line */
+.nc-site-header__steward {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.nc-site-header__center {
-  display: flex;
-  align-items: center;
   justify-content: center;
-}
-.nc-site-header__right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--nc-space-2);
-  position: relative;
-}
-
-/* ShadeNet umbrella brand anchor */
-.nc-shadenet-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  line-height: 1.1;
-  gap: 2px;
-}
-.nc-shadenet-brand__logo {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  transition: transform 180ms ease;
-}
-.nc-shadenet-brand:hover .nc-shadenet-brand__logo {
-  transform: scale(1.08);
-}
-.nc-shadenet-brand__text {
-  font-size: var(--nc-font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-weight: 800;
-  color: var(--nc-color-text);
 }
 
 /* Display settings disclosure panel */
@@ -3638,28 +3657,77 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   box-shadow: var(--nc-shadow-overlay);
 }
 
-/* Mobile responsive */
-@media (max-width: 680px) {
-  .nc-surface-nav__list {
-    gap: var(--nc-space-1);
-  }
-  .nc-surface-nav__link {
-    padding: 4px 8px;
-    font-size: var(--nc-font-size-xs);
-  }
-  .nc-surface-nav__link.is-inactive {
-    display: none; /* Mobile shows currently active surface prominent in center */
-  }
-  .nc-surface-nav__link.is-active {
-    display: inline-flex;
-    padding: 6px 16px;
-    font-size: var(--nc-font-size-sm);
-  }
-  .nc-site-header__row2 {
+/* Background watermark: fixed, faint, behind all page content */
+.nc-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4vmin;
+  pointer-events: none;
+  opacity: 0.06;
+}
+.nc-watermark__mark {
+  width: min(70vmin, 40rem);
+  height: auto;
+  object-fit: contain;
+}
+.nc-watermark[data-surface] .nc-watermark__mark {
+  width: min(42vmin, 28rem);
+}
+.nc-watermark[data-surface="shadenet"] .nc-watermark__mark {
+  width: min(70vmin, 40rem);
+}
+@media (prefers-reduced-transparency: reduce), print {
+  .nc-watermark { display: none; }
+}
+
+/* Mobile */
+@media (max-width: 42rem) {
+  .nc-site-header__row1 {
     grid-template-columns: auto 1fr auto;
   }
+  /* Search and Display collapse to icons; names stay in aria-label / visually hidden text */
+  .nc-site-header__row1 .nc-button > span {
+    position: absolute;
+    width: 0.0625rem;
+    height: 0.0625rem;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .nc-site-header__row1 .nc-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .nc-shadenet-brand__logo {
+    width: 5rem;
+    height: 5rem;
+  }
   .nc-shadenet-brand__text {
-    font-size: 10px;
+    font-size: var(--nc-font-size-xl);
+  }
+  .nc-surface-nav__list {
+    gap: var(--nc-space-1);
+    flex-wrap: nowrap;
+  }
+  .nc-surface-nav__link {
+    flex-direction: column;
+    gap: var(--nc-space-1);
+    min-height: 0;
+    padding: var(--nc-space-1) var(--nc-space-2);
+    font-size: var(--nc-font-size-xs);
+    text-align: center;
+  }
+  .nc-surface-nav__icon,
+  .nc-surface-nav__link--umwelt .nc-surface-nav__icon {
+    height: 2rem;
+  }
+  .nc-watermark,
+  .nc-watermark[data-surface] {
+    flex-direction: column;
   }
 }
 
@@ -4152,6 +4220,39 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   margin: var(--nc-space-0);
 }
 
+/* Storefront & Merch Grid */
+.nc-venue-merch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--nc-space-8) * 3), 1fr));
+  gap: var(--nc-space-3);
+}
+
+.nc-venue-merch-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--nc-space-2);
+  padding: var(--nc-space-3);
+  background: var(--nc-color-surface);
+  border: var(--nc-size-border) solid var(--nc-color-border);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-venue-merch-card__name {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-bold);
+  color: var(--nc-color-text);
+}
+
+.nc-venue-merch-card__price {
+  margin: var(--nc-space-0);
+  font-size: var(--nc-font-size-sm);
+  color: var(--nc-color-accent-text);
+  font-weight: var(--nc-font-weight-bold);
+}
+
+
 /* --- components/zine-card --- */
 [data-node-type] { --node: var(--nc-color-node-entity); }
 [data-node-type="article"] { --node: var(--nc-color-node-article); }
@@ -4301,7 +4402,7 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
 .nc-reader__title:focus { outline: none; }
 .nc-reader__meta { color: var(--nc-color-text-muted); }
 .nc-reader__sub { font-size: var(--nc-font-size-lg); }
-.nc-reader__backlinks-dock { display: grid; gap: var(--nc-space-4); margin-top: var(--nc-space-4); padding-top: var(--nc-space-4); border-top: 2px solid var(--nc-color-border); }
+.nc-reader__backlinks-dock { display: grid; gap: var(--nc-space-4); margin-top: var(--nc-space-4); padding-top: var(--nc-space-4); border-top: calc(var(--nc-size-border) * 2) solid var(--nc-color-border); }
 .nc-reader__conn-block { display: grid; gap: var(--nc-space-2); }
 .nc-reader__conn-desc { color: var(--nc-color-text-muted); font-size: var(--nc-font-size-sm); margin: 0; }
 .nc-reader__links { display: grid; gap: var(--nc-space-3); }
@@ -4459,6 +4560,65 @@ body.nc-embed .nc-embed-root { padding: var(--nc-space-3); }
   font-size: var(--nc-font-size-sm);
   color: var(--nc-color-kind-music-fg);
 }
+
+.nc-zkp-gate__tabs {
+  display: flex;
+  gap: var(--nc-space-1);
+  border-bottom: var(--nc-size-border) solid var(--nc-color-border);
+  padding-bottom: var(--nc-space-2);
+  overflow-x: auto;
+}
+
+.nc-zkp-gate__tab {
+  background: transparent;
+  color: var(--nc-color-text-muted);
+  border: var(--nc-size-border) solid transparent;
+  border-radius: var(--nc-radius-sm);
+  padding: var(--nc-space-1) var(--nc-space-3);
+  font-size: var(--nc-font-size-sm);
+  font-weight: var(--nc-font-weight-medium);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.nc-zkp-gate__tab:hover {
+  color: var(--nc-color-text);
+  background: var(--nc-color-surface-hover);
+}
+
+.nc-zkp-gate__tab--active {
+  color: var(--nc-color-text);
+  background: var(--nc-color-bg);
+  border-color: var(--nc-color-border);
+  font-weight: var(--nc-font-weight-bold);
+}
+
+.nc-zkp-gate__mode-desc {
+  font-size: var(--nc-font-size-xs);
+  color: var(--nc-color-text-muted);
+  line-height: 1.4;
+  margin: var(--nc-space-0);
+}
+
+.nc-zkp-gate__portrait-box {
+  display: flex;
+  align-items: center;
+  gap: var(--nc-space-3);
+  margin-top: var(--nc-space-2);
+  padding: var(--nc-space-2);
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--nc-radius-sm);
+}
+
+.nc-zkp-gate__portrait-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--nc-color-kind-music-mark);
+}
+
 
 /* --- components/worldsum --- */
 

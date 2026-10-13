@@ -5,16 +5,16 @@ Built 2026-10-09 per the operator. He writes the intro/editorial himself;
 everything else runs on this system.
 
 **Ownership:** these are the zine's jobs, not Dexa's. See `SCHEDULER-SPEC.md`
-for the platform spec (master-todo 6.9). They currently run on Dexa's
-scheduler as an interim measure; when the platform implements them natively,
-Dexa's crons get disabled — never double-run.
+for the platform spec (master-todo 6.9). Hermes cron on this machine runs
+them: `umwelt-horizons/writer-run` and `umwelt-horizons/editor-run`. Dexa's
+old cron names are not installed. Do not add a second runner.
 
 ## How it works
 
 Two stages, fully automated. The editor is the gate; operators can step in
 on anything, anytime.
 
-**Stage 1 — writer** (cron `zine-automation-run`, every 8h, ~40% gate):
+**Stage 1 — writer** (Hermes cron `umwelt-horizons/writer-run`, `0 */8 * * *`, ~40% gate):
 1. Picks a persona + prompt type at random (recency-weighted, never repeats
    a persona used in the last 5 runs; never picks `editors-letter`)
 2. Researches recent news (news vertical) for a subject
@@ -25,7 +25,7 @@ on anything, anytime.
 6. Appends the stance to the persona's **Stances taken** memory + state.json
 7. Files the draft to `drafts/` (the zine's inbox), `status: draft`
 
-**Stage 2 — editor** (cron `zine-automation-editor`, every 8h, offset):
+**Stage 2 — editor** (Hermes cron `umwelt-horizons/editor-run`, `0 4,12,20 * * *`):
 1. Takes the queue oldest-first: `drafts/*.md` + draft topics
 2. Copy-edits each piece as Dev Malik (`prompts/editor-pass.md`)
 3. Gate clears → `scripts/state.py publish` → `published/`, `status: published`

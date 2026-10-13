@@ -71,6 +71,8 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
       if (hasUserVoted) btnMinus.removeAttribute("disabled");
       else btnMinus.setAttribute("disabled", "true");
     }
+    // Let the page react (e.g. the road resizes billboards) — the vote buttons stop click propagation.
+    countSpan.dispatchEvent(new CustomEvent("nc:bodies", { bubbles: true, detail: { id: event.id, bodies } }));
   };
 
   const btnPlus = button({

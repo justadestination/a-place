@@ -45,7 +45,7 @@ export function portalView({
   const titleTag = level === 1 ? "h1.nc-portal__title" : "h2.nc-portal__title";
   const header = h("header.nc-portal__header", {},
     h("span.nc-portal__eyebrow", {},
-      h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
+      h("img", { src: "/assets/brand/uh-crimson-256.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
       "Umwelt Horizons (The Zine) · Print-to-Screen Portal"
     ),
     h(titleTag, {}, "Umwelt Horizons Dispatch Portal"),

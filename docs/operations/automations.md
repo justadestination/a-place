@@ -14,6 +14,8 @@ ShadeNet uses a background automations and supervisor subsystem (`shadenet/autom
 | `daily_page_build` | Daily Calendar Auto-Build | `publisher` | Daily @ 00:01 | Triggers `/today` and `/day/YYYY-MM-DD` static build and asserts `routes.json` integrity and non-empty index output. |
 | `summary_ingest` | Editorial & Syndicate Summary Ingest | `editor` | Every 6 hours | Ingests syndicated summaries into the zine graph; validates JSON schema (`id`, `date`, `title`, `summary`, `items`) and node connectivity. |
 | `backup_verification` | Backup Integrity Verification | `backup-daemon` | Every 12 hours | Inspects the most recent SQLite online backup; verifies sha256 checksum against manifest and executes `PRAGMA integrity_check;`. |
+| `umwelt-horizons/writer-run` | Zine Writer Run | `umwelt-horizons` | Every 8 hours | Hermes cron. A 40% gate picks a persona and prompt, then the writer follows `zine-automation/HANDOFF-WRITER.md`. |
+| `umwelt-horizons/editor-run` | Zine Editor Run | `umwelt-horizons` | Every 8 hours, offset 4 hours | Hermes cron. Edits `drafts/` per `zine-automation/HANDOFF-EDITOR.md`. |
 
 ---
 

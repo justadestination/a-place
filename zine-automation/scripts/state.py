@@ -12,7 +12,7 @@ Usage:
 import argparse, json, os, random, sys
 from datetime import date
 
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE = os.environ.get("ZINE_AUTOMATION_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE = os.path.join(BASE, 'state', 'state.json')
 LOG = os.path.join(BASE, 'state', 'run-log.md')
 
@@ -41,6 +41,7 @@ def save(s):
         json.dump(s, f, indent=2)
 
 def log_line(text):
+    os.makedirs(os.path.dirname(LOG), exist_ok=True)
     with open(LOG, 'a') as f:
         f.write(text.rstrip() + '\n')
 
@@ -54,14 +55,22 @@ def cmd_gate(a):
 
 def cmd_pick(a):
     s = load()
-    avail_p = [p for p in PERSONAS if p not in s['recent_personas']]
+    recent = set(s['recent_personas'])
+    avail_p = [p for p in PERSONAS if p not in recent] or list(PERSONAS)
     p_weights = [PERSONA_WEIGHTS.get(p, 10) for p in avail_p]
     persona = random.choices(avail_p, weights=p_weights)[0]
     names = [n for n, _ in PROMPTS]
     weights = [w for _, w in PROMPTS]
     prompt = random.choices(names, weights=weights)[0]
+    # A prompt locked to one writer must not pull that writer back in
+    # while they are still in recent_personas. Redraw a general prompt.
     if prompt in PROMPT_PERSONA and persona not in PROMPT_PERSONA[prompt]:
-        persona = random.choice(PROMPT_PERSONA[prompt])
+        allowed = [p for p in PROMPT_PERSONA[prompt] if p not in recent]
+        if allowed:
+            persona = random.choice(allowed)
+        else:
+            general = [(n, w) for n, w in PROMPTS if n not in PROMPT_PERSONA]
+            prompt = random.choices([n for n, _ in general], weights=[w for _, w in general])[0]
     if persona == "nico-varela" and prompt != "cartoon-brief":
         prompt = "cartoon-brief"
     print(f"persona={persona} prompt={prompt}")

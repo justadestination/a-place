@@ -13,9 +13,11 @@ REPAIRS_LOG="${LOGS_DIR}/repairs/repair.log"
 echo "===> [1/4] Installing Logrotate and monitoring utilities..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq logrotate jq curl sqlite3
+apt-get install -y -qq logrotate jq curl sqlite3 dnsutils
 
 mkdir -p "${BIN_DIR}" "${LOGS_DIR}/repairs"
+touch "${REPAIRS_LOG}"
+touch "${REPAIRS_LOG}"
 
 echo "===> [2/4] Setting up Logrotate policy for noisy logs..."
 cat > /etc/logrotate.d/shadenet <<EOF
@@ -149,8 +151,12 @@ usage() {
     echo "  repairs           - View automated repair & watchdog log"
     echo "  repair-now        - Run an immediate self-healing repair drill"
     echo "  vpn-qr            - Display mobile WireGuard QR code for operator"
-    echo "  monero-status     - Query pruned Monero node height & sync"
-    echo "  matrix-create-admin <user> <pass> - Register new Matrix admin user"
+    echo "  matrix-create-admin <user> - Register Matrix admin (prompts for password)"
+    echo "  sites-enable      - Enable public sites in Caddy (AFTER DNS points here)"
+    echo "  backup-now        - Run an encrypted backup to backup-host immediately"
+    echo "  backup-status     - Show last backup result and archives"
+    echo "  vault-status      - Show encrypted vault state (after 07_encrypt_at_rest.sh)"
+    echo "  vault-unlock      - Unlock vault with recovery passphrase if Tang is down"
     echo "============================================================"
     exit 1
 }
@@ -208,21 +214,52 @@ case "$CMD" in
             echo "Phone QR code not found."
         fi
         ;;
-    monero-status)
-        curl -s -X POST http://203.0.113.1:18081/json_rpc \
-            -d '{"jsonrpc":"2.0","id":"0","method":"get_info"}' \
-            -H 'Content-Type: application/json' | jq '.result | {height, target_height, synchronized, connections_in, connections_out}'
-        ;;
     matrix-create-admin)
-        USER="${2:-}"
-        PASS="${3:-}"
-        if [ -z "$USER" ] || [ -z "$PASS" ]; then
-            echo "Usage: shadenet-ctl matrix-create-admin <username> <password>"
+        MUSER="${2:-}"
+        if [ -z "$MUSER" ]; then
+            echo "Usage: shadenet-ctl matrix-create-admin <username>"
             exit 1
         fi
+        # No -p: password is prompted, never in argv / shell history
         docker exec -it matrix_synapse register_new_matrix_user \
             -c /data/homeserver.yaml \
-            -u "$USER" -p "$PASS" --admin "http://localhost:8008"
+            -u "$MUSER" --admin "http://localhost:8008"
+        ;;
+    sites-enable)
+        echo "Checking that public DNS points at this server..."
+        MYIP=$(ip -4 route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($i=="src") print $(i+1)}')
+        for h in shadesr.net matrix.shadesr.net chat.shadesr.net; do
+            got=$(dig +short A "$h" | tail -n1)
+            if [ "$got" != "$MYIP" ]; then
+                echo "  $h -> ${got:-nothing} (expected $MYIP). Fix DNS first; Let's Encrypt would fail."
+                exit 1
+            fi
+            echo "  $h -> $got ✓"
+        done
+        ln -sf ../sites-available/public.caddy "${ROOT_DIR}/config/caddy/sites-enabled/public.caddy"
+        docker compose restart ingress
+        echo "Public sites enabled. Watch certificates: shadenet-ctl logs ingress"
+        ;;
+    backup-now)
+        systemctl start shadenet-backup.service
+        journalctl -u shadenet-backup.service -n 30 --no-pager
+        ;;
+    backup-status)
+        systemctl status shadenet-backup.timer --no-pager | head -n 5
+        systemctl status shadenet-backup.service --no-pager | head -n 8
+        ;;
+    vault-status)
+        if [ ! -f /etc/shadenet-vault.conf ]; then
+            echo "Vault not set up — data is UNENCRYPTED. Run 07_encrypt_at_rest.sh."
+            exit 1
+        fi
+        systemctl status shadenet-vault.service --no-pager | head -n 5
+        findmnt "${ROOT_DIR}/data" || echo "Vault is NOT mounted."
+        ;;
+    vault-unlock)
+        "${ROOT_DIR}/bin/vault-unlock.sh" manual
+        systemctl start docker.socket docker.service
+        echo "Vault unlocked; containers starting (restart: always)."
         ;;
     *)
         usage

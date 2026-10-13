@@ -104,3 +104,36 @@ def test_spaces_search(test_store):
 def test_sub_500ms_performance(test_store):
     res = search(test_store, "showcase")
     assert res["duration_ms"] < 500
+
+
+def test_ensure_search_index_builds_and_tracks_changes(tmp_path):
+    import json
+    from shadenet.search import ensure_search_index
+
+    store = Store(tmp_path / "ensure.db")
+    store.upsert_source("test", "test", "https://example.com")
+    venue = store.ensure_venue("The Velvet Lounge", address="100 4th Street", city="Santa Rosa", state="CA")
+    zine = tmp_path / "zine.json"
+    zine.write_text(json.dumps({"nodes": [
+        {"id": "note:jazz", "type": "article", "title": "Jazz Notes", "summary": "riffs"},
+        {"id": "event:x", "type": "event", "title": "Jazz Mirror"},
+    ]}))
+
+    # Never built: the first search-time ensure fills the index.
+    ensure_search_index(store, zine)
+    assert search(store, "Velvet")["results"]["spaces"][0]["url"] == f"/venue/?id={venue}"
+    expressions = search(store, "Jazz")["results"]["expressions"]
+    assert [e["url"] for e in expressions] == ["/zine/?node=note:jazz"]  # event mirror skipped
+
+    # New scraper data after the first build is picked up on the next ensure.
+    store.upsert_listing(
+        source_id="test", external_id="late", url="https://example.com/late",
+        title_raw="Late Night Bluegrass", title_norm="late night bluegrass",
+        starts_at="2026-10-16T05:30:00+00:00", venue_id=venue, venue_name_raw="The Velvet Lounge",
+    )
+    from shadenet.towncrier.resolve import Resolver
+    Resolver(store).resolve()
+    ensure_search_index(store, zine)
+    spots = search(store, "bluegrass")["results"]["spots"]
+    # 05:30 UTC on the 16th is the night of the 15th in Santa Rosa.
+    assert spots[0]["url"] == "/?date=2026-10-15&scope=all"

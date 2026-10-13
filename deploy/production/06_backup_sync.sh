@@ -1,98 +1,157 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# 06_backup_sync.sh — Encrypted Cross-Server Backups to the backup host
-# Target: Fresh production VPS -> backup-host
+# 06_backup_sync.sh — Encrypted, Append-Only Backups to the backup host (borg)
+# Target: Production VPS. Pair with backup_host.sh (run ON backup-host).
+#
+# MODEL:
+# - borg repokey-blake2: authenticated encryption, dedup, compression.
+# - Production logs in as 'shadenet-backup' whose key is forced to
+#   `borg serve --append-only`: a compromised production server can add
+#   archives but cannot destroy history.
+# - Postgres is streamed straight into borg — no plaintext dumps on disk.
+# - Failures FAIL (systemd unit goes red, shadenet-ctl backup-status shows it).
+#
+# Order of operations:
+#   1. This script (generates SSH key + passphrase, installs timer).
+#   2. On backup-host: PROD_PUBKEY='<printed key>' bash backup_host.sh
+#   3. Here: shadenet-ctl backup-now   (first run initialises the repo)
 # ==============================================================================
 set -euo pipefail
 
 ROOT_DIR="/srv/shadenet"
-TARGET_HOST="${BACKUP_HOST:?Set BACKUP_HOST}"
-TARGET_USER="root"
-REMOTE_BACKUP_DIR="/opt/backups/production-vps"
+: "${BACKUP_HOST:?Set BACKUP_HOST}"
+BACKUP_USER="shadenet-backup"
+BORG_REPO_URL="ssh://${BACKUP_USER}@${BACKUP_HOST}/srv/borg/shadenet"
+SECRETS_DIR="/root/.config/shadenet"
+SSH_KEY="/root/.ssh/shadenet_backup_ed25519"
+KNOWN_HOSTS="/root/.ssh/known_hosts_backup"
+# Optional: pin backup-host's host key line (from a trusted known_hosts) instead of TOFU
+BACKUP-HOST_HOSTKEY="${BACKUP-HOST_HOSTKEY:-}"
 
-echo "===> [1/3] Generating encrypted backup script (${ROOT_DIR}/bin/backup.sh)..."
+echo "===> [1/4] Installing borg..."
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq
+apt-get install -y -qq borgbackup openssh-client
+
+echo "===> [2/4] Generating backup SSH key and repository passphrase..."
+mkdir -p "${SECRETS_DIR}" /root/.ssh
+chmod 700 "${SECRETS_DIR}" /root/.ssh
+if [ ! -f "${SSH_KEY}" ]; then
+  ssh-keygen -q -t ed25519 -N "" -C "shadenet-backup@$(hostname)" -f "${SSH_KEY}"
+fi
+if [ ! -f "${SECRETS_DIR}/borg-passphrase" ]; then
+  ( umask 077; openssl rand -base64 48 | tr -d '\n' > "${SECRETS_DIR}/borg-passphrase" )
+fi
+if [ ! -s "${KNOWN_HOSTS}" ]; then
+  if [ -n "${BACKUP-HOST_HOSTKEY}" ]; then
+    echo "${BACKUP-HOST_HOSTKEY}" > "${KNOWN_HOSTS}"
+  else
+    ssh-keyscan -t ed25519 "${BACKUP_HOST}" > "${KNOWN_HOSTS}" 2>/dev/null
+    echo "!! backup-host host key pinned by first contact (TOFU). Verify:"
+    ssh-keygen -lf "${KNOWN_HOSTS}"
+  fi
+fi
+
+echo "===> [3/4] Writing backup script (${ROOT_DIR}/bin/backup.sh)..."
 cat > "${ROOT_DIR}/bin/backup.sh" <<EOF
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="/srv/shadenet"
-BACKUP_DATE=\$(date -u +"%Y%m%d_%H%M%SZ")
-STAGING_DIR="/tmp/backup_\${BACKUP_DATE}"
-ARCHIVE_NAME="shadenet_prod_\${BACKUP_DATE}.tar.gz"
-ENCRYPTED_ARCHIVE="\${ARCHIVE_NAME}.enc"
-REMOTE_TARGET="${TARGET_USER}@${TARGET_HOST}:${REMOTE_BACKUP_DIR}"
-
-mkdir -p "\${STAGING_DIR}"
-
-echo "[*] Dumping Matrix Synapse database..."
-if docker ps -q -f name=matrix_postgres | grep -q .; then
-  docker exec -t matrix_postgres pg_dump -U synapse synapse > "\${STAGING_DIR}/synapse_db.sql" || true
-fi
-
-echo "[*] Archiving ShadeNet persistent data..."
-if [ -d "\${ROOT_DIR}/data/shadenet" ]; then
-  tar -czf "\${STAGING_DIR}/shadenet_data.tar.gz" -C "\${ROOT_DIR}/data/shadenet" . || true
-fi
-
-echo "[*] Archiving Monero wallet metadata & keys..."
-if [ -d "\${ROOT_DIR}/data/monero/wallets" ]; then
-  tar -czf "\${STAGING_DIR}/monero_wallets.tar.gz" -C "\${ROOT_DIR}/data/monero/wallets" . || true
-fi
-
-# Package into single archive
-tar -czf "/tmp/\${ARCHIVE_NAME}" -C "\${STAGING_DIR}" .
-rm -rf "\${STAGING_DIR}"
-
-# Encrypt archive with host key or symmetric pass before transit
-openssl enc -aes-256-cbc -salt -pbkdf2 -in "/tmp/\${ARCHIVE_NAME}" \
-  -out "/tmp/\${ENCRYPTED_ARCHIVE}" -pass file:/etc/security/luks/shadenet.key
-rm -f "/tmp/\${ARCHIVE_NAME}"
-
-echo "[*] Syncing encrypted archive to the backup host backup-host (${TARGET_HOST})..."
-ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new "${TARGET_USER}@${TARGET_HOST}" "mkdir -p ${REMOTE_BACKUP_DIR}" || true
-rsync -avz -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new" "/tmp/\${ENCRYPTED_ARCHIVE}" "\${REMOTE_TARGET}/" || true
-
-rm -f "/tmp/\${ENCRYPTED_ARCHIVE}"
-
-# Prune older backups on backup-host (keep 14 days)
-ssh -o BatchMode=yes "${TARGET_USER}@${TARGET_HOST}" "cd ${REMOTE_BACKUP_DIR} && ls -tp shadenet_prod_*.enc | grep -v '/$' | tail -n +15 | xargs -I {} rm -f -- {}" 2>/dev/null || true
-
-echo "[✓] Encrypted backup successfully transmitted to backup-host."
+export BORG_REPO="${BORG_REPO_URL}"
+export BORG_PASSCOMMAND="cat ${SECRETS_DIR}/borg-passphrase"
+export BORG_RSH="ssh -i ${SSH_KEY} -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=${KNOWN_HOSTS} -o ControlMaster=auto -o ControlPath=/run/shadenet-backup-%C -o ControlPersist=120"
+# ^ one multiplexed connection: backup-host rate-limits new SSH connections to 6/min
+ROOT_DIR="${ROOT_DIR}"
 EOF
-chmod +x "${ROOT_DIR}/bin/backup.sh"
+cat >> "${ROOT_DIR}/bin/backup.sh" <<'EOF'
 
-echo "===> [2/3] Installing systemd backup service..."
-cat > /etc/systemd/system/steward-backup.service <<EOF
+# borg: 0 = ok, 1 = warning (e.g. file changed while reading), >=2 = error
+borg_run() {
+  local rc=0
+  borg "$@" || rc=$?
+  if [ "${rc}" -ge 2 ]; then
+    echo "borg $1 FAILED (rc=${rc})" >&2
+    exit "${rc}"
+  fi
+}
+
+# First run: create the repository (append-only server side still allows init)
+if ! borg info >/dev/null 2>&1; then
+  echo "[*] Initialising borg repository on backup-host..."
+  borg init --encryption=repokey-blake2
+  ( umask 077; borg key export "${BORG_REPO}" /root/shadenet-borg-key.txt )
+  echo "!! Copy /root/shadenet-borg-key.txt and ${HOME}/.config/shadenet/borg-passphrase"
+  echo "!! to the operator laptop, then: shred -u /root/shadenet-borg-key.txt"
+fi
+
+echo "[*] Streaming Matrix Postgres dump into borg..."
+if docker ps -q -f name=^matrix_postgres$ | grep -q .; then
+  borg_run create --stats --compression zstd,6 \
+    --content-from-command --stdin-name synapse.sql \
+    "::{hostname}-db-{now:%Y-%m-%dT%H:%M:%S}" \
+    -- docker exec matrix_postgres pg_dump -U synapse --no-owner synapse
+else
+  echo "matrix_postgres is not running — refusing to report a partial backup as success." >&2
+  exit 2
+fi
+
+echo "[*] Archiving data, config, secrets..."
+borg_run create --stats --compression zstd,6 --one-file-system \
+  --exclude "${ROOT_DIR}/data/postgres" \
+  --exclude "${ROOT_DIR}/data/synapse/media_store/remote_content" \
+  --exclude "${ROOT_DIR}/data/synapse/media_store/remote_thumbnail" \
+  --exclude "${ROOT_DIR}/data.plaintext-old" \
+  "::{hostname}-files-{now:%Y-%m-%dT%H:%M:%S}" \
+  "${ROOT_DIR}/data" "${ROOT_DIR}/config" "${ROOT_DIR}/.env" /etc/wireguard
+
+# Append-only: prune only MARKS archives deleted; backup-host decides when to compact
+echo "[*] Pruning (append-only — reversible until backup-host compacts)..."
+borg_run prune --glob-archives '{hostname}-db-*' --keep-daily 14 --keep-weekly 8 --keep-monthly 6
+borg_run prune --glob-archives '{hostname}-files-*' --keep-daily 14 --keep-weekly 8 --keep-monthly 6
+
+echo "[✓] Backup complete."
+EOF
+chmod 700 "${ROOT_DIR}/bin/backup.sh"
+
+echo "===> [4/4] Installing daily systemd backup timer (03:00 UTC)..."
+# Replace the old unit name if an earlier version installed it
+systemctl disable --now steward-backup.timer 2>/dev/null || true
+rm -f /etc/systemd/system/steward-backup.{service,timer}
+
+cat > /etc/systemd/system/shadenet-backup.service <<EOF
 [Unit]
-Description=ShadeNet Encrypted Cross-Server Backup to backup-host
-After=network-online.target
+Description=ShadeNet encrypted append-only backup to backup-host
+After=network-online.target docker.service
 Wants=network-online.target
 
 [Service]
 Type=oneshot
 ExecStart=${ROOT_DIR}/bin/backup.sh
-User=root
-StandardOutput=journal
-StandardError=journal
+Nice=10
+IOSchedulingClass=idle
 EOF
 
-echo "===> [3/3] Installing daily systemd backup timer (03:00 UTC)..."
-cat > /etc/systemd/system/steward-backup.timer <<'EOF'
+cat > /etc/systemd/system/shadenet-backup.timer <<'EOF'
 [Unit]
-Description=Daily Backup Timer for ShadeNet Production
-Persistent=true
+Description=Daily ShadeNet backup
 
 [Timer]
 OnCalendar=*-*-* 03:00:00 UTC
 RandomizedDelaySec=1800
-Unit=steward-backup.service
+Persistent=true
 
 [Install]
 WantedBy=timers.target
 EOF
 
 systemctl daemon-reload
-systemctl enable steward-backup.timer
-systemctl restart steward-backup.timer
+systemctl enable --now shadenet-backup.timer
 
-echo "✓ Encrypted cross-server backups active targeting backup-host (${TARGET_HOST})!"
+echo "======================================================================"
+echo " ✓ Backup timer installed. Backups are NOT active until backup-host trusts"
+echo "   this key. On backup-host run:"
+echo ""
+echo "   PROD_PUBKEY='$(cat "${SSH_KEY}.pub")' bash backup_host.sh"
+echo ""
+echo "   then here: shadenet-ctl backup-now"
+echo "======================================================================"

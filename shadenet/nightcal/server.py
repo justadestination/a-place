@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import threading
+import time
 import traceback
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -52,6 +53,19 @@ from shadenet.operator import (
 )
 from shadenet.zine_automations import run_newsroom_cycle
 from shadenet.ratelimit import limiter
+from shadenet.ops import auth as ops_auth, metrics as ops_metrics
+from shadenet.ops.routes import LOGIN_RATE, PUBLIC_OPERATOR_PATHS, Ctx as OpsCtx, handle_ops, require_operator
+
+from shadenet.logging import StructuredLogger
+limiter.limits.setdefault("ops_login", LOGIN_RATE)
+# Structured access log for the ops console; only writes to a file when SHADENET_LOG_FILE is set,
+# so stderr stays as the plain access line below.
+class _Discard:
+    def write(self, _s: str) -> None: ...
+    def flush(self) -> None: ...
+
+
+_access_log = StructuredLogger(service="http", sink=_Discard())
 from shadenet.health import check_subsystems
 from shadenet.auth import default_auth_manager
 from shadenet.zkp import (
@@ -99,6 +113,25 @@ def _model(status: str | None = None) -> dict:
         store.close()
 
 
+def _ops_ctx() -> OpsCtx:
+    def venues() -> list[dict]:
+        store = open_store(_db_path())
+        try:
+            return [dict(r) for r in store._conn.execute("SELECT id, name FROM venues ORDER BY name")]
+        finally:
+            store.close()
+
+    def operator_status() -> dict:
+        with _lock:
+            store = open_store(_db_path())
+            try:
+                return get_operator_status(store)
+            finally:
+                store.close()
+
+    return OpsCtx(venues=venues, operator_status=operator_status)
+
+
 MIME_MAP = {
     ".html": "text/html; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
@@ -127,7 +160,29 @@ class Handler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
     def log_message(self, fmt: str, *args) -> None:
-        sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
+        sys.stderr.write("%s - %s\n" % (self._client_ip(), fmt % args))
+
+    def _client_ip(self) -> str:
+        peer = self.client_address[0] if getattr(self, "client_address", None) else "127.0.0.1"
+        return ops_auth.client_ip(peer, self.headers.get("X-Forwarded-For") if getattr(self, "headers", None) else None)
+
+    def send_response(self, code: int, message: str | None = None) -> None:
+        self._status_code = code
+        super().send_response(code, message)
+
+    def handle_one_request(self) -> None:
+        started = time.perf_counter()
+        self._status_code = 0
+        super().handle_one_request()
+        if self._status_code and getattr(self, "command", None):
+            ms = (time.perf_counter() - started) * 1000
+            path = getattr(self, "path", "")
+            ops_metrics.record(self.command, path, self._status_code, ms)
+            if ops_metrics.route_group(path) != "static":
+                code = self._status_code
+                level = _access_log.error if code >= 500 else _access_log.warning if code >= 400 else _access_log.info
+                level("http_request", method=self.command, path=path.split("?", 1)[0][:300], status=code,
+                      ms=round(ms, 1), ip=self._client_ip())
 
     def _send(self, code: int, body: bytes, content_type: str, cache_control: str = "no-store", extra_headers: dict | None = None) -> None:
         self.send_response(code)
@@ -158,7 +213,8 @@ class Handler(BaseHTTPRequestHandler):
         return body
 
     def _check_rate_limit(self, category: str = "api") -> bool:
-        client_ip = self.client_address[0] if getattr(self, "client_address", None) else "127.0.0.1"
+        # Behind Caddy every peer is 127.0.0.1; key buckets on the real client.
+        client_ip = self._client_ip()
         auth = self.headers.get("Authorization") or self.headers.get("X-Operator-Token") or ""
         allowed, retry_after = limiter.check(client_ip, category=category, auth_token=auth)
         if not allowed:
@@ -217,6 +273,12 @@ class Handler(BaseHTTPRequestHandler):
         if self._events("GET"):
             return
         path = self.path.split("?", 1)[0]
+        if path.startswith("/api/ops/"):
+            handle_ops(self, "GET", self.path, {}, _ops_ctx(), limiter)
+            return
+        if path.startswith("/api/operator/") and path not in PUBLIC_OPERATOR_PATHS:
+            if not require_operator(self, "GET"):
+                return
         if path in ("/healthz", "/api/health"):
             rep = check_subsystems(_db_path())
             self._json(rep["http_code"], rep)
@@ -259,7 +321,16 @@ class Handler(BaseHTTPRequestHandler):
             parts = path.split("/")
             room_id = urllib.parse.unquote(parts[parts.index("rooms") + 1])
             conn = get_chat_db(_db_path())
-            msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since)
+            auth_hdr = self.headers.get("Authorization", "") or self.headers.get("X-Session-Token", "")
+            token = auth_hdr.replace("Bearer ", "").strip() if "Bearer " in auth_hdr else auth_hdr.strip()
+            session = default_auth_manager.validate_session(token) if token else None
+            user_id = session["user_id"] if session else ("anon_" + hashlib.sha256(str(self.client_address[0]).encode()).hexdigest()[:8])
+            viewer = get_pseudonym_for_user(conn, user_id)
+            try:
+                msgs = get_room_messages(conn, room_id, limit=limit, since_ts=since, viewer=viewer)
+            except PermissionError as exc:
+                self._json(403, {"error": str(exc)})
+                return
             if path.startswith("/_matrix/"):
                 chunk = [{"event_id": m["event_id"], "sender": m["sender"], "origin_server_ts": m["timestamp"], "type": "m.room.message", "content": {"body": m["content"], "msgtype": "m.text"}} for m in msgs]
                 self._json(200, {"chunk": chunk, "start": str(since), "end": str(msgs[-1]["timestamp"] if msgs else since)})
@@ -267,7 +338,7 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(200, {"room_id": room_id, "messages": msgs})
             return
         if path.startswith("/api/"):
-            cat = "operator" if path.startswith("/api/operator/") else "api"
+            cat = "operator" if path.startswith(("/api/operator/", "/api/ops/")) else "api"
             if not self._check_rate_limit(cat):
                 return
 
@@ -379,14 +450,19 @@ class Handler(BaseHTTPRequestHandler):
             with _lock:
                 message = update_data_message(_model())
             self._send(200, json.dumps(message).encode(), "application/json; charset=utf-8")
+            return
         if path == "/api/search":
             qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
             q = qs.get("q", [""])[0]
-            limit = int(qs.get("limit", [20])[0])
+            try:
+                limit = max(1, min(50, int(qs.get("limit", [20])[0])))
+            except ValueError:
+                limit = 20
             kind = qs.get("kind", [None])[0]
             store = open_store(_db_path())
             try:
-                from shadenet.search import search as fts_search
+                from shadenet.search import ensure_search_index, search as fts_search
+                ensure_search_index(store, WEB_DIR / "data" / "zine.json")
                 res = fts_search(store, q, limit=limit, kind=kind)
                 self._json(200, res)
             finally:
@@ -398,12 +474,8 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         if path in ("/operator", "/operator/", "/operator.html"):
-            op_page = WEB_DIR / "operator" / "index.html"
-            if not op_page.is_file():
-                op_page = STATIC / "static" / "operator.html"
-            if op_page.is_file():
-                self._send(200, op_page.read_bytes(), "text/html; charset=utf-8")
-                return
+            self._send(302, b"", "text/plain; charset=utf-8", extra_headers={"Location": "/ops/"})
+            return
 
         if path in ("/status", "/status/", "/status.html"):
             st_page = WEB_DIR / "status" / "index.html"
@@ -502,12 +574,19 @@ class Handler(BaseHTTPRequestHandler):
             return
         path = self.path.split("?", 1)[0]
         if path.startswith("/api/"):
-            cat = "operator" if path.startswith("/api/operator/") else "submissions"
+            cat = "operator" if path.startswith(("/api/operator/", "/api/ops/")) else "submissions"
             if not self._check_rate_limit(cat):
                 return
         body = self._read_json()
         if body is None:
             return
+
+        if path.startswith("/api/ops/"):
+            handle_ops(self, "POST", self.path, body, _ops_ctx(), limiter)
+            return
+        if (path.startswith("/api/operator/") and path not in PUBLIC_OPERATOR_PATHS) or path == "/api/zine/cycle":
+            if not require_operator(self, "POST"):
+                return
 
         if path.startswith("/api/auth/"):
             if path == "/api/auth/register/verify":

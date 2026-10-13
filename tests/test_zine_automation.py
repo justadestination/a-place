@@ -41,14 +41,55 @@ def test_personas_roster_exists():
 
 
 def test_state_gate_execution():
-    """Verify deterministic gate rolls via state.py."""
-    res_pass = subprocess.run([sys.executable, str(STATE_PY), "gate", "--chance", "100"], capture_output=True, text=True)
-    assert res_pass.returncode == 0
-    assert "PROCEED" in res_pass.stdout
+    """Verify deterministic gate rolls via state.py, off the live zine log."""
+    import shutil
+    import tempfile
 
-    res_skip = subprocess.run([sys.executable, str(STATE_PY), "gate", "--chance", "0"], capture_output=True, text=True)
-    assert res_skip.returncode == 3
-    assert "SKIP" in res_skip.stdout
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "state").mkdir()
+        shutil.copy(STATE_JSON, root / "state" / "state.json")
+        env = os.environ.copy()
+        env["ZINE_AUTOMATION_ROOT"] = str(root)
+        res_pass = subprocess.run(
+            [sys.executable, str(STATE_PY), "gate", "--chance", "100"],
+            capture_output=True, text=True, env=env,
+        )
+        assert res_pass.returncode == 0
+        assert "PROCEED" in res_pass.stdout
+
+        res_skip = subprocess.run(
+            [sys.executable, str(STATE_PY), "gate", "--chance", "0"],
+            capture_output=True, text=True, env=env,
+        )
+        assert res_skip.returncode == 3
+        assert "SKIP" in res_skip.stdout
+        assert "skipped" in (root / "state" / "run-log.md").read_text(encoding="utf-8")
+
+
+def test_writer_assignment_force_picks_without_touching_live_log():
+    """A forced assignment selects a persona and does not roll the live gate."""
+    import shutil
+    import tempfile
+
+    assignment = SCRIPTS_DIR / "writer_assignment.py"
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        (root / "state").mkdir()
+        (root / "scripts").mkdir()
+        shutil.copy(STATE_JSON, root / "state" / "state.json")
+        shutil.copy(STATE_PY, root / "scripts" / "state.py")
+        env = os.environ.copy()
+        env["ZINE_AUTOMATION_ROOT"] = str(root)
+        res = subprocess.run(
+            [sys.executable, str(assignment), "--force"],
+            capture_output=True, text=True, env=env,
+        )
+        assert res.returncode == 0, res.stderr
+        assert "PROCEED" in res.stdout
+        assert "persona=" in res.stdout
+        assert "prompt=" in res.stdout
+        assert "editors-letter" not in res.stdout
 
 
 def test_state_pick():

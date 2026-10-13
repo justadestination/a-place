@@ -4,6 +4,9 @@
 .nc-reader__title:focus { outline: none; }
 .nc-reader__meta { color: var(--nc-color-text-muted); }
 .nc-reader__sub { font-size: var(--nc-font-size-lg); }
+.nc-reader__backlinks-dock { display: grid; gap: var(--nc-space-4); margin-top: var(--nc-space-4); padding-top: var(--nc-space-4); border-top: calc(var(--nc-size-border) * 2) solid var(--nc-color-border); }
+.nc-reader__conn-block { display: grid; gap: var(--nc-space-2); }
+.nc-reader__conn-desc { color: var(--nc-color-text-muted); font-size: var(--nc-font-size-sm); margin: 0; }
 .nc-reader__links { display: grid; gap: var(--nc-space-3); }
 .nc-reader__grid { display: grid; gap: var(--nc-space-3); margin: 0; padding: 0; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
 .nc-reader__events { display: grid; gap: var(--nc-space-2); margin: 0; padding: 0; }

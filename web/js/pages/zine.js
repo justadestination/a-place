@@ -73,7 +73,7 @@ function getClusterCount(clusterKey) {
 // 1. Intro Header
 const intro = h("header.nc-zine__intro", {},
   h("p.nc-eyebrow", {},
-    h("img", { src: "/assets/brand/uh-accent.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
+    h("img", { src: "/assets/brand/uh-crimson-256.png", alt: "", width: "20", height: "13", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
     "Umwelt Horizons (The Zine)"
   ),
   h("h1.nc-h1", {}, "Editorial Dispatches & Field Dossiers"),

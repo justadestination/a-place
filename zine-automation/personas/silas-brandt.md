@@ -54,4 +54,4 @@ Letterpress and print craft; repair culture; tools and how they're held; the phy
 ## Stances taken (append-only memory)
 
 <!-- Newest first. Format: YYYY-MM-DD — Subject: stance (one line) → draft file -->
-(none yet)
+2026-10-12 — Diesel price economics: The world runs on diesel, and the diesel market is the most honest economy in the world: it takes every promise, prints it on the page, and then invoices you for the paper. → drafts/2026-10-12-diesel-price-economics-2026-10.md

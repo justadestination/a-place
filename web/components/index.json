@@ -141,7 +141,7 @@
   {
     "name": "hub-market",
     "title": "Hub market slot",
-    "summary": "Serendipilyst anonymous classifieds slot for the hub index. Independently frameable.",
+    "summary": "SerendipiLyst anonymous classifieds slot for the hub index. Independently frameable.",
     "params": {
       "count": "number of items to mock (default 0)"
     },
@@ -262,7 +262,7 @@
   {
     "name": "site-header",
     "title": "Site header",
-    "summary": "Tri-surface top nav (NightCal, Umwelt Horizons, Serendipilyst) and ShadeNet core toolbar.",
+    "summary": "ShadeNet portal mark with Search and Display, the three surfaces (NightCal, Umwelt Horizons, SerendipiLyst), and the Steward entry point.",
     "params": {},
     "readme": true
   },

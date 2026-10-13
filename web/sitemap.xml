@@ -18,6 +18,8 @@
   <url><loc>https://nightcal.example.org/terms/</loc></url>
   <url><loc>https://nightcal.example.org/privacy/</loc></url>
   <url><loc>https://nightcal.example.org/donate/</loc></url>
+  <url><loc>https://nightcal.example.org/door-scanner/</loc></url>
+  <url><loc>https://nightcal.example.org/changelog/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-02/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-03/</loc></url>
   <url><loc>https://nightcal.example.org/day/2026-10-04/</loc></url>

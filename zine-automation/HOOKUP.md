@@ -35,9 +35,19 @@ discovery; general search for dossier/prediction verification).
 Without web search the writer run cannot function — that step has no
 script fallback.
 
-**Interim:** both jobs currently run on Dexa's scheduler
-(`zine-automation-run`, `zine-automation-editor`). Migration = implement
-above, then disable Dexa's crons. Never double-run.
+**Runner:** Hermes cron on this machine, workdir `zine-automation/`.
+
+- `umwelt-horizons/writer-run` — `0 */8 * * *`. Monitor script
+  `writer_assignment.py` rolls the 40% gate and picks the persona. The agent
+  follows `HANDOFF-WRITER.md`.
+- `umwelt-horizons/editor-run` — `0 4,12,20 * * *`, four hours later. Monitor
+  script `editor_assignment.py`. The agent follows `HANDOFF-EDITOR.md`.
+
+The files Hermes actually executes are wrappers in `~/.hermes/scripts/`.
+Hermes rejects a symlink that resolves outside that directory. Each wrapper
+loads the canonical script in this tree.
+
+Dexa's old cron names are not installed here. Do not add a second runner.
 
 ## Hookup 2 — `published/` → zine pipeline intake
 
@@ -125,10 +135,10 @@ python3 scripts/state.py log --persona <id> --prompt <type> --draft <file> [--no
 
 ## Migration checklist (platform takeover)
 
-- [ ] Agent runner scheduled: writer every 8h (+40% gate), editor every 8h offset
-- [ ] Runner has fs access + python3 + web search
+- [x] Agent runner scheduled: writer every 8h (+40% gate), editor every 8h offset
+- [x] Runner has fs access + python3. News research is curl from the terminal tool (the Hermes CLI toolset here is terminal and file).
 - [ ] `published/` wired to zine pipeline intake (Hookup 2)
 - [ ] Escalation alert routed (chat now → operator Box later) (Hookup 4)
-- [ ] Single-writer guarantee on state.json (Hookup 5)
-- [ ] Dexa's interim crons (`zine-automation-run`, `zine-automation-editor`) disabled
+- [x] Single-writer guarantee on state.json (Hookup 5) — one Hermes job at a time; do not add a second writer
+- [x] Dexa's interim crons are not installed on this machine
 - [ ] Cipher slotted in when the operator's scheme lands (Hookup 6)
