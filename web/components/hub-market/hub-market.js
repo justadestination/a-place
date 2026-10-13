@@ -1,20 +1,18 @@
 import { h } from "../../js/core/dom.js";
 
 /**
- * Slot 5: Market slot (Serendipilyst anonymous classifieds).
- * Renamed to: "Community Listings"
- * Aggregated from Flags. Never out-shouts the hero.
+ * Slot 5: SerendipiLyst. The market page is the WorldSum map.
+ * Names who is bored nearby. Never out-shouts the hero.
  */
 export function hubMarket(market = null, { level = 2 } = {}) {
-  const container = h("section.nc-hub-slot.nc-hub-market", { "aria-label": "Market postings" });
-  
+  const container = h("section.nc-hub-slot.nc-hub-market", { "aria-label": "WorldSum" });
+
   const eyebrow = h("p.nc-eyebrow", {},
     h("img", { src: "/assets/brand/serendipilyst-accent.png", alt: "", width: "16", height: "16", style: "vertical-align: middle; margin-inline-end: 6px; display: inline-block;" }),
-    "Serendipilyst"
+    "SerendipiLyst"
   );
 
-  const count = market?.items?.length || 3;
-  const titleLink = h("a", { href: "/market/", style: "color: inherit; text-decoration: none;" }, `Community Listings (${count})`);
+  const titleLink = h("a", { href: "/market/", style: "color: inherit; text-decoration: none;" }, "WorldSum");
 
   container.append(
     h("header.nc-hub-slot__header", {},
@@ -24,9 +22,9 @@ export function hubMarket(market = null, { level = 2 } = {}) {
   );
 
   const defaultItems = [
-    { title: "Vintage Sansui Tube Amp", desc: "Working condition. In-person cash trade downtown." },
-    { title: "Carpool to San Francisco SFJAZZ", desc: "Leaving 4th St Friday 5:30pm, 2 spots open." },
-    { title: "Analog Synth Jam & Patch Exchange", desc: "Sunday afternoon patio meetup at Arlene Francis." },
+    { title: "Lumen", desc: "Bored at Courthouse Square." },
+    { title: "Jules", desc: "Bored at the lot." },
+    { title: "Mara", desc: "Bored at Dark Pool." },
   ];
 
   const itemsToRender = (market?.items && market.items.length > 0) ? market.items : defaultItems;
@@ -40,7 +38,7 @@ export function hubMarket(market = null, { level = 2 } = {}) {
 
   container.append(
     h("ul.nc-hub-market__list", { style: "list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: var(--nc-font-size-sm);" }, items),
-    h("a.nc-hub-slot__link", { href: "/market/", style: "display: inline-block; margin-block-start: 8px;" }, "Browse all listings →")
+    h("a.nc-hub-slot__link", { href: "/market/", style: "display: inline-block; margin-block-start: 8px;" }, "Open the map")
   );
 
   return container;
@@ -49,7 +47,7 @@ export function hubMarket(market = null, { level = 2 } = {}) {
 export const meta = {
   name: "hub-market",
   title: "Hub market slot",
-  summary: "Serendipilyst anonymous classifieds slot for the hub index. Independently frameable.",
+  summary: "SerendipiLyst anonymous classifieds slot for the hub index. Independently frameable.",
   params: { count: "number of items to mock (default 0)" },
 };
 

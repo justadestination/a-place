@@ -1,5 +1,5 @@
 // NightCal Service Worker (PWA)
-const CACHE_NAME = "nightcal-shell-v1";
+const CACHE_NAME = "nightcal-shell-v2";
 const PRECACHE_ASSETS = [
   "/",
   "/today",
