@@ -206,8 +206,8 @@ const lone = timelinePlace([
   { id: "q", title: "Q", date: "2026-10-17", startsAt: "2026-10-17T20:00:00-07:00", minutes: 1200 },
   { id: "r", title: "R", date: "2026-10-17", startsAt: "2026-10-17T21:00:00-07:00", minutes: 1260 },
 ], { now, geom: desk, today: "2026-10-17" }).filter(p => p.kind === "event");
-assert(lone.every(p => Math.abs(p.xNudge) > 0.3), "lone signs stand at a curb, not on the centre line");
-assert(Math.sign(lone[0].xNudge) !== Math.sign(lone[1].xNudge), "consecutive signs alternate curbs");
+assert(lone.every(p => p.xNudge !== 0 && p.lanes === 4), "lone signs take one of four lanes, never the centre line");
+assert(Math.sign(lone[0].xNudge) !== Math.sign(lone[1].xNudge), "consecutive signs alternate sides");
 
 const marks = timeLandmarks(now, Date.parse("2026-10-19T23:00:00-07:00"), desk, { minGap: 30, offsetMin: -420 });
 assert(marks.length >= 3 && marks.length < 40, `a handful of clock landmarks, got ${marks.length}`);

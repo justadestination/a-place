@@ -181,7 +181,7 @@ export function listingInstant(event) {
  * road and later nights compress toward the horizon without piling onto
  * one line.
  */
-export function timeDepth(startsMs, nowMs, { horizonDays = 14, depthMax = 8, power = 0.55 } = {}) {
+export function timeDepth(startsMs, nowMs, { horizonDays = 14, depthMax = 10, power = 0.55 } = {}) {
   const rawMin = Math.max(0, (Number(startsMs) - Number(nowMs)) / 60000);
   const spanMin = Math.max(60, horizonDays * 24 * 60);
   const t = Math.min(1, rawMin / spanMin);
@@ -228,7 +228,7 @@ export function timelinePlace(events, {
   maxLane = 3,
   maxEvents = 18,
   horizonDays = 14,
-  farDepth = 3,
+  farDepth = -1,
 } = {}) {
   const list = [...(events || [])].map(event => {
     const instant = listingInstant(event);
@@ -271,8 +271,9 @@ export function timelinePlace(events, {
     const shown = bucket.slice(0, maxLane);
     const rest = bucket.slice(maxLane);
     const n = shown.length;
-    // Far down the road signs are small, so lone ones spread over four lanes
-    // instead of two curbs and stop hiding behind each other.
+    // Lone signs take four lanes, two each side of the centre line, so they
+    // stop hiding behind each other. `farDepth` can hold the near road to
+    // two curb lanes.
     const far = n === 1 && shown[0].depth > farDepth;
     if (n === 1 && !far) curb = -curb;
     if (far) quad = (quad + 1) % QUAD.length;

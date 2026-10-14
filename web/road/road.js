@@ -11,7 +11,7 @@ import { isValidDate, label, relative } from "../js/data/dates.js";
 import { shareUrl } from "../js/core/share.js";
 import { eventCard } from "../components/event-card/event-card.js";
 import { DEFAULT_TIMEZONE } from "../js/data/tz.js";
-import { mountZineWall } from "./zine-wall.js?v=timeline15";
+import { mountZineWall } from "./zine-wall.js?v=timeline17";
 import { isStewardActive, openStewardDrawer } from "../components/steward-drawer/steward-drawer.js";
 import { reducedMotion } from "../js/core/theme.js";
 import {
@@ -29,7 +29,7 @@ import {
   posterFit,
   venuePaint,
   VENUE_COLORS,
-} from "./layout.js?v=timeline15";
+} from "./layout.js?v=timeline17";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STEWARD_PAYLOAD = "shadenet_steward_payload";
@@ -862,6 +862,8 @@ function render({ speak = false, focusHeading = false, reason = "" } = {}) {
     geom,
     today: selected,
     maxEvents: portrait ? 24 : 40,
+    // A phone's road is too narrow for four cards abreast near your feet.
+    farDepth: portrait ? 3 : -1,
   });
   const laterDates = state.dates.filter(date => date > selected);
   const remain = Math.max(0, laterDates.length);
