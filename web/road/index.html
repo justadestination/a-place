@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-LiLoaZuiTQx6+sUdvcmlBsxgMfJ9ABkbEjyu3Ql0JQE='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-6dZDLEI9AMAmeC9QZJoJtbiufoKk5P5PpDrTkzV5qJM='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
 <title>NightCal — the road</title>
 <meta name="description" content="Standing at the near end of the road. Sooner nights are closer. Bigger signs mean more people are going.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>(function () {
-  var bust = "timeline3";
+  var bust = "timeline15";
   try {
     if (sessionStorage.getItem("nc-road-bust") !== bust && "serviceWorker" in navigator) {
       sessionStorage.setItem("nc-road-bust", bust);
@@ -46,14 +46,16 @@
   }
 })();</script>
 <link rel="stylesheet" href="/css/nightcal.css">
-<link rel="stylesheet" href="/road/road.css?v=timeline3">
-<script type="module" src="/road/road.js?v=timeline3"></script>
+<link rel="stylesheet" href="/road/road.css?v=timeline15">
+<script type="module" src="/road/road.js?v=timeline15"></script>
 </head>
 <body class="road-page">
 <main class="road" id="road" aria-label="NightCal road. You are at the near end, looking toward the horizon. Closer signs are sooner.">
   <div class="road__stage" id="road-stage">
     <div class="road__sky" id="road-sky" aria-hidden="true"></div>
     <aside class="road__info" id="road-info" aria-label="Event"></aside>
+    <aside class="road__key" id="road-key" aria-label="How to read the signs"></aside>
+    <button type="button" class="road__key-chip" id="road-key-chip" aria-controls="road-key" aria-expanded="true">Key</button>
     <svg class="road__surface" id="road-surface" aria-hidden="true"></svg>
     <div class="road__rows" id="road-rows"></div>
     <p class="road__clear" id="road-clear" hidden>Nothing later is listed.</p>

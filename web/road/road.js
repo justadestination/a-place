@@ -9,21 +9,27 @@ import { button } from "../components/button/button.js";
 import { shareButton } from "../components/share-button/share-button.js";
 import { isValidDate, label, relative } from "../js/data/dates.js";
 import { shareUrl } from "../js/core/share.js";
+import { eventCard } from "../components/event-card/event-card.js";
+import { DEFAULT_TIMEZONE } from "../js/data/tz.js";
+import { mountZineWall } from "./zine-wall.js?v=timeline15";
 import { isStewardActive, openStewardDrawer } from "../components/steward-drawer/steward-drawer.js";
 import { reducedMotion } from "../js/core/theme.js";
 import {
   effectiveBodies,
   entryLabel,
   entryStroke,
+  entryWeight,
   listingDates,
   packSigns,
   perspective,
   signScale,
   timelinePlace,
+  timeLandmarks,
   listingInstant,
   posterFit,
   venuePaint,
-} from "./layout.js?v=timeline2";
+  VENUE_COLORS,
+} from "./layout.js?v=timeline15";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STEWARD_PAYLOAD = "shadenet_steward_payload";
@@ -37,6 +43,8 @@ const els = {
   rows: $("road-rows"),
   sky: $("road-sky"),
   info: $("road-info"),
+  key: $("road-key"),
+  keyChip: $("road-key-chip"),
   clear: $("road-clear"),
   heading: $("road-front-heading"),
   groundLabel: $("road-ground-label"),
@@ -397,53 +405,58 @@ function signLabel(event) {
   ].filter(Boolean).join(", ");
 }
 
+// The real event card is laid out at its billboard width and scaled down
+// to the sign, so far signs are the same card, only smaller.
+const CARD_W = 720;
+
 function makeSign(item) {
   const event = item.event;
   const paint = paintFor(event);
-  const btn = el("button", "road-sign");
-  btn.type = "button";
-  btn.dataset.id = event.id;
-  btn.dataset.date = event.date;
-  btn.dataset.lod = item.lod;
-  btn.dataset.shape = event.glyph;
-  btn.dataset.venue = event.venueId || "";
-  btn.classList.toggle("is-cancelled", !!event.cancelled);
-  btn.classList.toggle("is-pinned", state.pinned === event.id);
-  btn.style.setProperty("--venue", paint.venue);
-  btn.style.setProperty("--edge", paint.edge);
-  btn.style.setProperty("--ink", paint.ink);
-  btn.style.setProperty("--stroke", `${entryStroke(event, Math.min(item.w, item.h)).toFixed(2)}px`);
-  btn.style.setProperty("--grow", item.scale.toFixed(3));
-  btn.style.width = `${Math.round(item.w)}px`;
-  btn.style.height = `${Math.round(item.h)}px`;
-  btn.setAttribute("aria-pressed", String(state.pinned === event.id));
-  btn.setAttribute("aria-label", signLabel(event));
+  // A div, not a <button>: the card inside holds links and buttons.
+  const sign = el("div", "road-sign");
+  sign.tabIndex = 0;
+  sign.setAttribute("role", "button");
+  sign.dataset.id = event.id;
+  sign.dataset.date = event.date;
+  sign.dataset.lod = item.lod;
+  sign.dataset.shape = event.glyph;
+  sign.dataset.venue = event.venueId || "";
+  sign.classList.toggle("is-cancelled", !!event.cancelled);
+  sign.classList.toggle("is-pinned", state.pinned === event.id);
+  sign.style.setProperty("--venue", paint.venue);
+  sign.style.setProperty("--edge", paint.edge);
+  sign.style.setProperty("--ink", paint.ink);
+  sign.style.setProperty("--grow", item.scale.toFixed(3));
+  sign.style.width = `${Math.round(item.w)}px`;
+  sign.setAttribute("aria-pressed", String(state.pinned === event.id));
+  sign.setAttribute("aria-label", signLabel(event));
 
-  const edge = el("span", "road-sign__edge");
-  const face = el("span", "road-sign__face");
-  if (item.lod === "full") {
-    if (event.image) {
-      const img = el("img", "road-sign__img");
-      img.alt = "";
-      img.decoding = "async";
-      img.dataset.fit = "cover";
-      img.src = event.image;
-      face.append(img);
-    } else {
-      const mark = el("span", "road-sign__mark");
-      mark.dataset.shape = event.glyph || "square";
-      face.append(mark);
-    }
-    const meta = el("div", "road-sign__meta");
-    meta.append(el("span", "road-sign__title", event.title));
-    meta.append(el("span", "road-sign__when", event.timeDisplay || event.start));
-    face.append(meta);
-  } else if (item.lod !== "dot") {
-    face.append(el("span", "road-sign__title", event.title));
+  if (item.lod === "card") {
+    const s = item.w / CARD_W;
+    // Entry price is the border thickness on screen, so undo the scale.
+    sign.style.setProperty("--s", s.toFixed(4));
+    sign.style.setProperty("--stroke", `${entryWeight(event)}px`);
+    const frame = el("div", "road-sign__frame");
+    const card = eventCard(event, {
+      venue: state.model.venuesById?.get(event.venueId),
+      today: todayIso(),
+      level: 3,
+    });
+    card.inert = true;
+    frame.append(card);
+    sign.append(frame);
+  } else {
+    sign.style.height = `${Math.round(item.h)}px`;
+    sign.style.setProperty("--stroke", `${entryStroke(event, Math.min(item.w, item.h)).toFixed(2)}px`);
+    sign.append(el("span", "road-sign__edge"), el("span", "road-sign__face"));
   }
-  btn.append(edge, face);
 
-  btn.addEventListener("click", () => {
+  sign.addEventListener("keydown", key => {
+    if (key.target !== sign || (key.key !== "Enter" && key.key !== " ")) return;
+    key.preventDefault();
+    sign.click();
+  });
+  sign.addEventListener("click", () => {
     if (suppressClick) return;
     if (event.date !== state.selected) {
       state.pinned = event.id;
@@ -458,7 +471,7 @@ function makeSign(item) {
     paintSky();
     syncUrl();
   });
-  return btn;
+  return sign;
 }
 
 function bandName(date, depth) {
@@ -558,58 +571,121 @@ function drawSurface(geom) {
   els.road.style.setProperty("--road-right", `${cx + half}px`);
 }
 
-function drawTimeline(placed, geom) {
-  els.rows.replaceChildren();
-  els.rows.style.pointerEvents = "auto";
-  const halfRoad = geom.Wb / 2;
-  for (const item of placed) {
-    if (item.kind === "marker") {
-      const label = item.label || bandName(item.date, "near");
-      const line = el("div", "road-marker");
-      line.dataset.date = item.date;
-      line.style.top = `${item.y}px`;
-      line.style.width = `${item.width}px`;
-      const labelEl = el("span", "road-marker__label");
-      labelEl.textContent = label;
-      line.append(labelEl);
-      els.rows.append(line);
-      continue;
-    }
-    const event = item.event;
-    const lod = item.lod || lodForDepth(item.depth, geom);
-    const p = geom.p(item.depth);
-    // Poster card size from road width at this depth (near = big poster).
-    const cardSide = Math.min(220, Math.max(160, geom.widthAt(item.depth) * 0.34));
-    const signScale = 1 + 0.15 * Math.min(1, p / 0.5);
-    const itemForSign = {
-      ...item,
-      lod,
-      w: Math.round(cardSide),
-      h: Math.round(cardSide),
-      scale: signScale,
-    };
-    const sign = makeSign(itemForSign);
-    const style = sign.style;
-    style.left = `calc(50% + ${item.xNudge !== undefined ? item.xNudge * halfRoad : 0}px)`;
-    style.transform = "translate(-50%, -100%)";
-    style.pointerEvents = "auto";
-    els.rows.append(sign);
-    if (item.overflow > 0) {
-      const more = el("span", "road-more");
-      more.textContent = `+${item.overflow}`;
-      more.title = `${item.overflow} more this night`;
-      more.style.pointerEvents = "none";
-      els.rows.append(more);
-    }
-  }
-  els.clear.hidden = placed.some(item => item.kind === "event" && Date.parse(listingInstant(item.event)) >= Date.now());
+function signBox(item, placed, geom) {
+  // Each sign owns one lane of the road at its depth; attendance grows it
+  // inside that lane. Far cards just get small; you can travel closer.
+  const widthAt = Math.max(24, item.width || geom.widthAt(item.depth));
+  const lane = widthAt / (item.lanes || 2) - 8;
+  const peers = placed.filter(p => p.kind === "event" && p.event.date === item.event.date);
+  const dayTotal = peers.reduce((sum, p) => sum + going(p.event), 0);
+  const scale = signScale(going(item.event), { dayTotal, count: Math.max(1, peers.length) });
+  const w = Math.min(lane, 290 * Math.min(scale, 1.3));
+  if (w >= 40) return { lod: "card", w: Math.round(w), h: 0, scale, x: (item.xNudge || 0) * widthAt / 2 };
+  const dot = Math.max(10, Math.min(22, lane * 0.6));
+  return { lod: "dot", w: Math.round(dot), h: Math.round(dot), scale, x: (item.xNudge || 0) * widthAt / 2 };
 }
 
-/** LOD pick from depth: full poster near, title mid, dot far. */
+const PEEK_MIN = 22;
+
+const clock = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+  timeZone: DEFAULT_TIMEZONE,
+});
+
+/** Minutes the calendar's zone is ahead of UTC at `ms` (negative west of Greenwich). */
+function zoneOffsetMin(ms) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", {
+    timeZone: DEFAULT_TIMEZONE, hourCycle: "h23", year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric",
+  }).formatToParts(new Date(ms)).map(part => [part.type, Number(part.value)]));
+  const local = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute);
+  return Math.round((local - Math.floor(ms / 60000) * 60000) / 60000);
+}
+
+function drawTimeline(placed, geom, landmarks = []) {
+  els.rows.replaceChildren();
+  const floor = geom.groundY - 12;
+  // hh:mm landmarks stand on the right curb; dates own the left one.
+  for (const mark of landmarks) {
+    if (mark.y > floor) continue;
+    const tick = el("span", "road-clock", clock.format(mark.ms));
+    tick.style.top = `${mark.y}px`;
+    tick.style.left = `calc(50% + ${Math.max(24, mark.width) / 2}px + 0.5rem)`;
+    els.rows.append(tick);
+  }
+  // Nearest first, so the sign in front of each curb lane is known before
+  // the ones behind it. A sign that would only peek a sliver over the one
+  // in front folds into that sign's +N instead of hiding behind it.
+  const front = new Map();
+  const holders = [];
+  // Night lines always draw; their labels skip when they would stack.
+  let lastLabelY = Infinity;
+  for (const item of placed) {
+    if (item.kind === "marker") {
+      const y = Math.min(item.y, floor);
+      const line = el("div", "road-marker");
+      line.dataset.date = item.date;
+      line.style.top = `${y}px`;
+      line.style.width = `${Math.max(48, item.width)}px`;
+      line.style.zIndex = String(Math.round(y));
+      const labelEl = el("button", "road-marker__label");
+      labelEl.type = "button";
+      labelEl.textContent = bandName(item.date, item.depth < 1.2 ? "near" : item.depth < 4 ? "mid" : "far");
+      labelEl.style.top = `${y}px`;
+      labelEl.style.left = `calc(50% - ${Math.max(48, item.width) / 2}px - 0.5rem)`;
+      labelEl.addEventListener("click", () => {
+        if (!suppressClick) select(item.date, { focusHeading: true });
+      });
+      if (lastLabelY - y >= 22) {
+        els.rows.append(line, labelEl);
+        lastLabelY = y;
+      } else {
+        els.rows.append(line);
+      }
+      continue;
+    }
+    const box = signBox(item, placed, geom);
+    const sign = makeSign({ event: item.event, lod: box.lod, w: box.w, h: box.h, scale: box.scale });
+    sign.style.top = `${item.y}px`;
+    sign.style.left = `calc(50% + ${box.x}px)`;
+    sign.style.transform = "translate(-50%, -100%)";
+    sign.style.zIndex = String(Math.round(item.y));
+    els.rows.append(sign);
+    if (box.lod === "card") {
+      // The card's own layout decides its height; scale it to the sign.
+      box.h = Math.round(sign.firstElementChild.offsetHeight * (box.w / CARD_W));
+      sign.style.height = `${box.h}px`;
+    }
+    const laneKey = Math.round((item.xNudge || 0) * 100);
+    const ahead = front.get(laneKey);
+    if (ahead && ahead.top - (item.y - box.h) < PEEK_MIN) {
+      ahead.hidden += 1 + (item.overflow || 0);
+      sign.remove();
+      continue;
+    }
+    const holder = { item, box, top: item.y - box.h, hidden: item.overflow || 0 };
+    front.set(laneKey, holder);
+    holders.push(holder);
+  }
+  for (const { item, box, hidden } of holders) {
+    if (!hidden) continue;
+    const more = el("span", "road-more");
+    more.textContent = `+${hidden}`;
+    more.title = `${hidden} more behind this sign`;
+    more.style.top = `${item.y - box.h}px`;
+    more.style.left = `calc(50% + ${box.x + (box.x < 0 ? -1 : 1) * (box.w / 2)}px)`;
+    more.style.zIndex = String(Math.round(item.y) + 1);
+    els.rows.append(more);
+  }
+  els.clear.hidden = placed.some(item => item.kind === "event");
+}
+
+/** LOD from how close the depth sits to your feet. */
 function lodForDepth(depth, geom) {
   const p = geom.p(depth);
-  if (p > 0.55) return "full";
-  if (p > 0.28) return "title";
+  if (p > 0.62) return "full";
+  if (p > 0.34) return "title";
   return "dot";
 }
 
@@ -652,6 +728,57 @@ function availableKinds() {
     kinds.add(event.kind);
   }
   return kinds;
+}
+
+/** Show or fold the key. Only a click is remembered; the default follows the screen. */
+function setKey(open, { remember = false, focus = false } = {}) {
+  els.road.dataset.key = open ? "open" : "closed";
+  els.keyChip.setAttribute("aria-expanded", String(open));
+  if (remember) {
+    try { localStorage.setItem("nc-road-key", open ? "open" : "closed"); } catch { /* private mode */ }
+  }
+  if (focus) (open ? els.key.querySelector(".road-key__hide") : els.keyChip)?.focus();
+}
+
+/** The key: one line per encoding on the cards, built from KINDS so it cannot drift. */
+function buildKey() {
+  const sample = (className, style = {}, text) => {
+    const node = el("span", `road-key__sample ${className}`, text);
+    for (const [name, value] of Object.entries(style)) node.style.setProperty(name, value);
+    return node;
+  };
+  // Each row: what it looks like, then a few words.
+  const row = (samples, text) => {
+    const item = el("div", "road-key__row");
+    const shown = el("span", "road-key__samples");
+    shown.append(...samples);
+    item.append(shown, el("span", "road-key__term", text));
+    return item;
+  };
+  const kinds = el("ul", "road-key__kinds");
+  for (const meta of Object.values(KINDS)) {
+    const item = el("li");
+    const mark = el("span", "road-sign__mark road-key__mark");
+    mark.dataset.shape = meta.glyph;
+    item.append(mark, document.createTextNode(meta.label));
+    kinds.append(item);
+  }
+  const head = el("div", "road-key__head");
+  const hide = el("button", "road-key__hide", "Hide");
+  hide.type = "button";
+  hide.setAttribute("aria-label", "Hide the key");
+  hide.addEventListener("click", () => setKey(false, { remember: true, focus: true }));
+  head.append(el("h2", "road-key__title", "Reading the road"), hide);
+  els.key.replaceChildren(
+    head,
+    row([sample("road-key__line")], "Nearer is sooner; a line starts each night"),
+    kinds,
+    row([16, 22, 28].map(px => sample("road-key__box", { "--s": `${px}px` })), "Size: how many are going"),
+    row([1, 4, 8].map(px => sample("road-key__box road-key__frame", { "--w": `${px}px` })), "Border thickness: entry, free to $50+"),
+    row(VENUE_COLORS.slice(0, 4).map(color => sample("road-key__box road-key__frame", { "--w": "3px", "--edge": color })), "Border colour: the venue"),
+    row([sample("road-key__clock", {}, "18:00")], "Clock, every three hours"),
+    row([sample("road-key__more", {}, "+3")], "More behind that sign"),
+  );
 }
 
 function paintKinds() {
@@ -721,44 +848,36 @@ function render({ speak = false, focusHeading = false, reason = "" } = {}) {
     return;
   }
   resizeTries = 0;
-  // Street-level defaults live in perspective(); the road is a continuous
-  // walk up the street toward upcoming shows, with night-boundary markers.
+  // Continuous walk: depth is clock time from the selected night’s first show.
   const geom = perspective(stageW, stageH);
-  const now = Date.now();
-  const selectedListings = state.dates.map(date => eventsOn(date)).flat();
-  const placed = timelinePlace(selectedListings, { now, geom, today: todayIso() });
-  const firstToday = placed.filter(p => p.kind === "event" && p.event.date === todayIso());
-  const firstShowOfSelected = firstToday.length
-    ? firstToday[0].event.startsAt
-    : null;
-  const visible = [];
-  for (const item of placed) {
-    if (item.kind === "marker") {
-      visible.push(item);
-      continue;
-    }
-    const ms = Date.parse(listingInstant(item.event));
-    if (!ms) {
-      visible.push(item);
-      continue;
-    }
-    if (firstShowOfSelected && ms < Date.parse(firstShowOfSelected)) continue;
-    visible.push(item);
-  }
-  const markerDates = new Set(visible.filter(item => item.kind === "marker").map(item => item.date));
-  const dates = [...markerDates].sort();
-  const nearEnd = visible.find(item => item.kind === "event") || null;
-  const nearEndDate = nearEnd && nearEnd.kind === "event" ? nearEnd.event.date : null;
+  const selected = state.selected || todayIso();
+  const upcomingDates = state.dates.filter(date => date >= selected);
+  const listings = upcomingDates.flatMap(date => eventsOn(date));
+  const firstOfSelected = listings.find(event => event.date === selected);
+  const anchorMs = firstOfSelected
+    ? (Date.parse(listingInstant(firstOfSelected)) || Date.now())
+    : Date.now();
+  const placed = timelinePlace(listings, {
+    now: anchorMs,
+    geom,
+    today: selected,
+    maxEvents: portrait ? 24 : 40,
+  });
+  const laterDates = state.dates.filter(date => date > selected);
+  const remain = Math.max(0, laterDates.length);
 
   drawSurface(geom);
-  drawTimeline(visible, geom);
-  updateFoot({ selected: nearEndDate || state.selected, remaining: 0 });
+  const lastMs = placed.reduce((max, item) => item.kind === "event"
+    ? Math.max(max, Date.parse(listingInstant(item.event)) || 0)
+    : max, anchorMs);
+  drawTimeline(placed, geom, timeLandmarks(anchorMs, lastMs, geom, { offsetMin: zoneOffsetMin(anchorMs) }));
+  updateFoot({ selected, remaining: remain, road: laterDates });
   paintSky();
   paintKinds();
   restoreFocus(active, focusHeading);
   if (speak) {
-    const name = relative(state.selected, todayIso());
-    const count = eventsOn(state.selected).length;
+    const name = relative(selected, todayIso());
+    const count = eventsOn(selected).length;
     announce(reason || `${name}. ${count ? countLabel(count) : "Nothing listed this night."}`);
   }
 }
@@ -872,6 +991,11 @@ function onKey(event) {
 }
 
 function bindTravel() {
+  buildKey();
+  let storedKey = null;
+  try { storedKey = localStorage.getItem("nc-road-key"); } catch { /* private mode */ }
+  setKey(storedKey ? storedKey === "open" : innerWidth >= innerHeight);
+  els.keyChip.addEventListener("click", () => setKey(true, { remember: true, focus: true }));
   els.earlier.addEventListener("click", () => step(-1, true));
   els.further.addEventListener("click", () => step(1, true));
   els.back.addEventListener("click", () => select(todayIso(), { focusHeading: true }));
@@ -977,6 +1101,8 @@ function start(model) {
   render({ speak: true });
   syncUrl();
 }
+
+mountZineWall(els.stage, { motion: !reducedMotion() });
 
 loadCalendar().then(start).catch(() => {
   els.groundLabel.textContent = "The calendar didn't load.";

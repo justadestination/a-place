@@ -19,6 +19,7 @@ import {
   windowAt,
   listingInstant,
   timeDepth,
+  timeLandmarks,
   timelinePlace,
 } from "../road/layout.js";
 
@@ -167,8 +168,14 @@ assert(stamped.includes("19:30") || Date.parse(stamped) === Date.parse("2026-10-
 
 const now = Date.parse("2026-10-17T18:00:00-07:00");
 const dNear = timeDepth(Date.parse("2026-10-17T18:30:00-07:00"), now);
-const dFar = timeDepth(Date.parse("2026-10-18T21:00:00-07:00"), now);
-assert(dNear >= 0 && dFar > dNear, `near ${dNear} < far ${dFar}`);
+const dMid = timeDepth(Date.parse("2026-10-18T21:00:00-07:00"), now);
+const dFar = timeDepth(Date.parse("2026-10-24T21:00:00-07:00"), now);
+assert(dNear >= 0 && dMid > dNear && dFar > dMid, `near ${dNear} < mid ${dMid} < far ${dFar}`);
+assert(dFar < 14.01, `far depth stays on the road curve, got ${dFar}`);
+const dThree = timeDepth(Date.parse("2026-10-17T21:00:00-07:00"), now);
+const nearRate = (dThree - dNear) / 2.5;
+const farRate = (dFar - dMid) / (6 * 24);
+assert(nearRate > 5 * farRate, `the next hours own the near road, near ${nearRate}/h vs far ${farRate}/h`);
 
 const desk = perspective(1440, 900);
 assert(Math.abs(desk.Wb / 1440 - 0.72) < 0.02, `wider desk road, Wb=${desk.Wb}`);
@@ -193,5 +200,25 @@ const xslot = timelinePlace([
 const xs = xslot.filter(p => p.kind === "event");
 assert(xs.length === 2, "both same-minute shows kept");
 assert(xs.some(p => (p.xNudge || 0) !== 0) || xs[0].x !== xs[1].x, "lateral nudge on collision");
+
+const lone = timelinePlace([
+  { id: "p", title: "P", date: "2026-10-17", startsAt: "2026-10-17T19:00:00-07:00", minutes: 1140 },
+  { id: "q", title: "Q", date: "2026-10-17", startsAt: "2026-10-17T20:00:00-07:00", minutes: 1200 },
+  { id: "r", title: "R", date: "2026-10-17", startsAt: "2026-10-17T21:00:00-07:00", minutes: 1260 },
+], { now, geom: desk, today: "2026-10-17" }).filter(p => p.kind === "event");
+assert(lone.every(p => Math.abs(p.xNudge) > 0.3), "lone signs stand at a curb, not on the centre line");
+assert(Math.sign(lone[0].xNudge) !== Math.sign(lone[1].xNudge), "consecutive signs alternate curbs");
+
+const marks = timeLandmarks(now, Date.parse("2026-10-19T23:00:00-07:00"), desk, { minGap: 30, offsetMin: -420 });
+assert(marks.length >= 3 && marks.length < 40, `a handful of clock landmarks, got ${marks.length}`);
+assert(marks.every(m => new Date(m.ms).getUTCMinutes() === 0), "landmarks sit on whole hours");
+assert(marks.every(m => ((new Date(m.ms).getUTCHours() - 7 + 24) % 3) === 0), "landmarks fall on local 3-hour steps");
+assert(marks.every((m, i) => !i || (marks[i - 1].y - m.y >= 30 && m.ms > marks[i - 1].ms)), "landmarks recede and keep their spacing");
+
+const farRoad = timelinePlace(Array.from({ length: 8 }, (_, i) => ({
+  id: `f${i}`, title: `F${i}`, date: "2026-10-22", startsAt: `2026-10-22T${String(12 + i).padStart(2, "0")}:00:00-07:00`,
+})), { now, geom: desk, today: "2026-10-17" }).filter(p => p.kind === "event");
+assert(farRoad.every(p => p.lanes === 4), "far signs share the road four abreast");
+assert(new Set(farRoad.map(p => p.xNudge)).size === 4, "far signs use all four lanes");
 
 console.log("road layout checks passed");

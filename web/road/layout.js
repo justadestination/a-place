@@ -175,52 +175,93 @@ export function listingInstant(event) {
 }
 
 /**
- * Depth from now. Minutes ahead map through a soft curve so the next hours
- * own the near road; later nights compress. Returns >= 0.
+ * Depth from an anchor instant (usually “now” or the first show of the
+ * selected night). `t` in [0,1] over `horizonDays` maps to depth in
+ * [0, depthMax] through `t ** power`, so the next few hours own the near
+ * road and later nights compress toward the horizon without piling onto
+ * one line.
  */
-export function timeDepth(startsMs, nowMs, { hourSpan = 18, k = 3.2 } = {}) {
+export function timeDepth(startsMs, nowMs, { horizonDays = 14, depthMax = 8, power = 0.55 } = {}) {
   const rawMin = Math.max(0, (Number(startsMs) - Number(nowMs)) / 60000);
-  const t = Math.min(1, rawMin / (hourSpan * 60));
-  // Invert perspective-like: small t -> small depth (near).
-  const d = (k * t) / Math.max(1e-6, 1 - t + 1 / k);
-  return d;
+  const spanMin = Math.max(60, horizonDays * 24 * 60);
+  const t = Math.min(1, rawMin / spanMin);
+  return depthMax * t ** power;
 }
 
 /**
- * Place markers + events for one camera. Each item:
- *   { kind:"marker", date, label?, depth, y, width }
- *   { kind:"event", event, depth, y, width, xNudge, lodHint? }
- * Empty today: if no event on `today`, still emit a today marker at depth 0.
+ * Clock landmarks along the curb: clock steps after `anchorMs` up to
+ * `untilMs`, kept only when at least `minGap` px up the road from the last
+ * one, so near hours each get a mark and far hours thin out on their own.
  */
-export function timelinePlace(events, { now, geom, today, collideMinutes = 12, maxLane = 3 } = {}) {
+export function timeLandmarks(anchorMs, untilMs, geom, { stepMin = 180, offsetMin = 0, minGap = 30, horizonDays = 14 } = {}) {
+  // Steps line up on the local clock (00, 03, 06 … with the default step);
+  // `offsetMin` is the local zone's offset from UTC.
+  const step = Math.max(15, stepMin) * 60000;
+  const off = Number(offsetMin) * 60000;
+  const start = Math.ceil((Number(anchorMs) + off) / step) * step - off;
+  const out = [];
+  let lastY = Infinity;
+  for (let ms = start; ms <= Number(untilMs) && out.length < 40; ms += step) {
+    const depth = timeDepth(ms, anchorMs, { horizonDays });
+    const y = geom.yAt(depth);
+    if (lastY - y < minGap) continue;
+    out.push({ ms, depth, y, width: geom.widthAt(depth) });
+    lastY = y;
+  }
+  return out;
+}
+
+const QUAD = [-0.75, 0.25, -0.25, 0.75];
+
+/**
+ * Place markers + events for one camera. Each item:
+ *   { kind:"marker", date, depth, y, width }
+ *   { kind:"event", event, id, depth, y, width, xNudge, lanes, overflow }
+ * Empty `today`: if no event that day, still emit a today marker at depth 0.
+ * `maxEvents` caps how many listings are kept after the anchor (near end).
+ */
+export function timelinePlace(events, {
+  now,
+  geom,
+  today,
+  collideMinutes = 12,
+  maxLane = 3,
+  maxEvents = 18,
+  horizonDays = 14,
+  farDepth = 3,
+} = {}) {
   const list = [...(events || [])].map(event => {
     const instant = listingInstant(event);
     const ms = Date.parse(instant) || Date.parse(`${event.date}T12:00:00`);
     return { event, instant, ms };
-  }).filter(row => Number.isFinite(row.ms))
+  }).filter(row => Number.isFinite(row.ms) && row.ms >= Number(now) - 60_000)
     .sort((a, b) => a.ms - b.ms || a.event.title.localeCompare(b.event.title));
 
+  const capped = list.slice(0, Math.max(1, maxEvents | 0));
   const out = [];
   let lastDate = null;
-  const todayHas = list.some(row => row.event.date === today);
-  if (today && !todayHas) {
+  const todayHas = capped.some(row => row.event.date === today);
+  if (today && !todayHas && (!capped.length || capped[0].event.date > today)) {
     out.push({ kind: "marker", date: today, depth: 0, y: geom.yAt(0), width: geom.widthAt(0) });
     lastDate = today;
   }
 
   const groups = [];
-  for (const row of list) {
+  for (const row of capped) {
     if (row.event.date !== lastDate) {
-      const depth = Math.max(0, timeDepth(row.ms, now) - 0.08);
+      const depth = Math.max(0, timeDepth(row.ms, now, { horizonDays }) - 0.04);
       out.push({ kind: "marker", date: row.event.date, depth, y: geom.yAt(depth), width: geom.widthAt(depth) });
       lastDate = row.event.date;
     }
-    const depth = timeDepth(row.ms, now);
-    groups.push({ ...row, depth });
+    groups.push({ ...row, depth: timeDepth(row.ms, now, { horizonDays }) });
   }
 
-  // Collision buckets by rounded depth / time epsilon
+  // xNudge is a fraction of the road's half-width at that depth. A lone
+  // sign stands at a curb and the next one takes the other curb, so near
+  // posters do not stack on the centre line. Shared slots spread across.
   const epsMs = collideMinutes * 60000;
+  let curb = -1;
+  let quad = -1;
   let i = 0;
   while (i < groups.length) {
     let j = i + 1;
@@ -230,8 +271,13 @@ export function timelinePlace(events, { now, geom, today, collideMinutes = 12, m
     const shown = bucket.slice(0, maxLane);
     const rest = bucket.slice(maxLane);
     const n = shown.length;
+    // Far down the road signs are small, so lone ones spread over four lanes
+    // instead of two curbs and stop hiding behind each other.
+    const far = n === 1 && shown[0].depth > farDepth;
+    if (n === 1 && !far) curb = -curb;
+    if (far) quad = (quad + 1) % QUAD.length;
     shown.forEach((row, idx) => {
-      const xNudge = n === 1 ? 0 : (idx - (n - 1) / 2) * 0.22; // fraction of road half-width
+      const xNudge = far ? QUAD[quad] : n === 1 ? curb * 0.5 : n === 2 ? (idx ? 0.5 : -0.5) : (idx - 1) * 0.66;
       out.push({
         kind: "event",
         event: row.event,
@@ -240,7 +286,8 @@ export function timelinePlace(events, { now, geom, today, collideMinutes = 12, m
         y: geom.yAt(row.depth),
         width: geom.widthAt(row.depth),
         xNudge,
-        overflow: rest.length,
+        lanes: far ? 4 : n === 3 ? 3 : 2,
+        overflow: idx === 0 ? rest.length : 0,
       });
     });
     i = j;
