@@ -1,0 +1,9 @@
+# Private operator and ops APIs never answer the public internet.
+# /api/operator/door-verify stays public (shadenet/ops/routes.py PUBLIC_OPERATOR_PATHS).
+# Installed as /etc/caddy/operator-guard.caddy and imported inside each site
+# block that proxies to the NightCal server.
+@operator_private {
+	path /api/operator/* /api/ops/*
+	not path /api/operator/door-verify
+}
+respond @operator_private 404
