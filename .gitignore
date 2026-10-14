@@ -39,3 +39,12 @@ shadenet/data/certs/
 
 # brainstorming mockups
 .superpowers/
+
+# Deploy: names and build output that never belong in the repo
+.env.deploy
+releases/
+backups/
+vendor/steward/**/__pycache__/
+
+# Claude Code personal settings
+.claude/settings.local.json
