@@ -163,6 +163,92 @@ export function posterFit(naturalW, naturalH) {
   return height > width * 1.05 ? "contain" : "cover";
 }
 
+/** ISO-ish instant for sorting/placement. startsAt wins; else date + minutes; else local noon. */
+export function listingInstant(event) {
+  if (event?.startsAt) return String(event.startsAt);
+  const date = event?.date;
+  if (!date) return "";
+  const minutes = Number.isFinite(Number(event?.minutes)) ? Number(event.minutes) : 12 * 60;
+  const hh = String(Math.floor(minutes / 60) % 24).padStart(2, "0");
+  const mm = String(minutes % 60).padStart(2, "0");
+  return `${date}T${hh}:${mm}:00`;
+}
+
+/**
+ * Depth from now. Minutes ahead map through a soft curve so the next hours
+ * own the near road; later nights compress. Returns >= 0.
+ */
+export function timeDepth(startsMs, nowMs, { hourSpan = 18, k = 3.2 } = {}) {
+  const rawMin = Math.max(0, (Number(startsMs) - Number(nowMs)) / 60000);
+  const t = Math.min(1, rawMin / (hourSpan * 60));
+  // Invert perspective-like: small t -> small depth (near).
+  const d = (k * t) / Math.max(1e-6, 1 - t + 1 / k);
+  return d;
+}
+
+/**
+ * Place markers + events for one camera. Each item:
+ *   { kind:"marker", date, label?, depth, y, width }
+ *   { kind:"event", event, depth, y, width, xNudge, lodHint? }
+ * Empty today: if no event on `today`, still emit a today marker at depth 0.
+ */
+export function timelinePlace(events, { now, geom, today, collideMinutes = 12, maxLane = 3 } = {}) {
+  const list = [...(events || [])].map(event => {
+    const instant = listingInstant(event);
+    const ms = Date.parse(instant) || Date.parse(`${event.date}T12:00:00`);
+    return { event, instant, ms };
+  }).filter(row => Number.isFinite(row.ms))
+    .sort((a, b) => a.ms - b.ms || a.event.title.localeCompare(b.event.title));
+
+  const out = [];
+  let lastDate = null;
+  const todayHas = list.some(row => row.event.date === today);
+  if (today && !todayHas) {
+    out.push({ kind: "marker", date: today, depth: 0, y: geom.yAt(0), width: geom.widthAt(0) });
+    lastDate = today;
+  }
+
+  const groups = [];
+  for (const row of list) {
+    if (row.event.date !== lastDate) {
+      const depth = Math.max(0, timeDepth(row.ms, now) - 0.08);
+      out.push({ kind: "marker", date: row.event.date, depth, y: geom.yAt(depth), width: geom.widthAt(depth) });
+      lastDate = row.event.date;
+    }
+    const depth = timeDepth(row.ms, now);
+    groups.push({ ...row, depth });
+  }
+
+  // Collision buckets by rounded depth / time epsilon
+  const epsMs = collideMinutes * 60000;
+  let i = 0;
+  while (i < groups.length) {
+    let j = i + 1;
+    while (j < groups.length && Math.abs(groups[j].ms - groups[i].ms) <= epsMs) j += 1;
+    const bucket = groups.slice(i, j)
+      .sort((a, b) => (b.event.bodies || 0) - (a.event.bodies || 0) || a.event.title.localeCompare(b.event.title));
+    const shown = bucket.slice(0, maxLane);
+    const rest = bucket.slice(maxLane);
+    const n = shown.length;
+    shown.forEach((row, idx) => {
+      const xNudge = n === 1 ? 0 : (idx - (n - 1) / 2) * 0.22; // fraction of road half-width
+      out.push({
+        kind: "event",
+        event: row.event,
+        id: row.event.id,
+        depth: row.depth,
+        y: geom.yAt(row.depth),
+        width: geom.widthAt(row.depth),
+        xNudge,
+        overflow: rest.length,
+      });
+    });
+    i = j;
+  }
+
+  return out.sort((a, b) => a.depth - b.depth || (a.kind === "marker" ? -1 : 1));
+}
+
 /** Fill, a contrasting edge, and ink that stays readable on the fill. */
 export function venuePaint(venueId, venueIds = []) {
   const ids = [...new Set((venueIds || []).filter(Boolean))].sort();
@@ -227,7 +313,7 @@ export function perspective(W, H, { ground = null, horizon = null, road = null, 
   const groundY = ground == null ? height : Math.round(ground);
   const G = Math.max(1, groundY - horizonY);
   const fraction = road == null
-    ? (portrait ? 0.54 : 0.58)
+    ? (portrait ? 0.64 : 0.72)
     : Math.max(0.18, Math.min(0.92, Number(road) || 0.46));
   const Wb = Math.min(width * fraction, G * 2.15);
   const depth = k == null ? (portrait ? 3.1 : 3.5) : Math.max(0.45, Number(k) || K);

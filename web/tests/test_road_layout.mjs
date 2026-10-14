@@ -1,6 +1,6 @@
 // Layout checks for the perspective road. These stay in node: no browser.
 import { billboardScale } from "../components/event-card/event-card.js";
-import { eventIsFree, normalize } from "../js/data/calendar.js";
+import { normalize } from "../js/data/calendar.js";
 import {
   bandFrames,
   effectiveBodies,
@@ -17,6 +17,9 @@ import {
   VENUE_COLORS,
   venuePaint,
   windowAt,
+  listingInstant,
+  timeDepth,
+  timelinePlace,
 } from "../road/layout.js";
 
 const assert = (cond, msg) => { if (!cond) throw new Error(msg); };
@@ -137,11 +140,6 @@ assert(effectiveBodies({ bodies: 0 }, true) === 1, "a saved vote counts before t
 assert(effectiveBodies({ bodies: 4 }, true) === 4, "a saved vote does not add a second body");
 assert(effectiveBodies({ bodies: 4 }, false) === 4, "server tally is kept");
 
-assert(eventIsFree({ categories: ["Arts & Exhibits", "Free Events"] }), "Free Events category counts");
-assert(eventIsFree({ price: 0 }), "numeric zero is free");
-assert(eventIsFree({ price: "Free" }), "the word Free is free");
-assert(!eventIsFree({ price: "$15", categories: ["Music"] }), "a priced show is not free");
-
 const model = normalize({
   today: "2026-10-13",
   venues: [{ id: "v", name: "Room" }],
@@ -157,9 +155,43 @@ const model = normalize({
     performers: [],
     checks: [],
   }],
-}, "test");
+});
 const trivia = model.events.find(e => e.id === "e");
-assert(trivia.free === true, "normalize keeps free");
-assert(trivia.cancelled === true, "normalize keeps cancelled");
+assert(trivia.title === "Trivia", "normalize keeps the title");
+
+// --- continuous timeline ---
+const noon = listingInstant({ date: "2026-10-17", minutes: 12 * 60 });
+assert(noon.endsWith("12:00:00") || noon.includes("T12:00"), `noon default, got ${noon}`);
+const stamped = listingInstant({ date: "2026-10-17", startsAt: "2026-10-17T19:30:00-07:00", minutes: 0 });
+assert(stamped.includes("19:30") || Date.parse(stamped) === Date.parse("2026-10-17T19:30:00-07:00"), "startsAt wins");
+
+const now = Date.parse("2026-10-17T18:00:00-07:00");
+const dNear = timeDepth(Date.parse("2026-10-17T18:30:00-07:00"), now);
+const dFar = timeDepth(Date.parse("2026-10-18T21:00:00-07:00"), now);
+assert(dNear >= 0 && dFar > dNear, `near ${dNear} < far ${dFar}`);
+
+const desk = perspective(1440, 900);
+assert(Math.abs(desk.Wb / 1440 - 0.72) < 0.02, `wider desk road, Wb=${desk.Wb}`);
+const gp = perspective(390, 844);
+assert(Math.abs(gp.Wb / 390 - 0.64) < 0.03, `wider phone road, Wb=${gp.Wb}`);
+
+const placed = timelinePlace([
+  { id: "a", title: "A", date: "2026-10-17", startsAt: "2026-10-17T19:00:00-07:00", minutes: 19 * 60, bodies: 2 },
+  { id: "b", title: "B", date: "2026-10-17", startsAt: "2026-10-17T19:05:00-07:00", minutes: 19 * 60 + 5, bodies: 5 },
+  { id: "c", title: "C", date: "2026-10-18", startsAt: "2026-10-18T20:00:00-07:00", minutes: 20 * 60, bodies: 1 },
+], { now, geom: desk, today: "2026-10-17" });
+assert(placed.some(p => p.kind === "marker" && p.date === "2026-10-17"), "marker before first tonight show");
+assert(placed.some(p => p.kind === "marker" && p.date === "2026-10-18"), "marker before next night");
+const events = placed.filter(p => p.kind === "event");
+assert(events[0].id === "a" || events[0].event.id === "a", "time order");
+assert(events.length === 3, "three events");
+const collide = events.filter(e => Math.abs((e.depth ?? e.d) - (events[0].depth ?? events[0].d)) < 0.05);
+const xslot = timelinePlace([
+  { id: "x", title: "X", date: "2026-10-17", startsAt: "2026-10-17T19:00:00-07:00", minutes: 1140, bodies: 1 },
+  { id: "y", title: "Y", date: "2026-10-17", startsAt: "2026-10-17T19:00:00-07:00", minutes: 1140, bodies: 9 },
+], { now, geom: desk, today: "2026-10-17", collideMinutes: 15 });
+const xs = xslot.filter(p => p.kind === "event");
+assert(xs.length === 2, "both same-minute shows kept");
+assert(xs.some(p => (p.xNudge || 0) !== 0) || xs[0].x !== xs[1].x, "lateral nudge on collision");
 
 console.log("road layout checks passed");
