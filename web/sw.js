@@ -1,5 +1,5 @@
 // NightCal Service Worker (PWA)
-const CACHE_NAME = "nightcal-shell-v2";
+const CACHE_NAME = "nightcal-shell-v3";
 const PRECACHE_ASSETS = [
   "/",
   "/today",
@@ -43,6 +43,16 @@ self.addEventListener("fetch", event => {
 
   // Skip Matrix chat sync and write APIs
   if (url.pathname.startsWith("/_matrix") || url.pathname.startsWith("/api/chat")) {
+    return;
+  }
+
+  // Road calendar iterates often; never serve it stale from the shell cache.
+  if (url.pathname === "/road" || url.pathname.startsWith("/road/")) {
+    event.respondWith(
+      fetch(req)
+        .then(res => res)
+        .catch(async () => (await caches.match(req)) || Response.error())
+    );
     return;
   }
 

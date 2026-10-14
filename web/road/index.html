@@ -3,40 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
-<title>NightCal — The Road (prototype)</title>
-<meta name="description" content="Tonight up close, the coming nights down the road. Bigger signs mean more people are going.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eeiMn9Rlp84S/MJCuViSPwJbEKfvG6Ao/qJMqzWTzqw='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
+<title>NightCal — the road</title>
+<meta name="description" content="Standing at the near end of the road. Sooner nights are closer. Bigger signs mean more people are going.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script>(function () {
+  var bust = "street1";
+  try {
+    if (sessionStorage.getItem("nc-road-bust") !== bust && "serviceWorker" in navigator) {
+      sessionStorage.setItem("nc-road-bust", bust);
+      Promise.all([
+        navigator.serviceWorker.getRegistrations().then(function (regs) {
+          return Promise.all(regs.map(function (r) { return r.unregister(); }));
+        }),
+        caches.keys().then(function (keys) {
+          return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+        })
+      ]).then(function () { location.reload(); }).catch(function () {});
+    }
+  } catch (e) {}
+  var d = document.documentElement, s = null, q = null;
+  try { s = JSON.parse(localStorage.getItem("nightcal.theme.v1") || "null"); } catch (e) {}
+  try { q = new URLSearchParams(location.search); } catch (e) {}
+  if (q) {
+    s = s || {};
+    if (q.get("scheme")) s.scheme = q.get("scheme");
+    if (q.get("textScale")) s.textScale = parseFloat(q.get("textScale"));
+    if (q.get("density")) s.density = q.get("density");
+  }
+  if (!s) return;
+  if (s.scheme === "light" || s.scheme === "dark") d.setAttribute("data-theme", s.scheme);
+  if (s.textScale > 0) d.style.setProperty("--nc-text-scale", String(Math.min(2, Math.max(1, s.textScale))));
+  if (typeof s.density === "number") d.style.setProperty("--nc-density", String(s.density));
+  else if (s.density === "compact" || s.density === "spacious") d.setAttribute("data-density", s.density);
+  if (s.motion === "reduce" || s.motion === "full") d.setAttribute("data-motion", s.motion);
+  if (s.css) {
+    var el = document.createElement("style");
+    el.id = "nc-theme-overrides";
+    el.textContent = s.css;
+    document.head.appendChild(el);
+  }
+})();</script>
 <link rel="stylesheet" href="/css/nightcal.css">
-<link rel="stylesheet" href="/road/road.css">
-<script type="module" src="/road/road.js"></script>
+<link rel="stylesheet" href="/road/road.css?v=street1">
+<script type="module" src="/road/road.js?v=street1"></script>
 </head>
 <body class="road-page">
-<main class="road" id="road" aria-label="NightCal road: tonight in front of you, the coming nights further down the road">
-  <!-- The sky: the event's image fills everything left of the road, above the ground.
-       Drawn first so the road surface always paints over it at the edge. -->
-  <div class="road__sky" id="road-sky"></div>
-
-  <svg class="road__surface" id="road-surface" aria-hidden="true"></svg>
-
-  <div class="road__rows" id="road-rows"></div>
+<main class="road" id="road" aria-label="NightCal road. You are at the near end, looking toward the horizon. Closer signs are sooner.">
+  <div class="road__stage" id="road-stage">
+    <div class="road__sky" id="road-sky" aria-hidden="true"></div>
+    <aside class="road__info" id="road-info" aria-label="Event"></aside>
+    <svg class="road__surface" id="road-surface" aria-hidden="true"></svg>
+    <div class="road__rows" id="road-rows"></div>
+    <p class="road__clear" id="road-clear" hidden>Nothing later is listed.</p>
+  </div>
 
   <section class="road__ground" id="road-ground" aria-labelledby="road-ground-label">
-    <aside class="road__viewer" id="road-detail" aria-live="polite" aria-label="Selected event"></aside>
-    <div class="road__front">
-      <div class="road__lane road__lane--today" id="road-today"></div>
-      <h1 class="road__front-date" tabindex="-1">
-        <span id="road-ground-label">Loading…</span>
-        <span class="road__date-count" id="road-ground-count"></span>
-        <button type="button" class="nc-button road__back" id="road-back" hidden>Back to today</button>
-      </h1>
+    <h1 class="road__front-date" id="road-front-heading" tabindex="-1" aria-current="date">
+      <span id="road-ground-label">Loading…</span>
+      <span class="road__date-when" id="road-ground-when" hidden></span>
+      <span class="road__date-count" id="road-ground-count"></span>
+    </h1>
+    <div class="road__travel">
+      <button type="button" id="road-earlier">Earlier</button>
+      <label class="road__jump">Date
+        <input type="date" id="road-jump">
+      </label>
+      <button type="button" id="road-further">Further <span class="road__remain" id="road-remain" hidden></span></button>
+      <a class="road__week" id="road-week" href="/">Week</a>
     </div>
+    <button type="button" class="road__back" id="road-back" hidden>Back to tonight</button>
+    <p class="road__source" id="road-source" hidden></p>
   </section>
 
-  <details class="road__filters" id="road-filters-wrap" open>
+  <details class="road__filters" id="road-filters-wrap">
     <summary>Filter</summary>
     <form id="road-filters">
+      <fieldset>
+        <legend>Show</legend>
+        <label><input type="radio" name="scope" value="nights" checked> Nights out</label>
+        <label><input type="radio" name="scope" value="all"> Everything</label>
+      </fieldset>
       <fieldset>
         <legend>Kinds</legend>
         <div id="road-kinds"></div>
@@ -46,7 +94,7 @@
     </form>
   </details>
 
-  <p class="road__source" id="road-source" aria-live="polite"></p>
+  <p class="nc-sr-only" id="road-status" aria-live="polite"></p>
 </main>
 </body>
 </html>
