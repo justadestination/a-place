@@ -194,6 +194,131 @@
 
 .road__rows { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 
+/* Night curb markers are hairlines across the road, labels to the left. */
+.road-marker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: color-mix(in srgb, var(--nc-palette-neutral-200) 55%, transparent);
+  pointer-events: none;
+}
+
+.road-marker__label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  color: var(--nc-palette-neutral-200);
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-medium);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(11, 11, 12, 0.85);
+}
+
+/* Poster cards stand on the depth line and read as the sign's leg. */
+.road-sign {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.road-sign[data-lod="full"] .road-sign__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem;
+  gap: 0.25rem;
+  min-height: 160px;
+  max-height: 220px;
+  text-align: center;
+}
+
+.road-sign[data-lod="full"] .road-sign__img {
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.road-sign[data-lod="full"] .road-sign__mark {
+  position: absolute;
+  bottom-right;
+  margin: 0.3rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 2px;
+  opacity: 0.85;
+}
+
+.road-sign[data-lod="full"] .road-sign__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  text-align: center;
+  padding-top: 0.15rem;
+}
+
+.road-sign[data-lod="full"] .road-sign__title {
+  font-weight: var(--nc-font-weight-bold);
+  font-size: clamp(0.72rem, 1.4cqi, 0.95rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-align: center;
+}
+
+.road-sign[data-lod="full"] .road-sign__when {
+  font-size: var(--nc-font-size-xs);
+  font-weight: var(--nc-font-weight-medium);
+  opacity: 0.9;
+}
+
+.road-sign[data-lod="title"] .road-sign__face {
+  padding: 0.3rem 0.4rem;
+  min-height: 48px;
+}
+
+.road-sign[data-lod="title"] .road-sign__title {
+  font-weight: var(--nc-font-weight-bold);
+  font-size: clamp(0.62rem, 1.6cqi, 0.8rem);
+  line-height: 1.12;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.road-sign[data-lod="dot"] .road-sign__face {
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.road-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.4rem;
+  padding: 0 0.3rem;
+  color: var(--nc-palette-neutral-300);
+  font-size: var(--nc-font-size-xs);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
 .road__clear {
   position: absolute;
   z-index: 2;
@@ -205,103 +330,6 @@
   color: var(--nc-palette-neutral-300);
   font-size: var(--nc-font-size-sm);
 }
-
-.road-band {
-  position: absolute;
-  left: 50%;
-  translate: -50% 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  pointer-events: none;
-  overflow: hidden;
-  /* Soft pavement lift so packed nights read as occupying the asphalt. */
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--nc-palette-neutral-800) 22%, transparent) 0%,
-      color-mix(in srgb, var(--nc-palette-neutral-900) 8%, transparent) 55%,
-      transparent 100%
-    );
-}
-
-.road-band[data-depth="near"] {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--nc-palette-neutral-700) 28%, transparent) 0%,
-      color-mix(in srgb, var(--nc-palette-neutral-800) 14%, transparent) 60%,
-      transparent 100%
-    );
-}
-
-.road-band[data-depth="far"] {
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--nc-palette-neutral-800) 14%, transparent) 0%,
-      transparent 100%
-    );
-}
-
-.road-band .road__lane {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-end;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 8px;
-  overflow: hidden;
-  pointer-events: auto;
-}
-
-.road__lane-empty {
-  margin: 0 0 0.4rem;
-  color: var(--nc-palette-neutral-300);
-  font-size: var(--nc-font-size-sm);
-}
-
-.road__date {
-  flex: none;
-  align-self: stretch;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  margin: 0;
-  padding: 0 0.4rem;
-  border: 0;
-  background: transparent;
-  color: var(--nc-palette-neutral-50);
-  font: inherit;
-  font-size: var(--nc-font-size-sm);
-  font-weight: var(--nc-font-weight-medium);
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-shadow: 0 1px 2px rgba(11, 11, 12, 0.7);
-  pointer-events: auto;
-  cursor: pointer;
-}
-
-.road__date-name,
-.road__date-n {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.road__date-n {
-  color: var(--nc-palette-amber-300);
-  font-variant-numeric: tabular-nums;
-}
-
-.road-band[data-depth="mid"] .road__date { font-size: var(--nc-font-size-xs); }
-.road-band[data-depth="far"] .road__date { font-size: 0.7rem; }
 
 /* The sign is the shape. Fill is the venue. The inset is the entry price. */
 .road-sign,

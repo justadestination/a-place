@@ -12,20 +12,16 @@ import { shareUrl } from "../js/core/share.js";
 import { isStewardActive, openStewardDrawer } from "../components/steward-drawer/steward-drawer.js";
 import { reducedMotion } from "../js/core/theme.js";
 import {
-  SCALE_MAX,
-  bandFrames,
   effectiveBodies,
   entryLabel,
   entryStroke,
   listingDates,
-  lodFor,
   packSigns,
   perspective,
   signScale,
-  posterFit,
-  standAt,
+  timelinePlace,
   venuePaint,
-} from "./layout.js?v=street1";
+} from "./layout.js?v=timeline1";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STEWARD_PAYLOAD = "shadenet_steward_payload";
@@ -399,14 +395,14 @@ function signLabel(event) {
   ].filter(Boolean).join(", ");
 }
 
-function makeSign(item, lod) {
+function makeSign(item) {
   const event = item.event;
   const paint = paintFor(event);
   const btn = el("button", "road-sign");
   btn.type = "button";
   btn.dataset.id = event.id;
   btn.dataset.date = event.date;
-  btn.dataset.lod = lod;
+  btn.dataset.lod = item.lod;
   btn.dataset.shape = event.glyph;
   btn.dataset.venue = event.venueId || "";
   btn.classList.toggle("is-cancelled", !!event.cancelled);
@@ -423,7 +419,26 @@ function makeSign(item, lod) {
 
   const edge = el("span", "road-sign__edge");
   const face = el("span", "road-sign__face");
-  if (lod !== "dot") face.append(el("span", "road-sign__title", event.title));
+  if (item.lod === "full") {
+    if (event.image) {
+      const img = el("img", "road-sign__img");
+      img.alt = "";
+      img.decoding = "async";
+      img.dataset.fit = "cover";
+      img.src = event.image;
+      face.append(img);
+    } else {
+      const mark = el("span", "road-sign__mark");
+      mark.dataset.shape = event.glyph || "square";
+      face.append(mark);
+    }
+    const meta = el("div", "road-sign__meta");
+    meta.append(el("span", "road-sign__title", event.title));
+    meta.append(el("span", "road-sign__when", event.timeDisplay || event.start));
+    face.append(meta);
+  } else if (item.lod !== "dot") {
+    face.append(el("span", "road-sign__title", event.title));
+  }
   btn.append(edge, face);
 
   btn.addEventListener("click", () => {
@@ -541,31 +556,64 @@ function drawSurface(geom) {
   els.road.style.setProperty("--road-right", `${cx + half}px`);
 }
 
-function drawBands(frames, win) {
+function drawTimeline(placed, geom) {
   els.rows.replaceChildren();
-  const nights = win.nights || [];
-  frames.forEach((frame, index) => {
-    const date = nights[index];
-    if (!date) return;
-    const events = eventsOn(date);
-    const band = el("div", "road-band");
-    const depth = index === 0 ? "near" : index === 1 ? "mid" : "far";
-    band.dataset.depth = depth;
-    band.dataset.date = date;
-    band.style.top = `${frame.y}px`;
-    band.style.height = `${frame.height}px`;
-    band.style.width = `${frame.near}px`;
-    const inset = frame.near > 0 ? (frame.inset / frame.near) * 100 : 0;
-    band.style.clipPath = `polygon(${inset}% 0, ${100 - inset}% 0, 100% 100%, 0 100%)`;
-    band.append(placeRoadSigns(events, frame), dateButton(date, events.length, frame.header, depth));
-    els.rows.append(band);
-  });
-  els.clear.hidden = nights.length > 0;
+  els.rows.style.pointerEvents = "auto";
+  const halfRoad = geom.Wb / 2;
+  for (const item of placed) {
+    if (item.kind === "marker") {
+      const label = item.label || bandName(item.date, "near");
+      const line = el("div", "road-marker");
+      line.dataset.date = item.date;
+      line.style.top = `${item.y}px`;
+      line.style.width = `${item.width}px`;
+      const labelEl = el("span", "road-marker__label");
+      labelEl.textContent = label;
+      line.append(labelEl);
+      els.rows.append(line);
+      continue;
+    }
+    const event = item.event;
+    const lod = item.lod || lodForDepth(item.depth, geom);
+    const p = geom.p(item.depth);
+    // Poster card size from road width at this depth (near = big poster).
+    const cardSide = Math.min(220, Math.max(160, geom.widthAt(item.depth) * 0.34));
+    const signScale = 1 + 0.15 * Math.min(1, p / 0.5);
+    const itemForSign = {
+      ...item,
+      lod,
+      w: Math.round(cardSide),
+      h: Math.round(cardSide),
+      scale: signScale,
+    };
+    const sign = makeSign(itemForSign);
+    const style = sign.style;
+    style.left = `calc(50% + ${item.xNudge !== undefined ? item.xNudge * halfRoad : 0}px)`;
+    style.transform = "translate(-50%, -100%)";
+    style.pointerEvents = "auto";
+    els.rows.append(sign);
+    if (item.overflow > 0) {
+      const more = el("span", "road-more");
+      more.textContent = `+${item.overflow}`;
+      more.title = `${item.overflow} more this night`;
+      more.style.pointerEvents = "none";
+      els.rows.append(more);
+    }
+  }
+  els.clear.hidden = placed.some(item => item.kind === "event" && Date.parse(listingInstant(item.event)) >= Date.now());
+}
+
+/** LOD pick from depth: full poster near, title mid, dot far. */
+function lodForDepth(depth, geom) {
+  const p = geom.p(depth);
+  if (p > 0.55) return "full";
+  if (p > 0.28) return "title";
+  return "dot";
 }
 
 function updateFoot(win) {
-  const events = eventsOn(win.selected || state.selected);
   const selected = win.selected || state.selected;
+  const events = eventsOn(selected);
   const name = relative(selected, todayIso());
   els.groundLabel.textContent = name;
   const short = name === "Tonight" || name === "Tomorrow" || name === "Yesterday";
@@ -671,26 +719,38 @@ function render({ speak = false, focusHeading = false, reason = "" } = {}) {
     return;
   }
   resizeTries = 0;
-  // Street-level defaults live in perspective(); nights fill the road from your feet up.
+  // Street-level defaults live in perspective(); the road is a continuous
+  // walk up the street toward upcoming shows, with night-boundary markers.
   const geom = perspective(stageW, stageH);
-  const later = state.dates.filter(date => date > state.selected);
-  const nightBudget = exact >= 0
-    ? Math.min(12, Math.max(4, state.dates.length - exact))
-    : Math.min(12, Math.max(4, later.length + 1));
-  const frames = bandFrames(geom, nightBudget);
-  const follow = Math.max(0, frames.length - 1);
-  const win = exact >= 0
-    ? standAt(state.dates, exact, frames.length)
-    : {
-      selected: state.selected,
-      road: later.slice(0, follow),
-      nights: [state.selected, ...later.slice(0, follow)].filter(Boolean).slice(0, frames.length),
-      remaining: Math.max(0, later.length - follow),
-    };
+  const now = Date.now();
+  const selectedListings = state.dates.map(date => eventsOn(date)).flat();
+  const placed = timelinePlace(selectedListings, { now, geom, today: todayIso() });
+  const firstToday = placed.filter(p => p.kind === "event" && p.event.date === todayIso());
+  const firstShowOfSelected = firstToday.length
+    ? firstToday[0].event.startsAt
+    : null;
+  const visible = [];
+  for (const item of placed) {
+    if (item.kind === "marker") {
+      visible.push(item);
+      continue;
+    }
+    const ms = Date.parse(listingInstant(item.event));
+    if (!ms) {
+      visible.push(item);
+      continue;
+    }
+    if (firstShowOfSelected && ms < Date.parse(firstShowOfSelected)) continue;
+    visible.push(item);
+  }
+  const markerDates = new Set(visible.filter(item => item.kind === "marker").map(item => item.date));
+  const dates = [...markerDates].sort();
+  const nearEnd = visible.find(item => item.kind === "event") || null;
+  const nearEndDate = nearEnd && nearEnd.kind === "event" ? nearEnd.event.date : null;
 
   drawSurface(geom);
-  drawBands(frames, win);
-  updateFoot(win);
+  drawTimeline(visible, geom);
+  updateFoot({ selected: nearEndDate || state.selected, remaining: 0 });
   paintSky();
   paintKinds();
   restoreFocus(active, focusHeading);
