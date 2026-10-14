@@ -20,8 +20,10 @@ import {
   perspective,
   signScale,
   timelinePlace,
+  listingInstant,
+  posterFit,
   venuePaint,
-} from "./layout.js?v=timeline1";
+} from "./layout.js?v=timeline2";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const STEWARD_PAYLOAD = "shadenet_steward_payload";

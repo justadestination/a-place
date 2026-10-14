@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eeiMn9Rlp84S/MJCuViSPwJbEKfvG6Ao/qJMqzWTzqw='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-LiLoaZuiTQx6+sUdvcmlBsxgMfJ9ABkbEjyu3Ql0JQE='; style-src 'self' 'unsafe-inline'; img-src 'self' https: data: blob:; connect-src 'self'; base-uri 'self'; form-action 'self'">
 <title>NightCal — the road</title>
 <meta name="description" content="Standing at the near end of the road. Sooner nights are closer. Bigger signs mean more people are going.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>(function () {
-  var bust = "timeline1";
+  var bust = "timeline3";
   try {
     if (sessionStorage.getItem("nc-road-bust") !== bust && "serviceWorker" in navigator) {
       sessionStorage.setItem("nc-road-bust", bust);
@@ -46,8 +46,8 @@
   }
 })();</script>
 <link rel="stylesheet" href="/css/nightcal.css">
-<link rel="stylesheet" href="/road/road.css?v=timeline1">
-<script type="module" src="/road/road.js?v=timeline1"></script>
+<link rel="stylesheet" href="/road/road.css?v=timeline3">
+<script type="module" src="/road/road.js?v=timeline3"></script>
 </head>
 <body class="road-page">
 <main class="road" id="road" aria-label="NightCal road. You are at the near end, looking toward the horizon. Closer signs are sooner.">

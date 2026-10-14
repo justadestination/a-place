@@ -597,7 +597,7 @@
 .road__filters {
   position: absolute;
   z-index: 5;
-  bottom: 100%;
+  bottom: 0;
   left: 0;
   right: 0;
   width: auto;
@@ -612,6 +612,8 @@
 }
 
 .road__filters[open] {
+  position: absolute;
+  bottom: 0;
   width: min(18rem, calc(100vw - 1.5rem));
   padding: var(--nc-space-3);
   border-radius: var(--nc-radius-md);
