@@ -26,7 +26,7 @@ import json
 import secrets
 import threading
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -599,7 +599,7 @@ def build_test_mdl_presentation(
             .public_key(ca_key.public_key())
             .serial_number(1)
             .not_valid_before(now)
-            .not_valid_after(now + datetime.timedelta(days=365))
+            .not_valid_after(now + timedelta(days=365))
             .sign(ca_key, hashes.SHA256())
         )
     else:
