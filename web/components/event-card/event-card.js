@@ -63,7 +63,7 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
   const countSpan = h("span.nc-event-card__gauge-count", {}, String(bodies));
   const labelSpan = h("span.nc-event-card__gauge-label", {}, ` ${bodies === 1 ? "body" : "bodies"}`);
 
-  const updateVoteDisplay = () => {
+  const updateVoteDisplay = (direction) => {
     countSpan.textContent = String(bodies);
     labelSpan.textContent = ` ${bodies === 1 ? "body" : "bodies"}`;
     if (btnPlus) btnPlus.className = `nc-button ${hasUserVoted ? "nc-button--primary" : "nc-button--ghost"}`;
@@ -71,8 +71,11 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
       if (hasUserVoted) btnMinus.removeAttribute("disabled");
       else btnMinus.setAttribute("disabled", "true");
     }
-    // Let the page react (e.g. the road resizes billboards) — the vote buttons stop click propagation.
-    countSpan.dispatchEvent(new CustomEvent("nc:bodies", { bubbles: true, detail: { id: event.id, bodies } }));
+    // The road resizes billboards from this. direction is "+" or "retract".
+    countSpan.dispatchEvent(new CustomEvent("nc:bodies", {
+      bubbles: true,
+      detail: { id: event.id, bodies, direction },
+    }));
   };
 
   const btnPlus = button({
@@ -94,7 +97,7 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
         hasUserVoted = true;
         bodies += 1;
         try { localStorage.setItem(userVotedKey, "1"); } catch {}
-        updateVoteDisplay();
+        updateVoteDisplay("+");
       }
     }
   });
@@ -119,7 +122,7 @@ export function eventCard(event, { venue, level = 2, today, showImage = true, sh
         hasUserVoted = false;
         bodies = Math.max(0, bodies - 1);
         try { localStorage.removeItem(userVotedKey); } catch {}
-        updateVoteDisplay();
+        updateVoteDisplay("retract");
       }
     }
   });

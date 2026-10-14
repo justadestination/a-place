@@ -379,9 +379,10 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
         """
         SELECT e.id, e.title, e.starts_at, e.ends_at, e.status, e.venue_id,
                e.confidence, e.needs_review, e.source_count, e.ticket_url,
-               e.image_url, e.active,
+               e.image_url, e.active, e.price AS event_price,
                v.name AS venue_name,
                l.url AS listing_url, l.source_id, l.raw_json, l.venue_name_raw, l.description,
+               l.price AS listing_price,
                l.title_raw AS listing_title, l.starts_at AS listing_starts, l.ends_at AS listing_ends
         FROM events e
         JOIN event_listings el ON el.event_id = e.id
@@ -477,6 +478,7 @@ def load_rows(store: Store, *, include_hidden: bool = False) -> tuple[list[dict]
             "endLabel": _clock(end),
             "kind": raw.get("kind") or "other",
             "categories": raw.get("categories") or [],
+            "price": row["event_price"] or row["listing_price"] or raw.get("price") or "",
             "status": row["status"],
             "sourceUrl": row["listing_url"] or "",
             "sourceName": _source_name(row["source_id"] or ""),

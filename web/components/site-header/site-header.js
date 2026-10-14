@@ -13,7 +13,7 @@ const SURFACES = [
     label: "NightCal",
     mark: `${BRAND}/nightcal-256.png`,
     accent: "var(--nc-color-accent, #E5A93C)",
-    match: p => p === "/" || p.startsWith("/calendar") || p.startsWith("/today") || p.startsWith("/day"),
+    match: p => p === "/" || p.startsWith("/calendar") || p.startsWith("/today") || p.startsWith("/day") || p.startsWith("/road"),
   },
   {
     id: "umwelt",

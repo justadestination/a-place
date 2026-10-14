@@ -51,6 +51,15 @@ const main = h("main.nc-container.nc-page.nc-cal", { id: "main", tabindex: "-1" 
 const footer = siteFooter({ notes: model.notes, source: model.source });
 app.replaceChildren(siteHeader(), main, footer);
 
+const roadLink = h("a.nc-link", { href: "/road/" }, "Open the road");
+function refreshRoadLink() {
+  const q = new URLSearchParams();
+  if (state.date && state.date !== model.today) q.set("date", state.date);
+  if (state.scope === "all") q.set("scope", "all");
+  if (state.kind) q.set("kind", state.kind);
+  const s = q.toString();
+  roadLink.href = s ? `/road/?${s}` : "/road/";
+}
 function drawControls() {
   controls.replaceChildren(filterBar({
     scope: state.scope,
@@ -58,7 +67,8 @@ function drawControls() {
     kind: state.kind,
     rooms: roomsWithEvents(model, { scope: "all" }),
     kinds: kindsWithEvents(model, { scope: "all" }),
-  }));
+  }), roadLink);
+  refreshRoadLink();
 }
 function drawWeek() {
   week.replaceChildren(calendarWeek(weekScene(model, state), { noun: noun() }));
@@ -208,6 +218,7 @@ function selectDate(date, { focus } = {}) {
   state.date = date;
   state.month = date.slice(0, 7);
   syncUrl();
+  refreshRoadLink();
   drawAll();
   if (focus === "week") week.querySelector(`[data-date="${date}"]`)?.focus();
   if (focus === "agenda") agenda.querySelector("h1")?.focus();
@@ -219,6 +230,7 @@ controls.addEventListener("nc-filter", e => {
   state.venueId = e.detail.venueId;
   state.kind = e.detail.kind || "";
   syncUrl();
+  refreshRoadLink();
   drawAll();
 });
 week.addEventListener("nc-shift", e => {

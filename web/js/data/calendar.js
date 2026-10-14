@@ -68,6 +68,21 @@ export function isClosedVenue(v) {
   return false;
 }
 
+/** A listing is free when the source says so, or files it under Free Events. */
+export function eventIsFree(e) {
+  if (!e) return false;
+  if (e.isFree === true || e.isAccessibleForFree === true) return true;
+  const price = e.price;
+  if (price === 0 || price === "0") return true;
+  if (typeof price === "string" && /^\s*(free|\$0(?:\.00)?)\s*$/i.test(price)) return true;
+  const cats = []
+    .concat(e.categories || [])
+    .map(c => String(typeof c === "string" ? c : c?.name || "").toLowerCase());
+  if (cats.some(c => c === "free" || c.includes("free event"))) return true;
+  if (/\bfree\b/i.test(String(e.priceLabel || ""))) return true;
+  return false;
+}
+
 export function isChildrenEvent(e) {
   if (!e) return false;
   const title = (e.title || "").toLowerCase();
@@ -128,6 +143,12 @@ export function normalize(raw, source = "live", { today: overrideToday } = {}) {
         checks: (e.checks || []).map(c => ({ name: c.name, url: safeUrl(c.url) })).filter(c => c.url),
         image: safeUrl(e.image),
         performers: (e.performers || []).map(p => p.name).filter(Boolean),
+        categories: (e.categories || [])
+          .map(c => (typeof c === "string" ? c : c?.name || ""))
+          .filter(Boolean),
+        price: e.price ?? "",
+        free: eventIsFree(e),
+        cancelled: /cancel/i.test(String(e.status || "")) || e.eventStatus === "EventCancelled",
         up: e.up || 0, down: e.down || 0, score: e.score || 0,
         bodies: Number.isFinite(e.bodies) ? e.bodies : (Number.isFinite(e.up) ? e.up : 0),
         verifiedBodies: Number.isFinite(e.verified_bodies) ? e.verified_bodies : 0,
