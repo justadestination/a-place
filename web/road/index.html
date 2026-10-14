@@ -9,7 +9,7 @@
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <script>(function () {
-  var bust = "street1";
+  var bust = "timeline1";
   try {
     if (sessionStorage.getItem("nc-road-bust") !== bust && "serviceWorker" in navigator) {
       sessionStorage.setItem("nc-road-bust", bust);
@@ -46,8 +46,8 @@
   }
 })();</script>
 <link rel="stylesheet" href="/css/nightcal.css">
-<link rel="stylesheet" href="/road/road.css?v=street1">
-<script type="module" src="/road/road.js?v=street1"></script>
+<link rel="stylesheet" href="/road/road.css?v=timeline1">
+<script type="module" src="/road/road.js?v=timeline1"></script>
 </head>
 <body class="road-page">
 <main class="road" id="road" aria-label="NightCal road. You are at the near end, looking toward the horizon. Closer signs are sooner.">
@@ -75,24 +75,25 @@
     </div>
     <button type="button" class="road__back" id="road-back" hidden>Back to tonight</button>
     <p class="road__source" id="road-source" hidden></p>
-  </section>
 
-  <details class="road__filters" id="road-filters-wrap">
-    <summary>Filter</summary>
-    <form id="road-filters">
-      <fieldset>
-        <legend>Show</legend>
-        <label><input type="radio" name="scope" value="nights" checked> Nights out</label>
-        <label><input type="radio" name="scope" value="all"> Everything</label>
-      </fieldset>
-      <fieldset>
-        <legend>Kinds</legend>
-        <div id="road-kinds"></div>
-      </fieldset>
-      <label><input type="checkbox" name="free"> Free only</label>
-      <label><input type="checkbox" name="hideCancelled"> Hide cancelled</label>
-    </form>
-  </details>
+    <details class="road__filters" id="road-filters-wrap">
+      <summary>Filter</summary>
+      <form id="road-filters">
+        <fieldset>
+          <legend>Show</legend>
+          <label><input type="radio" name="scope" value="nights" checked> Nights out</label>
+          <label><input type="radio" name="scope" value="all"> Everything</label>
+        </fieldset>
+        <fieldset>
+          <legend>Kinds</legend>
+          <div id="road-kinds"></div>
+        </fieldset>
+        <label><input type="checkbox" name="free"> Free only</label>
+        <label><input type="checkbox" name="hideCancelled"> Hide cancelled</label>
+      </form>
+    </details>
+
+  </section>
 
   <p class="nc-sr-only" id="road-status" aria-live="polite"></p>
 </main>

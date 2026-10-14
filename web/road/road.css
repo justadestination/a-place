@@ -450,10 +450,8 @@
 
 .road__ground {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem 0.85rem;
+  flex-direction: column;
+  position: relative;
   padding: 0.4rem 0.8rem max(0.45rem, env(safe-area-inset-bottom));
   background: var(--nc-palette-neutral-950);
   border-top: 1px solid color-mix(in srgb, var(--nc-palette-neutral-50) 12%, transparent);
@@ -571,10 +569,11 @@
 .road__filters {
   position: absolute;
   z-index: 5;
-  top: max(var(--nc-space-3), env(safe-area-inset-top));
-  left: max(var(--nc-space-3), env(safe-area-inset-left));
+  bottom: 100%;
+  left: 0;
+  right: 0;
   width: auto;
-  max-height: min(70dvh, 32rem);
+  max-height: min(40vh, 16rem);
   overflow: auto;
   padding: 0 0.9rem;
   background: color-mix(in srgb, var(--nc-palette-neutral-950) 88%, transparent);
