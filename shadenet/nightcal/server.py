@@ -121,6 +121,19 @@ def _model(status: str | None = None) -> dict:
         store.close()
 
 
+_house = None
+
+
+def _the_house():
+    """The House door (R8), imported and built on first use so a bad vendor copy cannot stop the server."""
+    global _house
+    if _house is None:
+        from shadenet.house import House
+
+        _house = House()
+    return _house
+
+
 def _ops_ctx() -> OpsCtx:
     def venues() -> list[dict]:
         store = open_store(_db_path())
@@ -621,6 +634,14 @@ class Handler(BaseHTTPRequestHandler):
                 return
 
         if self._flags("POST", path, body):
+            return
+
+        # Public by design (R8: the door always delivers, from anyone). Not
+        # under /api/operator/, so require_operator does not apply; it sits in
+        # the submissions rate-limit bucket applied above.
+        if path == "/api/house/operator-mail":
+            code, payload = _the_house().operator_mail(body)
+            self._json(code, payload)
             return
 
         if path.startswith("/api/auth/"):
